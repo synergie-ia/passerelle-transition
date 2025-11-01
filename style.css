@@ -1,140 +1,104 @@
-body {
-  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(180deg, #f7faff 0%, #ffffff 100%);
-  color: #2c3e50;
-  margin: 0;
-  padding: 0;
-  transition: background 0.3s ease;
+:root{
+  --blue:#3764f5;
+  --blue-600:#2e55cf;
+  --blue-100:#e9f0ff;
+  --ink:#0f172a;
+  --muted:#64748b;
+  --card:#ffffff;
+  --bg:#f7f8fc;
+  --ring: rgba(55,100,245,.35);
+  --grad: linear-gradient(135deg,#3764f5,#6a8bff);
+  --btn-grad: linear-gradient(135deg,#ff9332,#ffb36c);
 }
 
-.container {
-  max-width: 900px;
-  margin: 50px auto;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 74, 173, 0.1);
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,Arial;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
-  color: #004AAD;
-  text-align: center;
-  font-weight: 600;
+.header{
+  background:#fff; padding:28px 16px; border-bottom:3px solid var(--blue);
+}
+.header h1{margin:0 0 8px;font-size:1.8rem;color:var(--blue)}
+.subtitle{margin:0;max-width:960px;color:var(--muted)}
+
+.progress{height:8px;background:#e6e9f5;border-radius:99px;margin-top:16px;overflow:hidden}
+.progress-bar{height:100%;background:var(--grad);width:0%;transition:width .3s}
+
+.container{max-width:960px;margin:24px auto;padding:16px}
+
+.step-title{font-size:1.4rem;font-weight:700;color:var(--blue);margin-bottom:8px}
+.step-title .hint{display:block;color:var(--muted);font-weight:500;margin-top:4px}
+
+.cards{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.card{
+  background:var(--card); border:1.5px solid #e6e9f5; border-radius:14px; padding:14px 16px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(55,100,245,.08);border-color:#d9dffa}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card-title{font-weight:700}
+.card-phrase{color:var(--muted);margin-top:6px;line-height:1.45}
+
+.card input[type="checkbox"]{
+  width:22px;height:22px;accent-color:var(--blue);
 }
 
-p {
-  text-align: center;
-  color: #555;
-  line-height: 1.5;
+.limit{
+  margin-top:10px;padding:10px 12px;border:1px solid #ffd7b0;background:#fff6ec;border-radius:10px;
+  color:#8a4b10;font-weight:600
+}
+.hidden{display:none}
+
+.nav{display:flex;gap:12px;justify-content:flex-end;margin-top:16px}
+.btn{
+  appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+  transition:transform .08s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
+}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--btn-grad);color:#1f2937}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,147,50,.25)}
+.btn-secondary{background:var(--grad);color:#fff}
+.btn-secondary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(55,100,245,.28)}
+.btn-outline{background:#fff;border:2px solid var(--blue);color:var(--blue)}
+.btn-outline:hover{background:var(--blue);color:#fff}
+
+.results{margin-top:8px}
+.results-title{color:var(--blue);font-size:1.5rem;margin:6px 0 12px}
+.results-blocks{display:flex;flex-direction:column;gap:14px}
+
+.block{
+  background:#fff;border:2px solid #d9e3ff;border-radius:16px;padding:14px 16px
+}
+.block h3{margin:0 0 10px;color:var(--blue-600)}
+
+.selected-badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{
+  background:var(--blue-100);color:var(--blue-600);border:1px solid #cfe0ff;border-radius:999px;
+  padding:8px 10px;font-weight:600
+}
+.badge small{display:block;color:#354caa;font-weight:500;opacity:.85}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.export{margin-top:8px}
+.export textarea{
+  width:100%;min-height:160px;border:1.5px solid #e6e9f5;border-radius:12px;padding:12px;font-family:ui-monospace,Consolas,monospace
 }
 
-.btn {
-  display: inline-block;
-  background: linear-gradient(135deg, #ff8a00, #ff6600);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 25px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 8px rgba(255, 136, 0, 0.2);
+/* Print */
+@media print{
+  body{background:#fff}
+  .header,.nav,.actions{display:none!important}
+  .container{max-width:100%;padding:0}
+  .results{margin-top:0}
+  .block{page-break-inside:avoid;border-color:#c9d7ff}
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(255, 136, 0, 0.3);
-}
-
-.btn-blue {
-  background: linear-gradient(135deg, #004AAD, #0074e4);
-  box-shadow: 0 4px 8px rgba(0, 74, 173, 0.2);
-}
-
-.btn-blue:hover {
-  box-shadow: 0 6px 12px rgba(0, 74, 173, 0.3);
-}
-
-.section {
-  display: none;
-  margin-top: 30px;
-  animation: fadeIn 0.4s ease;
-}
-
-.visible {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.bloc {
-  border: 2px solid #004AAD;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background: #f9fbff;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 74, 173, 0.05);
-}
-
-.bloc:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 74, 173, 0.1);
-}
-
-.checkbox-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 15px;
-}
-
-label {
-  background: #ffffff;
-  border: 1px solid #cce0ff;
-  border-radius: 8px;
-  padding: 12px 10px;
-  cursor: pointer;
-  display: block;
-  transition: all 0.2s ease;
-}
-
-input[type="checkbox"]:checked + label {
-  background-color: #004AAD;
-  color: white;
-  border-color: #004AAD;
-  box-shadow: 0 2px 10px rgba(0, 74, 173, 0.2);
-}
-
-.profile {
-  background: #f9fbff;
-  border: 2px solid #004AAD;
-  border-radius: 14px;
-  padding: 25px;
-  margin-top: 25px;
-  box-shadow: 0 6px 20px rgba(0, 74, 173, 0.08);
-}
-
-.profile h2, .profile h3 {
-  color: #004AAD;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-li {
-  background: #ffffff;
-  border-left: 5px solid #004AAD;
-  margin: 8px 0;
-  padding: 10px 14px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 74, 173, 0.05);
+/* Small tweaks */
+@media (min-width:768px){
+  .subtitle{font-size:1.05rem}
 }
