@@ -1,19 +1,11 @@
-// ======================================
 // SCRIPT PRINCIPAL ORIENTATION 360 IA
-// ======================================
+// ===============================
 
 let currentPage = 0;
-const selections = {
-  interets: [],
-  personnalite: [],
-  valeurs: []
-};
+const selections = { interets: [], personnalite: [], valeurs: [] };
 const maxChoices = 6;
 
-// =========================
-// NAVIGATION ENTRE LES PAGES
-// =========================
-
+// ---------- Navigation ----------
 function goToPage(page) {
   document.querySelectorAll('.page, #welcome, #summary').forEach(p => p.style.display = 'none');
   const target = document.getElementById(page === 0 ? 'welcome' : `page${page}`);
@@ -21,34 +13,26 @@ function goToPage(page) {
   currentPage = page;
 }
 
-// =========================
-// AFFICHAGE DES BLOCS
-// =========================
-
+// ---------- Affichage ----------
 function renderSection(id, data) {
   const container = document.getElementById(id);
   container.innerHTML = '';
-
   data.forEach((item, i) => {
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
       <label>
         <input type="checkbox" onchange="toggleChoice('${id}', ${i}, this)">
-        <div class="content">
+        <div>
           <div class="verbs">${item.verbes.join(', ')}</div>
           <div class="phrase">${item.phrase}</div>
         </div>
-      </label>
-    `;
+      </label>`;
     container.appendChild(div);
   });
 }
 
-// =========================
-// GESTION DES CHOIX
-// =========================
-
+// ---------- Gestion des choix ----------
 function toggleChoice(category, index, checkbox) {
   if (checkbox.checked) {
     if (selections[category].length >= maxChoices) {
@@ -62,10 +46,7 @@ function toggleChoice(category, index, checkbox) {
   }
 }
 
-// =========================
-// RÉCAPITULATIF FINAL
-// =========================
-
+// ---------- Récapitulatif ----------
 function showSummary() {
   document.querySelectorAll('.page, #welcome').forEach(p => p.style.display = 'none');
   const recapSection = document.getElementById('summary');
@@ -78,11 +59,11 @@ function showSummary() {
     const section = document.createElement('div');
     section.className = 'recap-section';
     section.innerHTML = `<h3>${cat.toUpperCase()}</h3>`;
+    const list = document.createElement('ul');
 
     if (selections[cat].length === 0) {
-      section.innerHTML += `<p><em>Aucune sélection</em></p>`;
+      section.innerHTML += `<p><em>Aucune sélection.</em></p>`;
     } else {
-      const list = document.createElement('ul');
       selections[cat].forEach(i => {
         const data = window[cat][i];
         const li = document.createElement('li');
@@ -95,10 +76,7 @@ function showSummary() {
   });
 }
 
-// =========================
-// COPIER LE PROFIL
-// =========================
-
+// ---------- Copier ----------
 function copyProfile() {
   let text = '🎯 PROFIL GLOBAL ORIENTATION 360 IA\n\n';
   Object.keys(selections).forEach(cat => {
@@ -114,15 +92,11 @@ function copyProfile() {
     .then(() => alert('✅ Profil copié dans le presse-papiers !'));
 }
 
-// =========================
-// EXPORT EN PDF
-// =========================
-
+// ---------- Export PDF ----------
 function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   let y = 20;
-
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.text("Profil Orientation 360 IA", 20, y);
@@ -155,10 +129,7 @@ function exportPDF() {
   doc.save("profil_orientation360IA.pdf");
 }
 
-// =========================
-// INITIALISATION
-// =========================
-
+// ---------- Initialisation ----------
 document.addEventListener('DOMContentLoaded', () => {
   goToPage(0);
   renderSection('interets', interets);
