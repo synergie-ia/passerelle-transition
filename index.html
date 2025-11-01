@@ -1,40 +1,807 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>IA360 — Questionnaire intérêts (prototype)</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA360 - Test d'Orientation Professionnelle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 40px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .scale-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .scale-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .scale-item .emoji {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .scale-item .label {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .scale-item .range {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .question {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .question-header {
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .question-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .question-examples {
+            color: #888;
+            font-size: 0.9rem;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .slider-container {
+            margin: 25px 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(to right, 
+                #e0e0e0 0%, 
+                #ff6b6b 10%, 
+                #ff6b6b 30%, 
+                #ffa500 30%, 
+                #ffa500 60%, 
+                #4CAF50 60%, 
+                #4CAF50 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 3px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 3px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        .value-display {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .value-display .emoji {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+
+        .value-display .value {
+            color: #667eea;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .profile-summary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-summary h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .profile-item:hover {
+            transform: translateX(5px);
+        }
+
+        .profile-item-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .profile-item-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .profile-item-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .profile-item-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-item-pastilles {
+            display: flex;
+            gap: 3px;
+        }
+
+        .pastille {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+
+        .pastille.filled {
+            border-color: transparent;
+        }
+
+        .pastille.grey {
+            background: #e0e0e0;
+        }
+
+        .pastille.red {
+            background: #ff6b6b;
+        }
+
+        .pastille.orange {
+            background: #ffa500;
+        }
+
+        .pastille.green {
+            background: #4CAF50;
+        }
+
+        .profile-item-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            min-width: 35px;
+            text-align: right;
+        }
+
+        .export-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px dashed #667eea;
+        }
+
+        .export-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .export-text {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question {
+                padding: 20px;
+            }
+            
+            .scale-legend {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <main class="container" id="main">
-    <header>
-      <h1>IA360 — Tes intérêts</h1>
-      <p class="lead">Déplace les curseurs (0 = Pas du tout / 10 = Totalement). Pas de bonne réponse — fais au feeling.</p>
-    </header>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 IA360</h1>
+            <p>Test d'Orientation Professionnelle</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
 
-    <section id="quiz" aria-labelledby="quiz-title">
-      <h2 id="quiz-title" class="sr-only">Questions d'intérêts (14)</h2>
-      <div id="sliders" class="sliders-grid" role="list"></div>
+        <div class="content">
+            <!-- QUESTIONNAIRE -->
+            <div id="questionnaire">
+                <div class="intro">
+                    <h2>📋 Découvre tes intérêts professionnels</h2>
+                    <p><strong>Instructions :</strong> Pour chaque activité, évalue ton niveau d'intérêt sur une échelle de 0 à 10.</p>
+                    <p style="margin-top: 10px;">Il n'y a pas de bonnes ou mauvaises réponses ! Sois honnête avec toi-même.</p>
+                    <p style="margin-top: 10px;"><strong>⏱️ Temps estimé :</strong> 5-7 minutes</p>
+                </div>
 
-      <div class="actions">
-        <button id="resetBtn" class="btn ghost">Réinitialiser</button>
-        <button id="exampleBtn" class="btn">Exemple</button>
-        <button id="exportBtn" class="btn primary">Exporter (JSON)</button>
-      </div>
-    </section>
+                <div class="scale-legend">
+                    <div class="scale-item">
+                        <div class="emoji">⚪</div>
+                        <div class="label">Pas du tout</div>
+                        <div class="range">0</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="emoji">🔴</div>
+                        <div class="label">Un peu</div>
+                        <div class="range">1-3</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="emoji">🟠</div>
+                        <div class="label">Assez</div>
+                        <div class="range">4-6</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="emoji">🟢</div>
+                        <div class="label">Totalement</div>
+                        <div class="range">7-10</div>
+                    </div>
+                </div>
 
-    <section id="preview" class="card">
-      <h3>Aperçu profil</h3>
-      <div id="bars" class="bars" aria-hidden="false"></div>
-      <pre id="jsonOutput" class="json hidden" aria-live="polite"></pre>
-    </section>
+                <div id="questions-container"></div>
 
-    <footer class="muted">
-      Prototype IA360 — Interface sliders — Accessible & simple
-    </footer>
-  </main>
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="resetForm()">🔄 Recommencer</button>
+                    <button class="btn btn-primary" onclick="showResults()">✅ Voir mon profil</button>
+                </div>
+            </div>
 
-  <script src="script.js"></script>
+            <!-- RÉSULTATS -->
+            <div id="results" class="results">
+                <div class="profile-summary">
+                    <h2>🎯 Ton Profil d'Intérêts</h2>
+                    <div id="profile-list"></div>
+                </div>
+
+                <div class="export-section">
+                    <h3>📋 Copie ton profil pour l'IA</h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Copie le texte ci-dessous et colle-le dans Claude.ai pour obtenir tes recommandations personnalisées.
+                    </p>
+                    <div class="export-text" id="exportText"></div>
+                    <button class="copy-btn" onclick="copyProfile()">
+                        <span id="copyBtnText">📋 Copier mon profil</span>
+                    </button>
+                </div>
+
+                <div class="buttons" style="margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="backToQuestions()">← Retour</button>
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                title: "Bouger, être actif physiquement",
+                description: "Te déplacer sur le terrain, être souvent en mouvement, mobiliser ton corps, ne pas rester derrière un bureau",
+                examples: "Exemples : faire du sport, marcher toute la journée, porter des choses, être debout, te déplacer d'un endroit à un autre"
+            },
+            {
+                title: "Travailler avec tes mains",
+                description: "Fabriquer, assembler, manipuler des objets ou des outils, réparer, créer avec des matériaux",
+                examples: "Exemples : bricoler, construire, cuisiner, réparer des objets, travailler le bois/métal, faire de l'artisanat"
+            },
+            {
+                title: "Enquêter, observer, comprendre",
+                description: "Observer, comparer, chercher des explications, comprendre des faits, faire des recherches, analyser des situations",
+                examples: "Exemples : mener l'enquête, chercher à comprendre pourquoi ça marche, faire des recherches, analyser des informations"
+            },
+            {
+                title: "Explorer les sciences ou les technologies",
+                description: "Faire des expériences, utiliser des outils techniques, comprendre des phénomènes scientifiques, programmer, manipuler des appareils",
+                examples: "Exemples : faire des expériences en labo, utiliser des logiciels/machines, coder, comprendre comment fonctionnent les choses techniques"
+            },
+            {
+                title: "Utiliser des chiffres, calculer, raisonner logiquement",
+                description: "Faire des calculs, analyser des données, établir des liens mathématiques, résoudre des problèmes avec de la logique",
+                examples: "Exemples : faire des maths, gérer un budget, analyser des statistiques, résoudre des énigmes logiques"
+            },
+            {
+                title: "Créer artistiquement, imaginer",
+                description: "Dessiner, écrire, inventer des idées, produire du contenu visuel ou artistique, concevoir des formes originales",
+                examples: "Exemples : dessiner, peindre, faire de la musique, écrire des histoires, créer des designs, faire des vidéos"
+            },
+            {
+                title: "Concevoir, résoudre des problèmes, innover",
+                description: "Trouver des idées nouvelles, résoudre des problèmes complexes, construire un projet, améliorer ce qui existe, inventer des solutions",
+                examples: "Exemples : imaginer un nouveau produit, trouver des solutions créatives, améliorer un système, lancer un projet innovant"
+            },
+            {
+                title: "Aider, accompagner, prendre soin",
+                description: "Soutenir quelqu'un, résoudre un problème humain, guider, rassurer, écouter, soigner, être là pour les autres",
+                examples: "Exemples : aider un ami en difficulté, soigner quelqu'un, écouter et conseiller, accompagner des personnes fragiles"
+            },
+            {
+                title: "Enseigner, transmettre, expliquer",
+                description: "Partager tes connaissances, faire comprendre quelque chose, former quelqu'un, transmettre un savoir ou une technique",
+                examples: "Exemples : expliquer une leçon, former quelqu'un à faire quelque chose, donner des cours, partager ton expertise"
+            },
+            {
+                title: "Communiquer, écrire, t'exprimer",
+                description: "Parler en public, écrire des textes, créer du contenu pour informer ou divertir, partager des idées, animer des discussions",
+                examples: "Exemples : faire des présentations, écrire des articles/posts, parler devant un groupe, animer une conférence, créer du contenu sur les réseaux"
+            },
+            {
+                title: "Convaincre, vendre, négocier",
+                description: "Persuader quelqu'un, présenter un produit/service, défendre une idée, négocier un accord, influencer une décision",
+                examples: "Exemples : vendre quelque chose, négocier un prix, convaincre quelqu'un d'adhérer à ton idée, défendre un projet"
+            },
+            {
+                title: "Organiser, décider, diriger",
+                description: "Planifier un projet, gérer une équipe, coordonner des activités, prendre des décisions importantes, manager des personnes",
+                examples: "Exemples : organiser un événement, diriger une équipe, gérer un projet, prendre des décisions pour un groupe, coordonner des tâches"
+            },
+            {
+                title: "Travailler en autonomie",
+                description: "Être indépendant, gérer ton emploi du temps toi-même, lancer tes propres idées, avancer sans être surveillé ou dirigé",
+                examples: "Exemples : travailler en freelance, être ton propre patron, gérer ton temps librement, prendre tes propres décisions"
+            },
+            {
+                title: "Suivre un cadre structuré",
+                description: "Appliquer une méthode précise, suivre des consignes claires, respecter des règles, évoluer dans un environnement organisé et stable",
+                examples: "Exemples : suivre des procédures établies, travailler avec des règles claires, avoir un emploi du temps fixe, respecter une hiérarchie"
+            }
+        ];
+
+        let responses = new Array(14).fill(5);
+
+        function getEmoji(value) {
+            if (value === 0) return '⚪';
+            if (value >= 1 && value <= 3) return '🔴';
+            if (value >= 4 && value <= 6) return '🟠';
+            return '🟢';
+        }
+
+        function getPastilles(value) {
+            const total = 10;
+            let html = '';
+            for (let i = 1; i <= total; i++) {
+                if (i <= value) {
+                    if (value === 0) {
+                        html += '<span class="pastille filled grey"></span>';
+                    } else if (value >= 1 && value <= 3) {
+                        html += '<span class="pastille filled red"></span>';
+                    } else if (value >= 4 && value <= 6) {
+                        html += '<span class="pastille filled orange"></span>';
+                    } else {
+                        html += '<span class="pastille filled green"></span>';
+                    }
+                } else {
+                    html += '<span class="pastille"></span>';
+                }
+            }
+            return html;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const value = responses[index];
+                const emoji = getEmoji(value);
+                
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1}/14</span>
+                        <h3 class="question-title">${q.title}</h3>
+                        <p class="question-description">${q.description}</p>
+                        <p class="question-examples">${q.examples}</p>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-labels">
+                            <span>⚪ Pas du tout</span>
+                            <span>🟢 Totalement</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" min="0" max="10" value="${value}" 
+                                   id="slider${index}" 
+                                   oninput="updateValue(${index}, this.value)">
+                        </div>
+                        <div class="value-display" id="display${index}">
+                            <span class="emoji">${emoji}</span>
+                            <span class="value">${value}/10</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function updateValue(index, value) {
+            responses[index] = parseInt(value);
+            const emoji = getEmoji(value);
+            document.getElementById(`display${index}`).innerHTML = `
+                <span class="emoji">${emoji}</span>
+                <span class="value">${value}/10</span>
+            `;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = responses.filter(r => r !== null).length;
+            const percentage = (answered / 14) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showResults() {
+            // Vérifier que toutes les questions sont répondues
+            if (responses.includes(null)) {
+                alert('Merci de répondre à toutes les questions avant de continuer.');
+                return;
+            }
+
+            // Afficher les résultats
+            document.getElementById('questionnaire').style.display = 'none';
+            document.getElementById('results').classList.add('active');
+
+            // Générer le profil
+            generateProfile();
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function generateProfile() {
+            const profileList = document.getElementById('profile-list');
+            profileList.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const value = responses[index];
+                const emoji = getEmoji(value);
+                const pastilles = getPastilles(value);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'profile-item';
+                itemDiv.innerHTML = `
+                    <div class="profile-item-left">
+                        <div class="profile-item-number">${index + 1}</div>
+                        <div class="profile-item-name">${q.title}</div>
+                    </div>
+                    <div class="profile-item-right">
+                        <div class="profile-item-pastilles">${pastilles}</div>
+                        <div class="profile-item-value">${emoji} ${value}</div>
+                    </div>
+                `;
+                profileList.appendChild(itemDiv);
+            });
+
+            // Générer le texte d'export
+            generateExportText();
+        }
+
+        function generateExportText() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR');
+            
+            let text = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 PROFIL D'ORIENTATION PROFESSIONNELLE IA360
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Date : ${dateStr}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 MES 14 INTÉRÊTS PROFESSIONNELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+`;
+
+            questions.forEach((q, index) => {
+                const value = responses[index];
+                const emoji = getEmoji(value);
+                const bars = '█'.repeat(value) + '░'.repeat(10 - value);
+                text += `${index + 1}. ${q.title}\n   ${emoji} ${value}/10  ${bars}\n\n`;
+            });
+
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 PROFIL BRUT (pour l'IA)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[${responses.join(',')}]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 INSTRUCTIONS POUR L'IA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Copie ce profil complet et colle-le dans Claude.ai
+avec le message suivant :
+
+"Voici mon profil d'orientation IA360. 
+Peux-tu analyser mes intérêts et me proposer 
+les univers professionnels qui me correspondent ?"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            document.getElementById('exportText').textContent = text;
+        }
+
+        function copyProfile() {
+            const text = document.getElementById('exportText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copyBtnText');
+                btn.textContent = '✅ Profil copié !';
+                document.querySelector('.copy-btn').classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = '📋 Copier mon profil';
+                    document.querySelector('.copy-btn').classList.remove('copied');
+                }, 3000);
+            });
+        }
+
+        function backToQuestions() {
+            document.getElementById('questionnaire').style.display = 'block';
+            document.getElementById('results').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function resetForm() {
+            if (confirm('Es-tu sûr de vouloir recommencer ? Toutes tes réponses seront effacées.')) {
+                responses = new Array(14).fill(5);
+                renderQuestions();
+                updateProgress();
+            }
+        }
+
+        // Initialisation
+        renderQuestions();
+        updateProgress();
+    </script>
 </body>
 </html>
