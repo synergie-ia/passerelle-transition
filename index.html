@@ -1,82 +1,167 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orientation 360 IA</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container" id="app">
+// ======================================
+// SCRIPT PRINCIPAL ORIENTATION 360 IA
+// ======================================
 
-    <!-- PAGE D’ACCUEIL -->
-    <section id="welcome">
-      <h1>Bienvenue sur <span class="highlight">Orientation 360 IA</span></h1>
-      <p class="intro">
-        Voilà comment ça va se passer : tu vas passer quatre étapes — tes <strong>intérêts</strong>, tes <strong>compétences</strong>,
-        ta <strong>personnalité</strong> et tes <strong>valeurs</strong>.  
-        À la fin, tu pourras <strong>copier ou imprimer ton profil</strong> pour le transmettre à l’intelligence artificielle.
-      </p>
-      <button class="btn" onclick="goToPage(1)">Commencer le questionnaire</button>
-    </section>
+let currentPage = 0;
+const selections = {
+  interets: [],
+  personnalite: [],
+  valeurs: []
+};
+const maxChoices = 6;
 
-    <!-- PAGE INTÉRÊTS -->
-    <section id="page1" class="page">
-      <h2>1. Tes intérêts</h2>
-      <p>Choisis les verbes ou phrases qui te ressemblent le plus (maximum 6).</p>
-      <div id="interets" class="bloc"></div>
-      <div class="nav">
-        <button class="btn next" onclick="goToPage(2)">Suivant</button>
-      </div>
-    </section>
+// =========================
+// NAVIGATION ENTRE LES PAGES
+// =========================
 
-    <!-- PAGE COMPÉTENCES -->
-    <section id="page2" class="page">
-      <h2>2. Tes compétences</h2>
-      <p>Ce que tu sais faire naturellement ou as déjà appris (maximum 6).</p>
-      <div id="competences" class="bloc"></div>
-      <div class="nav">
-        <button class="btn prev" onclick="goToPage(1)">Précédent</button>
-        <button class="btn next" onclick="goToPage(3)">Suivant</button>
-      </div>
-    </section>
+function goToPage(page) {
+  document.querySelectorAll('.page, #welcome, #summary').forEach(p => p.style.display = 'none');
+  const target = document.getElementById(page === 0 ? 'welcome' : `page${page}`);
+  if (target) target.style.display = 'block';
+  currentPage = page;
+}
 
-    <!-- PAGE PERSONNALITÉ -->
-    <section id="page3" class="page">
-      <h2>3. Ta personnalité</h2>
-      <p>Comment tu es dans la vie de tous les jours (maximum 6).</p>
-      <div id="personnalite" class="bloc"></div>
-      <div class="nav">
-        <button class="btn prev" onclick="goToPage(2)">Précédent</button>
-        <button class="btn next" onclick="goToPage(4)">Suivant</button>
-      </div>
-    </section>
+// =========================
+// AFFICHAGE DES BLOCS
+// =========================
 
-    <!-- PAGE VALEURS -->
-    <section id="page4" class="page">
-      <h2>4. Tes valeurs</h2>
-      <p>Ce qui est important pour toi dans le travail et dans la vie (maximum 6).</p>
-      <div id="valeurs" class="bloc"></div>
-      <div class="nav">
-        <button class="btn prev" onclick="goToPage(3)">Précédent</button>
-        <button class="btn next" onclick="showSummary()">Voir mon profil</button>
-      </div>
-    </section>
+function renderSection(id, data) {
+  const container = document.getElementById(id);
+  container.innerHTML = '';
 
-    <!-- PAGE RÉCAPITULATIF -->
-    <section id="summary" class="page">
-      <h2>📋 Ton profil global</h2>
-      <div id="recap"></div>
-      <div class="nav">
-        <button class="btn prev" onclick="goToPage(4)">Précédent</button>
-        <button class="btn" onclick="copyProfile()">📋 Copier</button>
-        <button class="btn" onclick="window.print()">🖨️ Imprimer</button>
-      </div>
-    </section>
+  data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <label>
+        <input type="checkbox" onchange="toggleChoice('${id}', ${i}, this)">
+        <div class="content">
+          <div class="verbs">${item.verbes.join(', ')}</div>
+          <div class="phrase">${item.phrase}</div>
+        </div>
+      </label>
+    `;
+    container.appendChild(div);
+  });
+}
 
-  </div>
+// =========================
+// GESTION DES CHOIX
+// =========================
 
-  <script src="data.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+function toggleChoice(category, index, checkbox) {
+  if (checkbox.checked) {
+    if (selections[category].length >= maxChoices) {
+      alert(`Tu ne peux choisir que ${maxChoices} éléments maximum.`);
+      checkbox.checked = false;
+      return;
+    }
+    selections[category].push(index);
+  } else {
+    selections[category] = selections[category].filter(i => i !== index);
+  }
+}
+
+// =========================
+// RÉCAPITULATIF FINAL
+// =========================
+
+function showSummary() {
+  document.querySelectorAll('.page, #welcome').forEach(p => p.style.display = 'none');
+  const recapSection = document.getElementById('summary');
+  recapSection.style.display = 'block';
+
+  const recap = document.getElementById('recap');
+  recap.innerHTML = '';
+
+  Object.keys(selections).forEach(cat => {
+    const section = document.createElement('div');
+    section.className = 'recap-section';
+    section.innerHTML = `<h3>${cat.toUpperCase()}</h3>`;
+
+    if (selections[cat].length === 0) {
+      section.innerHTML += `<p><em>Aucune sélection</em></p>`;
+    } else {
+      const list = document.createElement('ul');
+      selections[cat].forEach(i => {
+        const data = window[cat][i];
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${data.verbes.join(', ')}</strong> — ${data.phrase}`;
+        list.appendChild(li);
+      });
+      section.appendChild(list);
+    }
+    recap.appendChild(section);
+  });
+}
+
+// =========================
+// COPIER LE PROFIL
+// =========================
+
+function copyProfile() {
+  let text = '🎯 PROFIL GLOBAL ORIENTATION 360 IA\n\n';
+  Object.keys(selections).forEach(cat => {
+    text += `--- ${cat.toUpperCase()} ---\n`;
+    if (selections[cat].length === 0) text += 'Aucune sélection.\n';
+    else selections[cat].forEach(i => {
+      const d = window[cat][i];
+      text += `• ${d.verbes.join(', ')} — ${d.phrase}\n`;
+    });
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text)
+    .then(() => alert('✅ Profil copié dans le presse-papiers !'));
+}
+
+// =========================
+// EXPORT EN PDF
+// =========================
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("Profil Orientation 360 IA", 20, y);
+  y += 10;
+
+  Object.keys(selections).forEach(cat => {
+    doc.setFontSize(14);
+    doc.setTextColor(102, 126, 234);
+    doc.text(cat.toUpperCase(), 20, y);
+    y += 8;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+
+    if (selections[cat].length === 0) {
+      doc.text("Aucune sélection.", 25, y);
+      y += 8;
+    } else {
+      selections[cat].forEach(i => {
+        const d = window[cat][i];
+        const text = `• ${d.verbes.join(', ')} — ${d.phrase}`;
+        const split = doc.splitTextToSize(text, 170);
+        doc.text(split, 25, y);
+        y += split.length * 6;
+      });
+    }
+    y += 5;
+    if (y > 270) { doc.addPage(); y = 20; }
+  });
+
+  doc.save("profil_orientation360IA.pdf");
+}
+
+// =========================
+// INITIALISATION
+// =========================
+
+document.addEventListener('DOMContentLoaded', () => {
+  goToPage(0);
+  renderSection('interets', interets);
+  renderSection('personnalite', personnalite);
+  renderSection('valeurs', valeurs);
+});
