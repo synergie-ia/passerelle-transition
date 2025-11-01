@@ -1,4 +1,4 @@
-// Liste des 14 intérêts (ordre fixe)
+// Liste des 14 intérêts
 const INTERETS = [
   "Bouger, être actif physiquement",
   "Travailler avec tes mains",
@@ -16,41 +16,52 @@ const INTERETS = [
   "Suivre un cadre structuré"
 ];
 
-// Matrice mère IA360 (valeurs 10/6/4/1) triée alphabétiquement par univers
-const MATRICE_IA360 = {
-  "🌾 Agriculture, Nature & Animaux": [10,10,6,10,4,1,6,10,4,6,1,6,10,4],
-  "🎨 Arts, Design & Création": [4,10,6,1,1,10,10,4,6,10,6,6,10,4],
-  "🛒 Commerce, Marketing & Vente": [4,4,6,1,10,6,6,1,4,10,10,10,6,6],
-  "🎙️ Communication, Médias & Culture": [4,4,10,1,6,10,10,1,6,10,6,6,10,4],
-  "🏗️ Construction, BTP & Habitat": [10,10,6,10,6,4,6,1,4,4,4,10,10,6],
-  "⚖️ Droit, Administration & Politique Publique": [1,1,10,4,10,4,4,6,6,10,6,10,6,10],
-  "🎓 Éducation, Formation & Apprentissage": [4,1,10,4,4,6,6,10,10,10,4,6,6,10],
-  "🌍 Environnement, Climat & Énergies": [6,6,10,10,6,1,10,4,4,6,1,10,10,4],
-  "💶 Gestion, Finance & Comptabilité": [1,1,10,4,10,1,6,1,4,6,6,10,6,10],
-  "🍽️ Hôtellerie, Restauration & Tourisme": [10,10,4,4,6,6,4,6,4,10,10,10,6,6],
-  "🏠 Immobilier & Patrimoine": [6,6,6,4,10,1,4,1,4,10,10,10,6,10],
-  "⚙️ Industrie, Fabrication & Production": [4,10,10,10,6,1,10,1,4,6,4,6,6,10],
-  "🚚 Logistique, Transport & Mobilité": [10,6,4,4,10,1,6,4,4,6,1,10,10,10],
-  "💼 Management, Entrepreneuriat & Stratégie": [1,1,6,4,6,6,10,6,4,10,10,10,10,6],
-  "💻 Numérique, Informatique & Data": [1,1,10,10,10,6,10,1,4,6,4,6,10,4],
-  "⚕️ Santé, Bien-être & Médical": [6,10,10,10,6,1,4,10,4,6,1,6,4,10],
-  "🔬 Sciences, Recherche & Innovation": [4,4,10,10,10,6,10,1,6,6,1,6,10,6],
-  "🛡️ Sécurité, Défense & Urgence": [10,6,10,6,4,1,4,10,4,6,1,10,6,10],
-  "❤️ Social, Aide & Solidarité": [6,6,10,4,4,1,4,10,10,10,1,6,10,6],
-  "🏋️ Sport, Loisirs & Vie Active": [10,6,4,4,1,1,4,10,6,10,6,10,10,6],
-  "🚀 Technologies Émergentes & Futur du Travail": [4,4,10,10,10,6,10,1,6,6,1,6,10,6]
-};
+// Liste des univers
+const UNIVERS = [
+  "🌾 Agriculture, Nature & Animaux",
+  "🎨 Arts, Design & Création",
+  "🛒 Commerce, Marketing & Vente",
+  "🎙️ Communication, Médias & Culture",
+  "🏗️ Construction, BTP & Habitat",
+  "⚖️ Droit, Administration & Politique",
+  "🎓 Éducation, Formation & Apprentissage",
+  "🌍 Environnement, Climat & Énergies",
+  "💶 Gestion, Finance & Comptabilité",
+  "🍽️ Hôtellerie, Restauration & Tourisme",
+  "🏠 Immobilier & Patrimoine",
+  "⚙️ Industrie, Fabrication & Production",
+  "🚚 Logistique, Transport & Mobilité",
+  "💼 Management, Entrepreneuriat & Stratégie",
+  "💻 Numérique, Informatique & Data",
+  "⚕️ Santé, Bien-être & Médical",
+  "🔬 Sciences, Recherche & Innovation",
+  "🛡️ Sécurité, Défense & Urgence",
+  "❤️ Social, Aide & Solidarité",
+  "🏋️ Sport, Loisirs & Vie Active",
+  "🚀 Technologies Émergentes & Futur du Travail"
+];
 
-// Calcul de compatibilité (profil 0-10 → %)
-function calculerCompatibilite(profil){
-  const out = {};
-  for(const [univers, poids] of Object.entries(MATRICE_IA360)){
-    let somme = 0, total = 0;
-    for(let i=0;i<INTERETS.length;i++){
-      somme += profil[i] * poids[i];
-      total += poids[i];
-    }
-    out[univers] = Math.round((somme / (10*total)) * 1000) / 10; // % à 0.1
-  }
-  return Object.entries(out).sort((a,b)=>b[1]-a[1]);
-}
+// Matrice univers × intérêts (10 = structurant, 6 = important, 4 = secondaire, 1 = faible)
+const MATRICE_UNIVERS = {
+  "🌾 Agriculture, Nature & Animaux":      [10,10,6,4,2,4,6,6,3,2,1,2,8,2],
+  "🎨 Arts, Design & Création":            [2,8,4,3,2,10,8,3,4,6,3,3,6,2],
+  "🛒 Commerce, Marketing & Vente":        [2,3,3,2,4,4,5,2,5,7,10,8,6,3],
+  "🎙️ Communication, Médias & Culture":   [2,2,4,3,3,6,5,3,6,10,8,5,5,3],
+  "🏗️ Construction, BTP & Habitat":       [8,9,6,6,5,3,6,3,3,3,2,5,6,4],
+  "⚖️ Droit, Administration & Politique": [2,2,6,6,8,3,6,4,5,6,6,10,6,8],
+  "🎓 Éducation, Formation & Apprentissage":[2,3,4,5,5,3,5,7,10,6,4,5,6,4],
+  "🌍 Environnement, Climat & Énergies":   [5,6,8,8,7,4,7,6,5,5,4,6,7,3],
+  "💶 Gestion, Finance & Comptabilité":    [2,2,4,7,10,2,6,3,3,4,5,8,8,7],
+  "🍽️ Hôtellerie, Restauration & Tourisme":[8,7,4,4,3,5,5,6,5,7,8,5,5,3],
+  "🏠 Immobilier & Patrimoine":            [5,6,4,4,6,3,5,3,3,5,8,8,6,5],
+  "⚙️ Industrie, Fabrication & Production":[6,8,6,8,8,4,8,3,3,4,3,6,6,4],
+  "🚚 Logistique, Transport & Mobilité":   [9,8,5,6,5,3,5,3,3,3,3,6,7,4],
+  "💼 Management, Entrepreneuriat & Stratégie":[3,4,4,6,7,5,8,4,6,6,8,10,9,4],
+  "💻 Numérique, Informatique & Data":     [1,2,6,10,8,6,10,2,2,5,4,5,8,4],
+  "⚕️ Santé, Bien-être & Médical":         [3,4,6,6,5,3,5,10,7,5,3,5,6,4],
+  "🔬 Sciences, Recherche & Innovation":   [2,3,10,10,8,4,9,4,6,4,3,4,7,3],
+  "🛡️ Sécurité, Défense & Urgence":       [8,7,6,6,6,2,5,6,3,4,4,8,8,6],
+  "❤️ Social, Aide & Solidarité":         [3,3,5,4,3,3,4,10,8,5,3,5,6,3],
+  "🏋️ Sport, Loisirs & Vie Active":       [10,8,4,4,3,3,4,5,4,6,5,4,8,3],
+  "🚀 Technologies Émergentes & Futur du Travail":[2,3,8,10,8,5,9,3,4,5,5,7,7,4]
+};
