@@ -4,108 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orientation 360 IA</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: white;
-            margin: 0;
-            padding: 0;
-            color: #2c3e50;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2.2rem;
-            color: #ff6600;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #555;
-            margin-bottom: 30px;
-        }
-
-        .page, #welcome, #summary {
-            display: none;
-        }
-
-        .item {
-            background: #f8f9fa;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            transition: all 0.3s;
-        }
-
-        .item:hover {
-            border-color: #ff6600;
-            box-shadow: 0 3px 10px rgba(255, 102, 0, 0.15);
-        }
-
-        input[type="checkbox"] {
-            margin-right: 10px;
-            transform: scale(1.2);
-        }
-
-        .verbs {
-            font-weight: 600;
-            color: #ff6600;
-        }
-
-        .phrase {
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #ff6600, #667eea);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 25px;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .recap-section {
-            margin-bottom: 25px;
-            padding: 15px;
-            border-left: 5px solid #667eea;
-            background: #f9f9ff;
-            border-radius: 8px;
-        }
-
-        .recap-section h3 {
-            color: #667eea;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
@@ -125,6 +24,7 @@
         <h2>🧭 Tes Intérêts</h2>
         <div id="interets"></div>
         <div class="actions">
+            <button class="btn" onclick="goToPage(0)">↩️ Accueil</button>
             <button class="btn" onclick="goToPage(2)">Page suivante →</button>
         </div>
     </div>
@@ -156,16 +56,13 @@
         <div class="actions">
             <button class="btn" onclick="copyProfile()">📋 Copier le profil</button>
             <button class="btn" onclick="exportPDF()">📄 Télécharger en PDF</button>
-            <button class="btn" onclick="goToPage(1)">↩️ Recommencer</button>
+            <button class="btn" onclick="goToPage(0)">🏠 Retour à l'accueil</button>
         </div>
     </div>
 
 </div>
 
-<!-- Librairie jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- Données + Script -->
 <script src="data.js"></script>
 <script src="script.js"></script>
 </body>
