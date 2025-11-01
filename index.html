@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IA360 — Questionnaire intérêts (prototype)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container" id="main">
+    <header>
+      <h1>IA360 — Tes intérêts</h1>
+      <p class="lead">Déplace les curseurs (0 = Pas du tout / 10 = Totalement). Pas de bonne réponse — fais au feeling.</p>
+    </header>
+
+    <section id="quiz" aria-labelledby="quiz-title">
+      <h2 id="quiz-title" class="sr-only">Questions d'intérêts (14)</h2>
+      <div id="sliders" class="sliders-grid" role="list"></div>
+
+      <div class="actions">
+        <button id="resetBtn" class="btn ghost">Réinitialiser</button>
+        <button id="exampleBtn" class="btn">Exemple</button>
+        <button id="exportBtn" class="btn primary">Exporter (JSON)</button>
+      </div>
+    </section>
+
+    <section id="preview" class="card">
+      <h3>Aperçu profil</h3>
+      <div id="bars" class="bars" aria-hidden="false"></div>
+      <pre id="jsonOutput" class="json hidden" aria-live="polite"></pre>
+    </section>
+
+    <footer class="muted">
+      Prototype IA360 — Interface sliders — Accessible & simple
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
