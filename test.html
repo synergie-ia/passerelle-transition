@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA360 - Test d'orientation professionnelle</title>
+    <title>Orientation 360 IA - Test d'orientation professionnelle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
     <div class="container">
         <div class="header">
             <a href="index.html" class="back-home-btn">← Accueil</a>
-            <h1>🎯 IA360</h1>
+            <h1>🧭 Orientation 360 IA</h1>
             <p>Test d'orientation professionnelle basé sur vos intérêts</p>
         </div>
         
@@ -27,11 +27,11 @@
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #95a5a6;"></div>
-                    <span><strong>⚪ Un peu moi</strong> - Ça m'intéresse légèrement</span>
+                    <span><strong>😐 Un peu moi</strong> - Ça m'intéresse légèrement</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #f39c12;"></div>
-                    <span><strong>🟡 Plutôt moi</strong> - J'aime assez ça</span>
+                    <span><strong>👍 Plutôt moi</strong> - J'aime assez ça</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #27ae60;"></div>
@@ -42,12 +42,12 @@
             <div id="interestsList"></div>
             
             <button class="calculate-btn" onclick="calculateResults()">
-                🚀 Calculer mes résultats
+                🔍 Calculer mes résultats
             </button>
             
             <div class="results" id="results">
                 <h2 style="text-align: center; margin-bottom: 30px; color: #333;">
-                    🎉 Vos univers professionnels compatibles
+                    🎯 Vos univers professionnels compatibles
                 </h2>
                 
                 <div class="results-actions">
@@ -56,6 +56,9 @@
                     </button>
                     <button class="action-btn copy-btn" onclick="copyResults()">
                         📋 Copier les résultats
+                    </button>
+                    <button class="action-btn assistant-btn" onclick="askAssistant()">
+                        🧭 Demander à l'assistant virtuel de faire un diagnostic de mon profil
                     </button>
                 </div>
                 
