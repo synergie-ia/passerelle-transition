@@ -20,10 +20,10 @@ function renderInterests() {
                     ❌ Pas du tout moi
                 </button>
                 <button class="rating-btn level-1" onclick="setRating(${interest.id}, 1)">
-                    ⚪ Un peu moi
+                    😐 Un peu moi
                 </button>
                 <button class="rating-btn level-2" onclick="setRating(${interest.id}, 2)">
-                    🟡 Plutôt moi
+                    👍 Plutôt moi
                 </button>
                 <button class="rating-btn level-3" onclick="setRating(${interest.id}, 3)">
                     ✅ Totalement moi
@@ -56,12 +56,12 @@ function updateProgress() {
 
 // Fonction pour créer le profil utilisateur
 function createUserProfile() {
-    let profile = "📊 MON PROFIL D'INTÉRÊTS\n";
-    profile += "=" .repeat(50) + "\n\n";
+    let profile = "🎯 MON PROFIL D'INTÉRÊTS\n";
+    profile += "=".repeat(50) + "\n\n";
     
     interests.forEach(interest => {
         const rating = ratings[interest.id] || 0;
-        const ratingLabels = ['❌ Pas du tout', '⚪ Un peu', '🟡 Plutôt', '✅ Totalement'];
+        const ratingLabels = ['❌ Pas du tout', '😐 Un peu', '👍 Plutôt', '✅ Totalement'];
         profile += `${interest.icon} ${interest.title}\n`;
         profile += `   → ${ratingLabels[rating]}\n\n`;
     });
@@ -139,6 +139,40 @@ function displayResults(results) {
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Fonction pour créer le contenu visuel des résultats
+function createVisualResults() {
+    const date = new Date().toLocaleDateString('fr-FR');
+    let content = "🧭 ORIENTATION 360 IA - RÉSULTATS DU TEST D'ORIENTATION\n";
+    content += "Date : " + date + "\n";
+    content += "=".repeat(60) + "\n\n";
+    
+    // Ajout du profil
+    content += createUserProfile();
+    content += "\n" + "=".repeat(60) + "\n\n";
+    
+    // Ajout des résultats
+    content += "🎯 TOP 10 DES UNIVERS COMPATIBLES\n";
+    content += "=".repeat(60) + "\n\n";
+    
+    currentResults.forEach((result, index) => {
+        content += `#${index + 1} ${result.name}\n`;
+        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
+        content += `   Score : ${result.score}/${result.maxScore}\n`;
+        
+        // Barre visuelle de progression
+        const barLength = 30;
+        const filledLength = Math.round((result.percentage / 100) * barLength);
+        const bar = "█".repeat(filledLength) + "░".repeat(barLength - filledLength);
+        content += `   [${bar}]\n\n`;
+    });
+    
+    content += "\n" + "=".repeat(60) + "\n";
+    content += "Merci d'avoir utilisé Orientation 360 IA !\n";
+    content += "L'intelligence artificielle au service de votre orientation professionnelle.";
+    
+    return content;
+}
+
 // Fonction pour télécharger les résultats
 function downloadResults() {
     if (currentResults.length === 0) {
@@ -146,34 +180,14 @@ function downloadResults() {
         return;
     }
     
+    const content = createVisualResults();
     const date = new Date().toLocaleDateString('fr-FR');
-    let content = "🎯 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
-    content += "Date : " + date + "\n";
-    content += "=" .repeat(60) + "\n\n";
-    
-    // Ajout du profil
-    content += createUserProfile();
-    content += "\n" + "=" .repeat(60) + "\n\n";
-    
-    // Ajout des résultats
-    content += "🏆 TOP 10 DES UNIVERS COMPATIBLES\n";
-    content += "=" .repeat(60) + "\n\n";
-    
-    currentResults.forEach((result, index) => {
-        content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
-    });
-    
-    content += "\n" + "=" .repeat(60) + "\n";
-    content += "Merci d'avoir utilisé IA360 !\n";
-    content += "Pour plus d'informations, visitez notre site web.";
     
     // Création et téléchargement du fichier
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `IA360_Resultats_${date.replace(/\//g, '-')}.txt`;
+    link.download = `Orientation360_Resultats_${date.replace(/\//g, '-')}.txt`;
     link.click();
     
     // Notification
@@ -187,24 +201,7 @@ function copyResults() {
         return;
     }
     
-    const date = new Date().toLocaleDateString('fr-FR');
-    let content = "🎯 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
-    content += "Date : " + date + "\n";
-    content += "=" .repeat(60) + "\n\n";
-    
-    // Ajout du profil
-    content += createUserProfile();
-    content += "\n" + "=" .repeat(60) + "\n\n";
-    
-    // Ajout des résultats
-    content += "🏆 TOP 10 DES UNIVERS COMPATIBLES\n";
-    content += "=" .repeat(60) + "\n\n";
-    
-    currentResults.forEach((result, index) => {
-        content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
-    });
+    const content = createVisualResults();
     
     // Copie dans le presse-papier
     navigator.clipboard.writeText(content).then(() => {
@@ -212,6 +209,17 @@ function copyResults() {
     }).catch(err => {
         alert('❌ Erreur lors de la copie : ' + err);
     });
+}
+
+// Fonction pour demander à l'assistant virtuel
+function askAssistant() {
+    if (currentResults.length === 0) {
+        alert('⚠️ Veuillez d\'abord passer le test avant de consulter l\'assistant virtuel.');
+        return;
+    }
+    
+    // Cette fonction sera connectée à un GPT ultérieurement
+    alert('🧭 Cette fonctionnalité sera bientôt disponible !\n\nL\'assistant virtuel analysera votre profil complet et vous proposera un diagnostic personnalisé pour votre orientation professionnelle.');
 }
 
 // Fonction pour afficher une notification
