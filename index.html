@@ -1,157 +1,87 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orientation 360 IA</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .hero-section {
-            max-width: 1200px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 3em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .hero-subtitle {
-            font-size: 1.3em;
-            color: #546e7a;
-            max-width: 800px;
-            margin: 0 auto 50px;
-            line-height: 1.6;
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px 30px;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 280px;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .card-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        .card-description {
-            font-size: 1em;
-            color: #546e7a;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .card.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .card.primary .card-title,
-        .card.primary .card-description {
-            color: white;
-        }
-
-        .card.secondary {
-            border: 2px solid #667eea;
-        }
-
-        .card.tertiary {
-            border: 2px solid #95a5a6;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2em;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.1em;
-            }
-            
-            .cards-container {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                min-height: 240px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Orientation 360 IA</title>
+  <style>
+    :root{
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #0ea5e9;  /* bleu doux */
+      --primary-600:#0284c7;
+      --ring: rgba(2,132,199,.15);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      padding:32px;
+    }
+    .wrap{max-width:1100px;width:100%}
+    header{text-align:center;margin-bottom:28px}
+    h1{font-size:clamp(28px,4vw,40px);color:var(--text);letter-spacing:.2px}
+    p.lead{color:var(--muted);margin-top:10px;font-size:clamp(14px,2vw,18px)}
+    .grid{
+      display:grid;gap:18px;
+      grid-template-columns: repeat(3,1fr);
+    }
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);border-radius:16px;padding:24px;position:relative;isolation:isolate;
+      box-shadow:0 10px 30px rgba(0,0,0,.06);
+      display:flex;flex-direction:column;justify-content:space-between;min-height:180px;
+      outline:1px solid rgba(2,132,199,.06);
+    }
+    .card:hover{box-shadow:0 16px 40px rgba(0,0,0,.08)}
+    .card h2{font-size:22px;color:var(--text);margin-bottom:8px}
+    .card p{color:var(--muted);font-size:15px;line-height:1.5;margin-bottom:16px}
+    .card a{
+      display:inline-block;text-decoration:none;padding:12px 16px;border-radius:12px;
+      background:var(--primary);color:#fff;font-weight:600;text-align:center;
+      width:100%;
+      transition:transform .15s ease, box-shadow .15s ease, background .2s ease;
+      box-shadow:0 6px 16px var(--ring);
+    }
+    .card a:hover{transform:translateY(-2px);background:var(--primary-600)}
+  </style>
 </head>
 <body>
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">Bienvenue sur la plateforme Orientation 360 IA</h1>
-            <p class="hero-subtitle">L'intelligence artificielle au service de l'orientation, la reconversion et le bilan de compétence</p>
-            
-            <div class="cards-container">
-                <a href="universes.html" class="card secondary">
-                    <div class="card-icon">🌐</div>
-                    <div class="card-title">Voir les univers</div>
-                    <div class="card-description">Découvrez les 21 univers professionnels et leurs 252 sous-univers</div>
-                </a>
-                
-                <a href="test.html" class="card primary">
-                    <div class="card-icon">📝</div>
-                    <div class="card-title">Tester ses univers préférentiels</div>
-                    <div class="card-description">Répondez au questionnaire pour découvrir vos affinités professionnelles</div>
-                </a>
-                
-                <a href="#" class="card tertiary">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">S'orienter avec l'assistant virtuel</div>
-                    <div class="card-description">Bénéficiez d'un accompagnement personnalisé par l'IA</div>
-                </a>
-            </div>
+  <main class="wrap">
+    <header>
+      <h1>Orientation 360 IA</h1>
+      <p class="lead">Choisis ton entrée : explorer les univers, faire le test ou revenir voir tes résultats.</p>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <div>
+          <h2>Explorer les univers</h2>
+          <p>Parcourir les 21 univers et leurs sous-univers, avec définitions au clic.</p>
         </div>
-    </div>
+        <a href="universes.html" aria-label="Voir les univers">Voir les univers</a>
+      </article>
+
+      <article class="card">
+        <div>
+          <h2>Passer le test</h2>
+          <p>Répondre aux 12 intérêts pour classer les 21 univers selon ton profil.</p>
+        </div>
+        <a href="test.html" aria-label="Passer le test">Commencer le test</a>
+      </article>
+
+      <article class="card">
+        <div>
+          <h2>Voir mes résultats</h2>
+          <p>Retrouver le classement complet et télécharger un PDF identique à l’écran.</p>
+        </div>
+        <a href="test.html#results" aria-label="Voir les résultats">Ouvrir les résultats</a>
+      </article>
+    </section>
+  </main>
 </body>
 </html>
