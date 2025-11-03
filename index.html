@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f7fa;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -29,72 +29,82 @@
 
         .hero-title {
             font-size: 3em;
-            color: white;
+            color: #2c3e50;
             margin-bottom: 20px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            font-weight: 700;
         }
 
         .hero-subtitle {
             font-size: 1.3em;
-            color: white;
-            opacity: 0.95;
+            color: #546e7a;
             max-width: 800px;
             margin: 0 auto 50px;
             line-height: 1.6;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        .cta-btn {
-            padding: 20px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .cta-btn.primary {
+        .card {
             background: white;
-            color: #667eea;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
         }
 
-        .cta-btn.primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .cta-btn.secondary {
-            background: rgba(255,255,255,0.2);
+        .card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1em;
+            color: #546e7a;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .card.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: 2px solid white;
-            backdrop-filter: blur(10px);
         }
 
-        .cta-btn.secondary:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-5px);
-        }
-
-        .cta-btn.tertiary {
-            background: rgba(255,255,255,0.15);
+        .card.primary .card-title,
+        .card.primary .card-description {
             color: white;
-            border: 2px solid rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
         }
 
-        .cta-btn.tertiary:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-5px);
+        .card.secondary {
+            border: 2px solid #667eea;
+        }
+
+        .card.tertiary {
+            border: 2px solid #95a5a6;
         }
 
         @media (max-width: 768px) {
@@ -106,13 +116,12 @@
                 font-size: 1.1em;
             }
             
-            .cta-buttons {
-                flex-direction: column;
+            .cards-container {
+                grid-template-columns: 1fr;
             }
-            
-            .cta-btn {
-                width: 100%;
-                justify-content: center;
+
+            .card {
+                min-height: 240px;
             }
         }
     </style>
@@ -123,15 +132,23 @@
             <h1 class="hero-title">Bienvenue sur la plateforme Orientation 360 IA</h1>
             <p class="hero-subtitle">L'intelligence artificielle au service de l'orientation, la reconversion et le bilan de compétence</p>
             
-            <div class="cta-buttons">
-                <a href="universes.html" class="cta-btn primary">
-                    🌐 Voir les univers
+            <div class="cards-container">
+                <a href="universes.html" class="card secondary">
+                    <div class="card-icon">🌐</div>
+                    <div class="card-title">Voir les univers</div>
+                    <div class="card-description">Découvrez les 21 univers professionnels et leurs 252 sous-univers</div>
                 </a>
-                <a href="test.html" class="cta-btn secondary">
-                    🧭 Tester ses univers préférentiels
+                
+                <a href="test.html" class="card primary">
+                    <div class="card-icon">📝</div>
+                    <div class="card-title">Tester ses univers préférentiels</div>
+                    <div class="card-description">Répondez au questionnaire pour découvrir vos affinités professionnelles</div>
                 </a>
-                <a href="#" class="cta-btn tertiary">
-                    🧭 S'orienter avec l'assistant virtuel
+                
+                <a href="#" class="card tertiary">
+                    <div class="card-icon">🤖</div>
+                    <div class="card-title">S'orienter avec l'assistant virtuel</div>
+                    <div class="card-description">Bénéficiez d'un accompagnement personnalisé par l'IA</div>
                 </a>
             </div>
         </div>
