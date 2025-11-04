@@ -108,10 +108,10 @@ function calculateResults() {
     // Tri des résultats par pourcentage décroissant
     results.sort((a, b) => b.percentage - a.percentage);
 
-    // Stocker les résultats globalement
-    currentResults = results.slice(0, 10);
+    // Stocker TOUS les résultats globalement
+    currentResults = results;
 
-    // Affichage du top 10
+    // Affichage des résultats (la fonction displayResults gère top 5 + reste)
     displayResults(currentResults);
 }
 
@@ -119,7 +119,11 @@ function calculateResults() {
 function displayResults(results) {
     const container = document.getElementById('resultsList');
     
-    container.innerHTML = results.map((result, index) => `
+    // Afficher seulement les 5 premiers
+    const top5 = results.slice(0, 5);
+    const remaining = results.slice(5);
+    
+    let html = top5.map((result, index) => `
         <div class="result-card">
             <div class="result-info">
                 <div class="result-title">#${index + 1} ${result.name}</div>
@@ -127,9 +131,33 @@ function displayResults(results) {
                     <div class="progress-fill" style="width: ${result.percentage}%"></div>
                 </div>
             </div>
-            <div class="result-score">${result.percentage.toFixed(1)}%</div>
+            <div class="result-score">${Math.round(result.percentage)}%</div>
         </div>
     `).join('');
+    
+    // Ajouter le bouton pour voir les univers restants
+    if (remaining.length > 0) {
+        html += `
+            <button class="show-more-btn" onclick="showRemainingUniverses()" id="showMoreBtn">
+                📊 Voir les ${remaining.length} univers restants
+            </button>
+            <div id="remainingUniverses" style="display: none;">
+                ${remaining.map((result, index) => `
+                    <div class="result-card">
+                        <div class="result-info">
+                            <div class="result-title">#${index + 6} ${result.name}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${result.percentage}%"></div>
+                            </div>
+                        </div>
+                        <div class="result-score">${Math.round(result.percentage)}%</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
 
     // Affichage de la section résultats avec animation
     const resultsSection = document.getElementById('results');
@@ -139,45 +167,120 @@ function displayResults(results) {
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Fonction pour télécharger les résultats
+// Fonction pour afficher les univers restants
+function showRemainingUniverses() {
+    const remainingDiv = document.getElementById('remainingUniverses');
+    const btn = document.getElementById('showMoreBtn');
+    remainingDiv.style.display = 'block';
+    btn.style.display = 'none';
+}
+
+// Fonction pour télécharger les résultats en PDF
 function downloadResults() {
     if (currentResults.length === 0) {
         alert('⚠️ Aucun résultat à télécharger. Veuillez d\'abord passer le test.');
         return;
     }
     
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
     const date = new Date().toLocaleDateString('fr-FR');
-    let content = "📋 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
-    content += "Date : " + date + "\n";
-    content += "=".repeat(60) + "\n\n";
+    let yPos = 20;
     
-    // Ajout du profil
-    content += createUserProfile();
-    content += "\n" + "=".repeat(60) + "\n\n";
+    // Titre
+    doc.setFontSize(18);
+    doc.setFont(undefined, 'bold');
+    doc.text('Orientation 360 IA', 105, yPos, { align: 'center' });
+    yPos += 10;
     
-    // Ajout des résultats
-    content += "🎯 TOP 10 DES UNIVERS COMPATIBLES\n";
-    content += "=".repeat(60) + "\n\n";
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    doc.text('Résultats du test d\'orientation', 105, yPos, { align: 'center' });
+    yPos += 5;
+    doc.text('Date : ' + date, 105, yPos, { align: 'center' });
+    yPos += 15;
     
-    currentResults.forEach((result, index) => {
-        content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
+    // Profil d'intérêts
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('MON PROFIL D\'INTÉRÊTS', 20, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    
+    interests.forEach(interest => {
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+        const rating = ratings[interest.id] || 0;
+        const ratingLabels = ['Pas du tout', 'Un peu', 'Plutôt', 'Totalement'];
+        doc.text(`${interest.title}`, 20, yPos);
+        yPos += 5;
+        doc.text(`   ${ratingLabels[rating]}`, 20, yPos);
+        yPos += 8;
     });
     
-    content += "\n" + "=".repeat(60) + "\n";
-    content += "Merci d'avoir utilisé IA360 !\n";
-    content += "Pour plus d'informations, visitez notre site web.";
+    yPos += 10;
     
-    // Création et téléchargement du fichier
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `IA360_Resultats_${date.replace(/\//g, '-')}.txt`;
-    link.click();
+    // Top 5 des univers
+    if (yPos > 200) {
+        doc.addPage();
+        yPos = 20;
+    }
     
-    // Notification
-    showNotification('✅ Résultats téléchargés avec succès !');
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('TOP 5 DES UNIVERS COMPATIBLES', 20, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    
+    currentResults.slice(0, 5).forEach((result, index) => {
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+        doc.setFont(undefined, 'bold');
+        doc.text(`#${index + 1} ${result.name}`, 20, yPos);
+        yPos += 5;
+        doc.setFont(undefined, 'normal');
+        doc.text(`   Compatibilité : ${Math.round(result.percentage)}%`, 20, yPos);
+        yPos += 8;
+    });
+    
+    // Autres univers
+    if (currentResults.length > 5) {
+        yPos += 5;
+        if (yPos > 250) {
+            doc.addPage();
+            yPos = 20;
+        }
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text('AUTRES UNIVERS', 20, yPos);
+        yPos += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'normal');
+        
+        currentResults.slice(5).forEach((result, index) => {
+            if (yPos > 270) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.text(`#${index + 6} ${result.name} - ${Math.round(result.percentage)}%`, 20, yPos);
+            yPos += 6;
+        });
+    }
+    
+    // Sauvegarde
+    doc.save(`Orientation360IA_Resultats_${date.replace(/\//g, '-')}.pdf`);
+    
+    showNotification('✅ PDF téléchargé avec succès !');
 }
 
 // Fonction pour copier les résultats
