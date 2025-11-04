@@ -191,10 +191,10 @@ function displayResults(results) {
         `;
     }
     
-    // Ajouter le bouton Accueil
+    // Ajouter le bouton Retour
     html += `
         <div style="text-align: center; margin-top: 30px;">
-            <a href="index.html" class="home-btn">🏠 Retour à l'accueil</a>
+            <button onclick="window.history.back()" class="home-btn">← Retour</button>
         </div>
     `;
     
@@ -218,8 +218,10 @@ function showRemainingUniverses() {
 
 // Fonction pour voir les détails d'un univers
 function viewUniverseDetails(universeId) {
-    // Rediriger vers la page des univers avec l'ID en paramètre
-    window.location.href = `universes.html?id=${universeId}`;
+    // Sauvegarder qu'on vient de la page résultats
+    sessionStorage.setItem('fromResults', 'true');
+    // Ouvrir la page univers avec l'ID
+    window.location.href = `universes.html?id=${universeId}&from=results`;
 }
 
 // Fonction pour télécharger les résultats en PDF
@@ -291,8 +293,9 @@ function downloadResults() {
             doc.addPage();
             yPos = 20;
         }
-        // Enlever les emojis pour le PDF
-        const cleanName = result.name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+        // Enlever les emojis et nettoyer le nom
+        let cleanName = result.name.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim();
+        cleanName = cleanName.replace(/[^\x00-\x7F]/g, ''); // Enlever tous caractères non-ASCII
         doc.setFont(undefined, 'bold');
         doc.text('#' + (index + 1) + ' ' + cleanName, 20, yPos);
         yPos += 5;
@@ -321,7 +324,8 @@ function downloadResults() {
                 doc.addPage();
                 yPos = 20;
             }
-            const cleanName = result.name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+            let cleanName = result.name.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim();
+            cleanName = cleanName.replace(/[^\x00-\x7F]/g, '');
             doc.text('#' + (index + 6) + ' ' + cleanName + ' - ' + Math.round(result.percentage) + '%', 20, yPos);
             yPos += 6;
         });
