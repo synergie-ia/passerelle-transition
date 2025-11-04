@@ -1,464 +1,74 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    overflow: hidden;
-}
-
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-}
-
-.back-home-btn {
-    position: absolute;
-    left: 40px;
-    top: 40px;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-}
-
-.back-home-btn:hover {
-    background: white;
-    color: #667eea;
-    transform: translateX(-5px);
-}
-
-.header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.header p {
-    font-size: 1.1em;
-    opacity: 0.9;
-}
-
-.content {
-    padding: 40px;
-}
-
-.interest-card {
-    background: #f8f9fa;
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 25px;
-    border-left: 5px solid #667eea;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.interest-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.interest-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.interest-icon {
-    font-size: 2em;
-    margin-right: 15px;
-}
-
-.interest-title {
-    flex: 1;
-}
-
-.interest-title h3 {
-    color: #333;
-    margin-bottom: 5px;
-}
-
-.interest-verbs {
-    color: #667eea;
-    font-size: 1em;
-    font-style: normal;
-    font-weight: bold;
-}
-
-.interest-description {
-    color: #555;
-    margin-bottom: 15px;
-    line-height: 1.6;
-    font-weight: 600;
-}
-
-.rating-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.rating-btn {
-    flex: 1;
-    min-width: 120px;
-    padding: 12px 20px;
-    border: 2px solid #ddd;
-    background: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.9em;
-    text-align: center;
-}
-
-.rating-btn:hover {
-    border-color: #667eea;
-    transform: translateY(-2px);
-}
-
-.rating-btn.selected {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: #667eea;
-    font-weight: bold;
-}
-
-.rating-btn.level-0.selected {
-    background: #e74c3c;
-    border-color: #e74c3c;
-}
-
-.rating-btn.level-1.selected {
-    background: #95a5a6;
-    border-color: #95a5a6;
-}
-
-.rating-btn.level-2.selected {
-    background: #f39c12;
-    border-color: #f39c12;
-}
-
-.rating-btn.level-3.selected {
-    background: #27ae60;
-    border-color: #27ae60;
-}
-
-.calculate-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 18px 40px;
-    font-size: 1.2em;
-    border-radius: 50px;
-    cursor: pointer;
-    display: block;
-    margin: 40px auto;
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-weight: bold;
-}
-
-.calculate-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
-
-.calculate-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.results {
-    margin-top: 40px;
-    display: none;
-}
-
-.results.show {
-    display: block;
-    animation: fadeIn 0.5s;
-}
-
-.results-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.download-btn {
-    background: #27ae60;
-    color: white;
-}
-
-.download-btn:hover {
-    background: #229954;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
-}
-
-.copy-btn {
-    background: #3498db;
-    color: white;
-}
-
-.copy-btn:hover {
-    background: #2980b9;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-}
-
-.assistant-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.assistant-btn:hover {
-    background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.show-more-btn {
-    background: #f8f9fa;
-    color: #667eea;
-    border: 2px solid #667eea;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    display: block;
-    margin: 20px auto;
-    transition: all 0.3s;
-}
-
-.show-more-btn:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-3px);
-}
-
-.home-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px 40px;
-    border-radius: 50px;
-    border: none;
-    font-weight: bold;
-    font-size: 1.1em;
-    display: inline-block;
-    transition: all 0.3s;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    cursor: pointer;
-}
-
-.home-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-.result-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-left: 5px solid #667eea;
-    transition: transform 0.2s;
-}
-
-.result-card:hover {
-    transform: translateX(5px);
-}
-
-.result-info {
-    flex: 1;
-}
-
-.result-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-}
-
-.result-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.result-score {
-    font-size: 2em;
-    font-weight: bold;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.view-universe-btn {
-    background: #667eea;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: all 0.3s;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.view-universe-btn:hover {
-    background: #5568d3;
-    transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #e0e0e0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    transition: width 0.5s ease;
-}
-
-.legend {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
-
-.legend h3 {
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.legend-box {
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    margin-right: 15px;
-}
-
-.progress-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: rgba(255,255,255,0.3);
-    z-index: 1000;
-}
-
-.progress-indicator {
-    height: 100%;
-    background: white;
-    transition: width 0.3s;
-}
-
-@media (max-width: 768px) {
-    .header {
-        padding: 30px 20px 30px 20px;
-    }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA360 - Test d'orientation professionnelle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-indicator" id="progressBar"></div>
+    </div>
     
-    .back-home-btn {
-        position: static;
-        display: inline-block;
-        margin-bottom: 15px;
-    }
-    
-    .rating-buttons {
-        flex-direction: column;
-    }
-    
-    .rating-btn {
-        min-width: 100%;
-    }
-    
-    .header h1 {
-        font-size: 2em;
-    }
-    
-    .content {
-        padding: 20px;
-    }
-    
-    .results-actions {
-        flex-direction: column;
-    }
-    
-    .action-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .result-actions {
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-    }
-}
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-home-btn">← Accueil</a>
+            <h1>📋 Orientation 360 IA</h1>
+            <p>Test d'orientation scolaire et professionnelle basé sur vos intérêts</p>
+        </div>
+        
+        <div class="content">
+            <div class="legend">
+                <h3>💡 Comment répondre ?</h3>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #e74c3c;"></div>
+                    <span><strong>❌ Pas du tout moi</strong> - Je n'aime pas ça</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #95a5a6;"></div>
+                    <span><strong>😐 Un peu moi</strong> - Ça m'intéresse légèrement</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #f39c12;"></div>
+                    <span><strong>👍 Plutôt moi</strong> - J'aime assez ça</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #27ae60;"></div>
+                    <span><strong>✅ Totalement moi</strong> - C'est exactement moi</span>
+                </div>
+            </div>
+            
+            <div id="interestsList"></div>
+            
+            <button class="calculate-btn" onclick="calculateResults()">
+                📊 Calculer mes résultats
+            </button>
+            
+            <div class="results" id="results">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">
+                    🎯 Résultats
+                </h2>
+                
+                <div class="results-actions">
+                    <button class="action-btn download-btn" onclick="downloadResults()">
+                        PDF
+                    </button>
+                    <button class="action-btn copy-btn" onclick="copyResults()">
+                        Copie
+                    </button>
+                    <button class="action-btn assistant-btn" onclick="openAssistant()">
+                        🧭 Diagnostic
+                    </button>
+                </div>
+                
+                <div id="resultsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
