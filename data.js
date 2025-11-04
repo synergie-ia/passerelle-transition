@@ -86,91 +86,111 @@ const interests = [
     }
 ];
 
-// Les 21 univers professionnels avec leurs poids (matrice corrigée)
-// Chaque tableau de poids correspond aux 12 intérêts dans l'ordre
+// Les 21 univers professionnels avec les matrices CORRIGÉES du document
 const universes = [
     {
+        id: 1,
         name: '🌾 Agriculture, nature & animaux', 
         weights: [3, 3, 1, 1, 0, 0, 1, 0, 2, 0, 0, 1]
     },
     {
+        id: 2,
         name: '🎨 Arts, design & création', 
         weights: [0, 1, 1, 0, 3, 3, 0, 1, 0, 0, 0, 0]
     },
     {
+        id: 3,
         name: '🛒 Commerce, marketing & vente', 
         weights: [0, 0, 0, 0, 1, 1, 1, 3, 2, 3, 1, 0]
     },
     {
+        id: 4,
         name: '🎙️ Communication, médias & culture', 
         weights: [0, 0, 1, 0, 3, 3, 1, 3, 1, 2, 0, 0]
     },
     {
+        id: 5,
         name: '🏗️ Construction, BTP & habitat', 
         weights: [2, 3, 0, 1, 0, 1, 0, 0, 2, 0, 1, 3]
     },
     {
+        id: 6,
         name: '⚖️ Droit, administration & politique publique', 
         weights: [0, 0, 2, 1, 0, 2, 1, 1, 1, 2, 3, 3]
     },
     {
+        id: 7,
         name: '🎓 Éducation, formation & apprentissage', 
         weights: [0, 0, 3, 1, 1, 1, 2, 3, 0, 0, 0, 0]
     },
     {
+        id: 8,
         name: '🌍 Environnement, climat & énergies', 
         weights: [3, 2, 1, 2, 0, 1, 1, 0, 1, 0, 0, 0]
     },
     {
+        id: 9,
         name: '💶 Gestion, finance & comptabilité', 
         weights: [0, 1, 1, 1, 0, 1, 0, 0, 1, 2, 3, 3]
     },
     {
+        id: 10,
         name: '🍽️ Hôtellerie, restauration & tourisme', 
         weights: [2, 0, 0, 0, 0, 1, 2, 3, 2, 1, 0, 0]
     },
     {
+        id: 11,
+        name: '🏠 Immobilier & patrimoine', 
+        weights: [1, 1, 1, 1, 0, 1, 0, 0, 2, 3, 2, 3]
+    },
+    {
+        id: 12,
         name: '⚙️ Industrie, fabrication & production', 
         weights: [1, 3, 1, 3, 0, 1, 0, 0, 1, 1, 1, 2]
     },
     {
+        id: 13,
         name: '🚚 Logistique, transport & mobilité', 
         weights: [3, 3, 0, 1, 0, 1, 0, 0, 2, 1, 1, 2]
     },
     {
+        id: 14,
         name: '💼 Management, entrepreneuriat & stratégie', 
         weights: [0, 0, 1, 1, 0, 1, 0, 2, 3, 3, 2, 1]
     },
     {
+        id: 15,
         name: '💻 Numérique, informatique & data', 
         weights: [0, 1, 1, 3, 0, 2, 0, 0, 1, 2, 3, 1]
     },
     {
+        id: 16,
         name: '⚕️ Santé, bien-être & médical', 
         weights: [1, 1, 3, 1, 0, 0, 3, 2, 0, 0, 1, 0]
     },
     {
+        id: 17,
         name: '🔬 Sciences, recherche & innovation', 
         weights: [0, 0, 3, 3, 1, 3, 0, 0, 0, 0, 2, 1]
     },
     {
+        id: 18,
         name: '🛡️ Sécurité, défense & urgence', 
         weights: [3, 2, 1, 1, 0, 1, 0, 0, 3, 2, 0, 2]
     },
     {
+        id: 19,
         name: '❤️ Social, aide & solidarité', 
         weights: [0, 0, 1, 0, 0, 0, 3, 3, 1, 0, 0, 0]
     },
     {
-        name: '⚽ Sport, loisirs & vie active', 
+        id: 20,
+        name: '🏋️ Sport, loisirs & vie active', 
         weights: [3, 1, 1, 0, 1, 0, 1, 3, 3, 1, 0, 0]
     },
     {
+        id: 21,
         name: '🚀 Technologies émergentes & futur du travail', 
         weights: [1, 1, 2, 3, 1, 2, 0, 0, 2, 2, 3, 1]
-    },
-    {
-        name: '🏠 Immobilier & patrimoine', 
-        weights: [1, 1, 1, 1, 0, 1, 0, 0, 2, 3, 2, 3]
     }
 ];
