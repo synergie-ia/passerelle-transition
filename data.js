@@ -1,290 +1,176 @@
-// Stockage des réponses de l'utilisateur
-const ratings = {};
-let currentResults = [];
-
-// Fonction d'initialisation au chargement de la page
-function renderInterests() {
-    const container = document.getElementById('interestsList');
-    container.innerHTML = interests.map(interest => `
-        <div class="interest-card">
-            <div class="interest-header">
-                <div class="interest-icon">${interest.icon}</div>
-                <div class="interest-title">
-                    <h3>${interest.title}</h3>
-                    <div class="interest-verbs">${interest.verbs}</div>
-                </div>
-            </div>
-            <div class="interest-description">${interest.description}</div>
-            <div class="rating-buttons">
-                <button class="rating-btn level-0" onclick="setRating(${interest.id}, 0)">
-                    ❌ Pas du tout moi
-                </button>
-                <button class="rating-btn level-1" onclick="setRating(${interest.id}, 1)">
-                    😐 Un peu moi
-                </button>
-                <button class="rating-btn level-2" onclick="setRating(${interest.id}, 2)">
-                    👍 Plutôt moi
-                </button>
-                <button class="rating-btn level-3" onclick="setRating(${interest.id}, 3)">
-                    ✅ Totalement moi
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Fonction appelée quand l'utilisateur clique sur un bouton de notation
-function setRating(interestId, value) {
-    ratings[interestId] = value;
-    
-    // Mise à jour visuelle du bouton sélectionné
-    const card = event.target.closest('.interest-card');
-    const buttons = card.querySelectorAll('.rating-btn');
-    buttons.forEach(btn => btn.classList.remove('selected'));
-    event.target.classList.add('selected');
-    
-    // Mise à jour de la barre de progression
-    updateProgress();
-}
-
-// Fonction pour mettre à jour la barre de progression
-function updateProgress() {
-    const totalAnswered = Object.keys(ratings).length;
-    const percentage = (totalAnswered / interests.length) * 100;
-    document.getElementById('progressBar').style.width = percentage + '%';
-}
-
-// Fonction pour créer le profil utilisateur
-function createUserProfile() {
-    let profile = "📋 MON PROFIL D'INTÉRÊTS\n";
-    profile += "=".repeat(50) + "\n\n";
-    
-    interests.forEach(interest => {
-        const rating = ratings[interest.id] || 0;
-        const ratingLabels = ['❌ Pas du tout', '😐 Un peu', '👍 Plutôt', '✅ Totalement'];
-        profile += `${interest.icon} ${interest.title}\n`;
-        profile += `   → ${ratingLabels[rating]}\n\n`;
-    });
-    
-    return profile;
-}
-
-// Fonction principale de calcul des résultats
-function calculateResults() {
-    // Vérifier que toutes les questions ont été répondues
-    if (Object.keys(ratings).length < interests.length) {
-        alert('⚠️ Veuillez répondre à toutes les questions avant de calculer vos résultats.');
-        return;
+// Les 12 intérêts avec leurs descriptions
+const interests = [
+    {
+        id: 1, 
+        icon: '🏃', 
+        title: 'Activités physiques & nature', 
+        verbs: 'Bouger, respirer, explorer, agir', 
+        description: "Je me vois plutôt dans un métier où je pourrai être en mouvement, vivre dehors et sentir l'énergie du corps."
+    },
+    {
+        id: 2, 
+        icon: '🔧', 
+        title: 'Manuel & technique', 
+        verbs: 'Fabriquer, réparer, construire, ajuster', 
+        description: "Je me vois plutôt dans un métier où je pourrai créer ou réparer avec mes mains et voir le résultat concret de mon travail."
+    },
+    {
+        id: 3, 
+        icon: '🔍', 
+        title: 'Investigation & information', 
+        verbs: 'Observer, comprendre, apprendre', 
+        description: "Je me vois plutôt dans un métier où je pourrai chercher à comprendre comment les choses fonctionnent et approfondir mes connaissances."
+    },
+    {
+        id: 4, 
+        icon: '🧪', 
+        title: 'Sciences & technologies', 
+        verbs: 'Tester, modéliser, programmer, innover', 
+        description: "Je me vois plutôt dans un métier où je pourrai expérimenter, utiliser des technologies et résoudre des problèmes complexes."
+    },
+    {
+        id: 5, 
+        icon: '🎨', 
+        title: 'Arts & expression', 
+        verbs: 'Imaginer, exprimer, créer, interpréter', 
+        description: "Je me vois plutôt dans un métier où je pourrai créer des œuvres originales et m'exprimer à travers l'art et la créativité."
+    },
+    {
+        id: 6, 
+        icon: '💡', 
+        title: 'Idées & conception', 
+        verbs: 'Concevoir, structurer, inventer, organiser', 
+        description: "Je me vois plutôt dans un métier où je pourrai imaginer de nouveaux concepts et organiser des idées de manière innovante."
+    },
+    {
+        id: 7, 
+        icon: '🤝', 
+        title: 'Aide & accompagnement', 
+        verbs: 'Soutenir, écouter, former, accompagner', 
+        description: "Je me vois plutôt dans un métier où je pourrai aider les autres à progresser et les accompagner dans leurs difficultés."
+    },
+    {
+        id: 8, 
+        icon: '👥', 
+        title: 'Relations & sociabilité', 
+        verbs: 'Communiquer, relier, partager, coopérer', 
+        description: "Je me vois plutôt dans un métier où je pourrai échanger avec les autres, créer du lien et travailler en équipe."
+    },
+    {
+        id: 9, 
+        icon: '⚡', 
+        title: 'Action & initiative', 
+        verbs: 'Agir, entreprendre, dynamiser, décider', 
+        description: "Je me vois plutôt dans un métier où je pourrai prendre des initiatives, lancer des projets et passer à l'action rapidement."
+    },
+    {
+        id: 10, 
+        icon: '👔', 
+        title: 'Leadership & stratégie', 
+        verbs: 'Motiver, diriger, influencer, décider', 
+        description: "Je me vois plutôt dans un métier où je pourrai guider les autres, prendre des décisions importantes et définir une vision."
+    },
+    {
+        id: 11, 
+        icon: '📊', 
+        title: 'Données & chiffres', 
+        verbs: 'Calculer, comparer, interpréter, vérifier', 
+        description: "Je me vois plutôt dans un métier où je pourrai travailler avec des données chiffrées et analyser des informations précises."
+    },
+    {
+        id: 12, 
+        icon: '📋', 
+        title: 'Règles & méthodes', 
+        verbs: 'Contrôler, sécuriser, appliquer, structurer', 
+        description: "Je me vois plutôt dans un métier où je pourrai suivre des procédures rigoureuses et m'assurer que tout est en ordre."
     }
+];
 
-    // Calcul du score pour chaque univers
-    const results = universes.map(universe => {
-        let score = 0;
-        let maxScore = 0;
-        
-        // Pour chaque intérêt (12 au total)
-        universe.weights.forEach((weight, index) => {
-            const interestId = index + 1;
-            const userRating = ratings[interestId] || 0;
-            
-            // Score = somme des (note utilisateur × poids univers)
-            score += userRating * weight;
-            
-            // Score max = somme des poids × 3 (note max possible)
-            maxScore += weight * 3;
-        });
-        
-        // Calcul du pourcentage de compatibilité
-        const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
-        
-        return {
-            name: universe.name,
-            score: score,
-            maxScore: maxScore,
-            percentage: percentage
-        };
-    });
-
-    // Tri des résultats par pourcentage décroissant
-    results.sort((a, b) => b.percentage - a.percentage);
-
-    // Stocker les résultats globalement
-    currentResults = results.slice(0, 10);
-
-    // Affichage du top 10
-    displayResults(currentResults);
-}
-
-// Fonction d'affichage des résultats
-function displayResults(results) {
-    const container = document.getElementById('resultsList');
-    
-    container.innerHTML = results.map((result, index) => `
-        <div class="result-card">
-            <div class="result-info">
-                <div class="result-title">#${index + 1} ${result.name}</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${result.percentage}%"></div>
-                </div>
-            </div>
-            <div class="result-score">${result.percentage.toFixed(1)}%</div>
-        </div>
-    `).join('');
-
-    // Affichage de la section résultats avec animation
-    const resultsSection = document.getElementById('results');
-    resultsSection.classList.add('show');
-    
-    // Scroll automatique vers les résultats
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// Fonction pour télécharger les résultats
-function downloadResults() {
-    if (currentResults.length === 0) {
-        alert('⚠️ Aucun résultat à télécharger. Veuillez d\'abord passer le test.');
-        return;
+// Les 21 univers professionnels avec leurs poids (matrice corrigée)
+// Chaque tableau de poids correspond aux 12 intérêts dans l'ordre
+const universes = [
+    {
+        name: '🌾 Agriculture, nature & animaux', 
+        weights: [3, 3, 1, 1, 0, 0, 1, 0, 2, 0, 0, 1]
+    },
+    {
+        name: '🎨 Arts, design & création', 
+        weights: [0, 1, 1, 0, 3, 3, 0, 1, 0, 0, 0, 0]
+    },
+    {
+        name: '🛒 Commerce, marketing & vente', 
+        weights: [0, 0, 0, 0, 1, 1, 1, 3, 2, 3, 1, 0]
+    },
+    {
+        name: '🎙️ Communication, médias & culture', 
+        weights: [0, 0, 1, 0, 3, 3, 1, 3, 1, 2, 0, 0]
+    },
+    {
+        name: '🏗️ Construction, BTP & habitat', 
+        weights: [2, 3, 0, 1, 0, 1, 0, 0, 2, 0, 1, 3]
+    },
+    {
+        name: '⚖️ Droit, administration & politique publique', 
+        weights: [0, 0, 2, 1, 0, 2, 1, 1, 1, 2, 3, 3]
+    },
+    {
+        name: '🎓 Éducation, formation & apprentissage', 
+        weights: [0, 0, 3, 1, 1, 1, 2, 3, 0, 0, 0, 0]
+    },
+    {
+        name: '🌍 Environnement, climat & énergies', 
+        weights: [3, 2, 1, 2, 0, 1, 1, 0, 1, 0, 0, 0]
+    },
+    {
+        name: '💶 Gestion, finance & comptabilité', 
+        weights: [0, 1, 1, 1, 0, 1, 0, 0, 1, 2, 3, 3]
+    },
+    {
+        name: '🍽️ Hôtellerie, restauration & tourisme', 
+        weights: [2, 0, 0, 0, 0, 1, 2, 3, 2, 1, 0, 0]
+    },
+    {
+        name: '⚙️ Industrie, fabrication & production', 
+        weights: [1, 3, 1, 3, 0, 1, 0, 0, 1, 1, 1, 2]
+    },
+    {
+        name: '🚚 Logistique, transport & mobilité', 
+        weights: [3, 3, 0, 1, 0, 1, 0, 0, 2, 1, 1, 2]
+    },
+    {
+        name: '💼 Management, entrepreneuriat & stratégie', 
+        weights: [0, 0, 1, 1, 0, 1, 0, 2, 3, 3, 2, 1]
+    },
+    {
+        name: '💻 Numérique, informatique & data', 
+        weights: [0, 1, 1, 3, 0, 2, 0, 0, 1, 2, 3, 1]
+    },
+    {
+        name: '⚕️ Santé, bien-être & médical', 
+        weights: [1, 1, 3, 1, 0, 0, 3, 2, 0, 0, 1, 0]
+    },
+    {
+        name: '🔬 Sciences, recherche & innovation', 
+        weights: [0, 0, 3, 3, 1, 3, 0, 0, 0, 0, 2, 1]
+    },
+    {
+        name: '🛡️ Sécurité, défense & urgence', 
+        weights: [3, 2, 1, 1, 0, 1, 0, 0, 3, 2, 0, 2]
+    },
+    {
+        name: '❤️ Social, aide & solidarité', 
+        weights: [0, 0, 1, 0, 0, 0, 3, 3, 1, 0, 0, 0]
+    },
+    {
+        name: '⚽ Sport, loisirs & vie active', 
+        weights: [3, 1, 1, 0, 1, 0, 1, 3, 3, 1, 0, 0]
+    },
+    {
+        name: '🚀 Technologies émergentes & futur du travail', 
+        weights: [1, 1, 2, 3, 1, 2, 0, 0, 2, 2, 3, 1]
+    },
+    {
+        name: '🏠 Immobilier & patrimoine', 
+        weights: [1, 1, 1, 1, 0, 1, 0, 0, 2, 3, 2, 3]
     }
-    
-    const date = new Date().toLocaleDateString('fr-FR');
-    let content = "📋 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
-    content += "Date : " + date + "\n";
-    content += "=".repeat(60) + "\n\n";
-    
-    // Ajout du profil
-    content += createUserProfile();
-    content += "\n" + "=".repeat(60) + "\n\n";
-    
-    // Ajout des résultats
-    content += "🎯 TOP 10 DES UNIVERS COMPATIBLES\n";
-    content += "=".repeat(60) + "\n\n";
-    
-    currentResults.forEach((result, index) => {
-        content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
-    });
-    
-    content += "\n" + "=".repeat(60) + "\n";
-    content += "Merci d'avoir utilisé IA360 !\n";
-    content += "Pour plus d'informations, visitez notre site web.";
-    
-    // Création et téléchargement du fichier
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `IA360_Resultats_${date.replace(/\//g, '-')}.txt`;
-    link.click();
-    
-    // Notification
-    showNotification('✅ Résultats téléchargés avec succès !');
-}
-
-// Fonction pour copier les résultats
-function copyResults() {
-    if (currentResults.length === 0) {
-        alert('⚠️ Aucun résultat à copier. Veuillez d\'abord passer le test.');
-        return;
-    }
-    
-    const date = new Date().toLocaleDateString('fr-FR');
-    let content = "📋 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
-    content += "Date : " + date + "\n";
-    content += "=".repeat(60) + "\n\n";
-    
-    // Ajout du profil
-    content += createUserProfile();
-    content += "\n" + "=".repeat(60) + "\n\n";
-    
-    // Ajout des résultats
-    content += "🎯 TOP 10 DES UNIVERS COMPATIBLES\n";
-    content += "=".repeat(60) + "\n\n";
-    
-    currentResults.forEach((result, index) => {
-        content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
-    });
-    
-    // Copie dans le presse-papier
-    navigator.clipboard.writeText(content).then(() => {
-        showNotification('✅ Résultats copiés dans le presse-papier !');
-    }).catch(err => {
-        alert('❌ Erreur lors de la copie : ' + err);
-    });
-}
-
-// Fonction pour ouvrir l'assistant virtuel
-function openAssistant() {
-    if (currentResults.length === 0) {
-        alert('⚠️ Veuillez d\'abord passer le test avant de consulter l\'assistant virtuel.');
-        return;
-    }
-    
-    // Pour l'instant, afficher un message (sera connecté à un GPT plus tard)
-    alert('🧭 Fonctionnalité à venir !\n\nL\'assistant virtuel sera bientôt disponible pour analyser votre profil en détail.');
-    
-    // TODO: Intégrer avec un GPT pour l'analyse du profil
-    // Exemple de données à envoyer au GPT :
-    // - Profil complet (ratings)
-    // - Top 10 des univers
-    // - Scores détaillés
-}
-
-// Fonction pour afficher une notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #27ae60;
-        color: white;
-        padding: 20px 30px;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        z-index: 10000;
-        font-weight: bold;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// Ajout des animations CSS pour les notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    renderInterests();
-});
+];
