@@ -1,50 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orientation 360 IA - Test d'orientation professionnelle</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA360 - Test d'orientation professionnelle</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="progress-container">
-    <div class="progress-indicator" id="progressBar"></div>
-  </div>
-
-  <div class="container">
-    <div class="header">
-      <a href="index.html" class="back-home-btn">Accueil</a>
-      <h1>Test des 12 intérêts</h1>
-      <p>Réponds aux 12 questions pour classer les 21 univers.</p>
+    <div class="progress-container">
+        <div class="progress-indicator" id="progressBar"></div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-home-btn">← Accueil</a>
+            <h1>📋 IA360</h1>
+            <p>Test d'orientation professionnelle basé sur vos intérêts</p>
+        </div>
+        
+        <div class="content">
+            <div class="legend">
+                <h3>💡 Comment répondre ?</h3>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #e74c3c;"></div>
+                    <span><strong>❌ Pas du tout moi</strong> - Je n'aime pas ça</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #95a5a6;"></div>
+                    <span><strong>😐 Un peu moi</strong> - Ça m'intéresse légèrement</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #f39c12;"></div>
+                    <span><strong>👍 Plutôt moi</strong> - J'aime assez ça</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #27ae60;"></div>
+                    <span><strong>✅ Totalement moi</strong> - C'est exactement moi</span>
+                </div>
+            </div>
+            
+            <div id="interestsList"></div>
+            
+            <button class="calculate-btn" onclick="calculateResults()">
+                📊 Calculer mes résultats
+            </button>
+            
+            <div class="results" id="results">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">
+                    🎯 Vos univers professionnels compatibles
+                </h2>
+                
+                <div class="results-actions">
+                    <button class="action-btn download-btn" onclick="downloadResults()">
+                        📥 Télécharger les résultats
+                    </button>
+                    <button class="action-btn copy-btn" onclick="copyResults()">
+                        📋 Copier les résultats
+                    </button>
+                    <button class="action-btn assistant-btn" onclick="openAssistant()">
+                        🧭 Demander à l'assistant virtuel de faire un diagnostic de mon profil
+                    </button>
+                </div>
+                
+                <div id="resultsList"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="section">
-      <h2>Questions</h2>
-      <div id="interestsList"></div>
-
-      <div class="actions">
-        <button class="action-btn" onclick="calculateResults()">Calculer mes résultats</button>
-        <button class="action-btn" onclick="createVisualResults()">Voir le détail texte</button>
-        <button class="action-btn assistant-btn" onclick="askAssistant()">Demander un diagnostic IA</button>
-      </div>
-    </div>
-
-    <div id="results" class="section">
-      <h2 id="resultsTitle">Résultats (classement des 21 univers)</h2>
-      <div class="results-buttons">
-        <button class="action-btn" onclick="window.location.href='universes.html'">Explorer les univers</button>
-        <button class="action-btn" onclick="downloadPDF()">Télécharger en PDF</button>
-      </div>
-      <div style="height:8px"></div>
-      <div id="resultsList"></div>
-    </div>
-  </div>
-
-  <!-- Données strictement utiles au front (univers + définitions) -->
-  <script src="data.js"></script>
-  <!-- Librairie HTML→PDF pour reproduire la page (même design) -->
-  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
-  <!-- Moteur IA360 (intérêts + matrices + logique résultats) -->
-  <script src="script.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
