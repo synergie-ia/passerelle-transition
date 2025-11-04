@@ -3,7 +3,7 @@ function renderUniverses() {
     const grid = document.getElementById('universesGrid');
     
     grid.innerHTML = universesData.map(universe => `
-        <div class="universe-card" onclick="openModal(${universe.id})">
+        <div class="universe-card" data-universe-id="${universe.id}">
             <div class="universe-image">
                 ${universe.icon}
             </div>
@@ -16,6 +16,14 @@ function renderUniverses() {
             </div>
         </div>
     `).join('');
+    
+    // Ajouter les event listeners
+    document.querySelectorAll('.universe-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const universeId = parseInt(this.getAttribute('data-universe-id'));
+            openModal(universeId);
+        });
+    });
 }
 
 // Fonction pour ouvrir le modal avec les sous-univers
@@ -30,7 +38,7 @@ function openModal(universeId) {
     modalTitle.textContent = universe.icon + ' ' + universe.name;
     
     subUniversesList.innerHTML = universe.subUniverses.map((sub, index) => `
-        <div class="sub-universe-card" onclick="toggleDescription(event, ${universeId}, ${index})">
+        <div class="sub-universe-card" data-universe-id="${universeId}" data-sub-index="${index}">
             <div class="sub-universe-header">
                 <div class="sub-universe-icon">${sub.icon}</div>
                 <div class="sub-universe-name">${sub.name}</div>
@@ -39,17 +47,19 @@ function openModal(universeId) {
         </div>
     `).join('');
     
+    // Ajouter les event listeners pour les sous-univers
+    document.querySelectorAll('.sub-universe-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            this.classList.toggle('expanded');
+        });
+    });
+    
     modal.style.display = 'block';
 }
 
 // Fonction pour fermer le modal
 function closeModal() {
     document.getElementById('subUniversesModal').style.display = 'none';
-}
-
-// Fonction pour afficher/masquer la description
-function toggleDescription(event, universeId, subIndex) {
-    event.currentTarget.classList.toggle('expanded');
 }
 
 // Fermer le modal si on clique en dehors
