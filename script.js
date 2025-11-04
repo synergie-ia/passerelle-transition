@@ -1,6 +1,19 @@
 // Stockage des réponses de l'utilisateur
-const ratings = {};
+let ratings = {};
 let currentResults = [];
+
+// Charger les réponses sauvegardées au démarrage
+function loadSavedRatings() {
+    const saved = localStorage.getItem('orientation360_ratings');
+    if (saved) {
+        ratings = JSON.parse(saved);
+    }
+}
+
+// Sauvegarder les réponses
+function saveRatings() {
+    localStorage.setItem('orientation360_ratings', JSON.stringify(ratings));
+}
 
 // Fonction d'initialisation au chargement de la page
 function renderInterests() {
@@ -16,34 +29,44 @@ function renderInterests() {
             </div>
             <div class="interest-description">${interest.description}</div>
             <div class="rating-buttons">
-                <button class="rating-btn level-0" onclick="setRating(${interest.id}, 0, event)">
-                    ❌ Pas du tout moi
-                </button>
-                <button class="rating-btn level-1" onclick="setRating(${interest.id}, 1, event)">
-                    😐 Un peu moi
-                </button>
-                <button class="rating-btn level-2" onclick="setRating(${interest.id}, 2, event)">
-                    👍 Plutôt moi
-                </button>
-                <button class="rating-btn level-3" onclick="setRating(${interest.id}, 3, event)">
-                    ✅ Totalement moi
-                </button>
+                <button class="rating-btn level-0" data-interest="${interest.id}" data-value="0">❌ Pas du tout</button>
+                <button class="rating-btn level-1" data-interest="${interest.id}" data-value="1">😐 Un peu</button>
+                <button class="rating-btn level-2" data-interest="${interest.id}" data-value="2">👍 Plutôt</button>
+                <button class="rating-btn level-3" data-interest="${interest.id}" data-value="3">✅ Totalement</button>
             </div>
         </div>
     `).join('');
-}
 
-// Fonction appelée quand l'utilisateur clique sur un bouton de notation
-function setRating(interestId, value, event) {
-    ratings[interestId] = value;
-    
-    // Mise à jour visuelle du bouton sélectionné
-    const card = event.target.closest('.interest-card');
-    const buttons = card.querySelectorAll('.rating-btn');
-    buttons.forEach(btn => btn.classList.remove('selected'));
-    event.target.classList.add('selected');
-    
-    // Mise à jour de la barre de progression
+    // Ajouter les event listeners
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const interestId = parseInt(this.getAttribute('data-interest'));
+            const value = parseInt(this.getAttribute('data-value'));
+            ratings[interestId] = value;
+
+            // Sauvegarder dans localStorage
+            saveRatings();
+
+            // Mettre à jour visuellement
+            const card = this.closest('.interest-card');
+            card.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // Mettre à jour la barre de progression
+            updateProgress();
+        });
+    });
+
+    // Restaurer les sélections
+    Object.keys(ratings).forEach(interestId => {
+        const value = ratings[interestId];
+        const btn = document.querySelector(`.rating-btn[data-interest="${interestId}"][data-value="${value}"]`);
+        if (btn) {
+            btn.classList.add('selected');
+        }
+    });
+
+    // Mettre à jour la progression
     updateProgress();
 }
 
@@ -56,14 +79,14 @@ function updateProgress() {
 
 // Fonction pour créer le profil utilisateur
 function createUserProfile() {
-    let profile = "📋 MON PROFIL D'INTÉRÊTS\n";
+    let profile = "MON PROFIL D'INTÉRÊTS\n";
     profile += "=".repeat(50) + "\n\n";
     
     interests.forEach(interest => {
         const rating = ratings[interest.id] || 0;
-        const ratingLabels = ['❌ Pas du tout', '😐 Un peu', '👍 Plutôt', '✅ Totalement'];
-        profile += `${interest.icon} ${interest.title}\n`;
-        profile += `   → ${ratingLabels[rating]}\n\n`;
+        const ratingLabels = ['Pas du tout', 'Un peu', 'Plutôt', 'Totalement'];
+        profile += `${interest.title}\n`;
+        profile += `   ${ratingLabels[rating]}\n\n`;
     });
     
     return profile;
@@ -77,7 +100,7 @@ function calculateResults() {
         return;
     }
 
-    // Calcul du score pour chaque univers
+    // Calcul du score pour chaque univers selon l'algorithme du document
     const results = universes.map(universe => {
         let score = 0;
         let maxScore = 0;
@@ -98,6 +121,7 @@ function calculateResults() {
         const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
         
         return {
+            id: universe.id,
             name: universe.name,
             score: score,
             maxScore: maxScore,
@@ -131,7 +155,12 @@ function displayResults(results) {
                     <div class="progress-fill" style="width: ${result.percentage}%"></div>
                 </div>
             </div>
-            <div class="result-score">${Math.round(result.percentage)}%</div>
+            <div class="result-actions">
+                <div class="result-score">${Math.round(result.percentage)}%</div>
+                <button class="view-universe-btn" onclick="viewUniverseDetails(${result.id})" title="Voir les sous-univers">
+                    🔍
+                </button>
+            </div>
         </div>
     `).join('');
     
@@ -150,12 +179,24 @@ function displayResults(results) {
                                 <div class="progress-fill" style="width: ${result.percentage}%"></div>
                             </div>
                         </div>
-                        <div class="result-score">${Math.round(result.percentage)}%</div>
+                        <div class="result-actions">
+                            <div class="result-score">${Math.round(result.percentage)}%</div>
+                            <button class="view-universe-btn" onclick="viewUniverseDetails(${result.id})" title="Voir les sous-univers">
+                                🔍
+                            </button>
+                        </div>
                     </div>
                 `).join('')}
             </div>
         `;
     }
+    
+    // Ajouter le bouton Accueil
+    html += `
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="home-btn">🏠 Retour à l'accueil</a>
+        </div>
+    `;
     
     container.innerHTML = html;
 
@@ -173,6 +214,12 @@ function showRemainingUniverses() {
     const btn = document.getElementById('showMoreBtn');
     remainingDiv.style.display = 'block';
     btn.style.display = 'none';
+}
+
+// Fonction pour voir les détails d'un univers
+function viewUniverseDetails(universeId) {
+    // Rediriger vers la page des univers avec l'ID en paramètre
+    window.location.href = `universes.html?id=${universeId}`;
 }
 
 // Fonction pour télécharger les résultats en PDF
@@ -204,7 +251,7 @@ function downloadResults() {
     // Profil d'intérêts
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
-    doc.text('MON PROFIL D\'INTÉRÊTS', 20, yPos);
+    doc.text('MON PROFIL D\'INTERETS', 20, yPos);
     yPos += 10;
     
     doc.setFontSize(10);
@@ -216,10 +263,10 @@ function downloadResults() {
             yPos = 20;
         }
         const rating = ratings[interest.id] || 0;
-        const ratingLabels = ['Pas du tout', 'Un peu', 'Plutôt', 'Totalement'];
-        doc.text(`${interest.title}`, 20, yPos);
+        const ratingLabels = ['Pas du tout', 'Un peu', 'Plutot', 'Totalement'];
+        doc.text(interest.title, 20, yPos);
         yPos += 5;
-        doc.text(`   ${ratingLabels[rating]}`, 20, yPos);
+        doc.text('   ' + ratingLabels[rating], 20, yPos);
         yPos += 8;
     });
     
@@ -244,11 +291,13 @@ function downloadResults() {
             doc.addPage();
             yPos = 20;
         }
+        // Enlever les emojis pour le PDF
+        const cleanName = result.name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
         doc.setFont(undefined, 'bold');
-        doc.text(`#${index + 1} ${result.name}`, 20, yPos);
+        doc.text('#' + (index + 1) + ' ' + cleanName, 20, yPos);
         yPos += 5;
         doc.setFont(undefined, 'normal');
-        doc.text(`   Compatibilité : ${Math.round(result.percentage)}%`, 20, yPos);
+        doc.text('   Compatibilite : ' + Math.round(result.percentage) + '%', 20, yPos);
         yPos += 8;
     });
     
@@ -272,13 +321,14 @@ function downloadResults() {
                 doc.addPage();
                 yPos = 20;
             }
-            doc.text(`#${index + 6} ${result.name} - ${Math.round(result.percentage)}%`, 20, yPos);
+            const cleanName = result.name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+            doc.text('#' + (index + 6) + ' ' + cleanName + ' - ' + Math.round(result.percentage) + '%', 20, yPos);
             yPos += 6;
         });
     }
     
     // Sauvegarde
-    doc.save(`Orientation360IA_Resultats_${date.replace(/\//g, '-')}.pdf`);
+    doc.save('Orientation360IA_Resultats_' + date.replace(/\//g, '-') + '.pdf');
     
     showNotification('✅ PDF téléchargé avec succès !');
 }
@@ -291,7 +341,7 @@ function copyResults() {
     }
     
     const date = new Date().toLocaleDateString('fr-FR');
-    let content = "📋 IA360 - RÉSULTATS DU TEST D'ORIENTATION\n";
+    let content = "📋 ORIENTATION 360 IA - RÉSULTATS\n";
     content += "Date : " + date + "\n";
     content += "=".repeat(60) + "\n\n";
     
@@ -300,14 +350,21 @@ function copyResults() {
     content += "\n" + "=".repeat(60) + "\n\n";
     
     // Ajout des résultats
-    content += "🎯 TOP 10 DES UNIVERS COMPATIBLES\n";
+    content += "🎯 TOP 5 DES UNIVERS COMPATIBLES\n";
     content += "=".repeat(60) + "\n\n";
     
-    currentResults.forEach((result, index) => {
+    currentResults.slice(0, 5).forEach((result, index) => {
         content += `#${index + 1} ${result.name}\n`;
-        content += `   Compatibilité : ${result.percentage.toFixed(1)}%\n`;
-        content += `   Score : ${result.score}/${result.maxScore}\n\n`;
+        content += `   Compatibilité : ${Math.round(result.percentage)}%\n\n`;
     });
+    
+    if (currentResults.length > 5) {
+        content += "\nAUTRES UNIVERS\n";
+        content += "=".repeat(60) + "\n\n";
+        currentResults.slice(5).forEach((result, index) => {
+            content += `#${index + 6} ${result.name} - ${Math.round(result.percentage)}%\n`;
+        });
+    }
     
     // Copie dans le presse-papier
     navigator.clipboard.writeText(content).then(() => {
@@ -328,10 +385,6 @@ function openAssistant() {
     alert('🧭 Fonctionnalité à venir !\n\nL\'assistant virtuel sera bientôt disponible pour analyser votre profil en détail.');
     
     // TODO: Intégrer avec un GPT pour l'analyse du profil
-    // Exemple de données à envoyer au GPT :
-    // - Profil complet (ratings)
-    // - Top 10 des univers
-    // - Scores détaillés
 }
 
 // Fonction pour afficher une notification
@@ -389,5 +442,6 @@ document.head.appendChild(style);
 
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
+    loadSavedRatings();
     renderInterests();
 });
