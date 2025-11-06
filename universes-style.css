@@ -151,7 +151,6 @@ body {
     transform: translateX(5px);
 }
 
-/* Modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -249,10 +248,6 @@ body {
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px solid #ddd;
-}
-
-.sub-universe-card.expanded .sub-universe-description {
-    display: block;
 }
 
 @media (max-width: 768px) {
