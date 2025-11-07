@@ -1,206 +1,207 @@
-// Les 12 intérêts dans l'ordre de la matrice Excel
+// Les 12 intérêts - VERSION V3
 const interests = [
     {
         id: 1, 
-        icon: '🏃',
-        title: 'Activités physiques & nature', 
-        description: "Bouger, faire des activités en extérieur, être actif physiquement et explorer la nature"
+        icon: '📋',
+        title: 'Méthode & organisation', 
+        description: "Structurer une activité dans le temps : planifier, ordonner les tâches, suivre des procédures, assurer une exécution cohérente et stable"
     },
     {
         id: 2,
         icon: '🔧',
-        title: 'Manuel & technique', 
-        description: "Fabriquer ou réparer des objets avec vos mains, utiliser des outils et réaliser des tâches concrètes"
+        title: 'Pratique & technique', 
+        description: "Utiliser ses mains, des outils ou des machines : ajuster, manipuler, assembler, entretenir, répéter des gestes maîtrisés"
     },
     {
         id: 3,
         icon: '🔍',
-        title: 'Investigation & information', 
-        description: "Chercher des informations, enquêter, faire des recherches et approfondir vos connaissances"
+        title: 'Analyse & logique', 
+        description: "Observer et diagnostiquer des situations : comparer, interpréter des informations, repérer des anomalies, tirer des conclusions structurées"
     },
     {
         id: 4,
         icon: '🧪',
-        title: 'Sciences & technologies', 
-        description: "Faire des expériences, tester de nouvelles technologies, comprendre comment les choses fonctionnent"
+        title: 'Sciences & innovation', 
+        description: "Chercher, tester, modéliser, expérimenter : comprendre des systèmes complexes et concevoir des solutions nouvelles ou améliorées"
     },
     {
         id: 5,
-        icon: '🎨',
-        title: 'Arts & expression', 
-        description: "Créer des choses artistiques, exprimer votre créativité, jouer avec les formes et les couleurs"
+        icon: '💡',
+        title: 'Conception & structuration d\'idées', 
+        description: "Imaginer, organiser ou architecturer une idée, un projet ou une forme avant réalisation : vision, cadrage, structuration"
     },
     {
         id: 6,
-        icon: '💡',
-        title: 'Idées & conception', 
-        description: "Imaginer de nouvelles idées, concevoir des solutions innovantes, structurer des projets et inventer"
+        icon: '🎨',
+        title: 'Expression & création', 
+        description: "Produire une forme personnelle (visuelle, sonore, corporelle ou narrative) exprimant une intention, une sensibilité ou une identité"
     },
     {
         id: 7,
-        icon: '🤝',
-        title: 'Aide & accompagnement', 
-        description: "Aider les autres, les accompagner dans leurs progrès, les écouter et les soutenir"
+        icon: '🏃',
+        title: 'Mouvement & plein air', 
+        description: "Travailler en mouvement, debout, en déplacement ou en extérieur, avec une implication corporelle visible"
     },
     {
         id: 8,
-        icon: '👥',
-        title: 'Relations & sociabilité', 
-        description: "Échanger avec les autres, travailler en équipe, communiquer et créer des liens"
+        icon: '🎯',
+        title: 'Coordination & pilotage', 
+        description: "Organiser l'action collective : répartir les rôles, superviser, synchroniser les étapes, assurer le lien entre acteurs"
     },
     {
         id: 9,
-        icon: '👑',
-        title: 'Leadership & stratégie', 
-        description: "Diriger une équipe, prendre des décisions stratégiques, avoir une vision d'ensemble et motiver les autres"
+        icon: '🚀',
+        title: 'Initiative & projet', 
+        description: "Proposer, lancer ou transformer une idée, un service ou une organisation ; être moteur dans le changement"
     },
     {
         id: 10,
-        icon: '⚡',
-        title: 'Action & initiative', 
-        description: "Prendre des initiatives, lancer de nouveaux projets, saisir les opportunités et relever des défis"
+        icon: '🤝',
+        title: 'Attention & transmission', 
+        description: "Accompagner, former, prendre soin ou transmettre : attention aux besoins d'autrui, pédagogie, écoute active"
     },
     {
         id: 11,
-        icon: '📋',
-        title: 'Règles & méthodes', 
-        description: "Suivre des procédures précises, appliquer des règles strictes, vérifier la conformité et organiser méthodiquement"
+        icon: '👥',
+        title: 'Travail de proximité', 
+        description: "Être en contact direct, physique ou relationnel rapproché avec des personnes ou des groupes dans une dimension de service ou d'accompagnement"
     },
     {
         id: 12,
-        icon: '📊',
-        title: 'Données & chiffres', 
-        description: "Travailler avec des chiffres, analyser des données, créer des tableaux et interpréter des statistiques"
+        icon: '💬',
+        title: 'Relationnel & influence', 
+        description: "Convaincre, négocier, créer du lien, influencer des décisions ou des comportements par la communication et l'interaction sociale"
     }
 ];
 
-// Les 21 univers professionnels avec la MATRICE OPTIMISÉE (depuis Excel)
-// Ordre des poids: [Activités physiques, Manuel, Investigation, Sciences, Arts, Idées, Aide, Relations, Leadership, Action, Règles, Données]
+// Les 21 univers professionnels avec la MATRICE V3
+// Ordre des poids: [MO, PT, AL, SI, CS, EC, MP, CP, IP, AT, TP, RI]
+// Coefficients: 6 (Essentiel) / 3 (Important) / 1 (Utile) / 0 (Non déterminant)
 const universes = [
     {
         id: 1,
         icon: '🌾',
         name: 'Agriculture, Nature & Animaux', 
-        weights: [3, 3, 2, 2, 0, 1, 1, 1, 1, 2, 1, 1]
+        weights: [0, 6, 3, 0, 0, 0, 6, 0, 0, 0, 1, 0]
     },
     {
         id: 2,
         icon: '🎨',
         name: 'Arts, Design & Création', 
-        weights: [0, 2, 1, 0, 3, 3, 0, 1, 1, 1, 0, 0]
+        weights: [0, 3, 0, 0, 6, 6, 0, 0, 0, 0, 0, 1]
     },
     {
         id: 3,
         icon: '🛒',
         name: 'Commerce, Marketing & Vente', 
-        weights: [0, 0, 2, 0, 0, 2, 1, 3, 2, 3, 1, 3]
+        weights: [0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 6, 6]
     },
     {
         id: 4,
         icon: '📺',
         name: 'Communication, Médias & Culture', 
-        weights: [0, 0, 2, 0, 3, 3, 1, 3, 1, 2, 1, 1]
+        weights: [0, 0, 0, 0, 3, 6, 0, 0, 0, 0, 1, 6]
     },
     {
         id: 5,
         icon: '🏗️',
         name: 'Construction, BTP & Habitat', 
-        weights: [2, 3, 1, 2, 0, 2, 0, 1, 1, 1, 3, 1]
+        weights: [1, 6, 0, 0, 0, 0, 6, 3, 0, 0, 0, 0]
     },
     {
         id: 6,
         icon: '⚖️',
-        name: 'Droit, Administration & Politique', 
-        weights: [0, 0, 3, 0, 0, 2, 1, 2, 2, 1, 3, 2]
+        name: 'Droit, Administration & Politique Publique', 
+        weights: [6, 0, 6, 0, 0, 0, 0, 0, 0, 0, 3, 1]
     },
     {
         id: 7,
         icon: '📚',
         name: 'Éducation, Formation & Apprentissage', 
-        weights: [0, 0, 2, 0, 1, 3, 3, 3, 2, 1, 1, 1]
+        weights: [0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 6, 3]
     },
     {
         id: 8,
         icon: '🌍',
         name: 'Environnement, Climat & Énergies', 
-        weights: [3, 2, 3, 3, 0, 2, 1, 1, 1, 1, 1, 2]
+        weights: [0, 0, 6, 6, 1, 0, 3, 0, 0, 0, 0, 0]
     },
     {
         id: 9,
         icon: '💼',
         name: 'Gestion, Finance & Comptabilité', 
-        weights: [0, 0, 2, 1, 0, 2, 1, 1, 2, 1, 3, 3]
+        weights: [6, 0, 6, 0, 0, 0, 0, 3, 0, 0, 0, 1]
     },
     {
         id: 10,
         icon: '🏨',
         name: 'Hôtellerie, Restauration & Tourisme', 
-        weights: [1, 2, 1, 0, 1, 1, 2, 3, 1, 2, 2, 1]
+        weights: [0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 6, 6]
     },
     {
         id: 11,
         icon: '🏠',
         name: 'Immobilier & Patrimoine', 
-        weights: [0, 1, 2, 1, 0, 1, 1, 3, 2, 3, 2, 3]
+        weights: [1, 0, 3, 0, 0, 0, 0, 6, 0, 0, 0, 6]
     },
     {
         id: 12,
         icon: '🏭',
         name: 'Industrie, Fabrication & Production', 
-        weights: [1, 3, 2, 3, 0, 1, 0, 0, 1, 1, 3, 2]
+        weights: [6, 6, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0]
     },
     {
         id: 13,
         icon: '🚚',
         name: 'Logistique, Transport & Mobilité', 
-        weights: [2, 2, 1, 1, 0, 1, 0, 1, 1, 3, 3, 2]
+        weights: [6, 3, 0, 0, 0, 0, 0, 6, 0, 1, 0, 0]
     },
     {
         id: 14,
         icon: '📈',
         name: 'Management, Entrepreneuriat & Stratégie', 
-        weights: [0, 0, 2, 1, 0, 3, 1, 3, 3, 3, 1, 2]
+        weights: [0, 0, 3, 0, 0, 0, 0, 6, 6, 0, 0, 1]
     },
     {
         id: 15,
         icon: '💻',
         name: 'Numérique, Informatique & Data', 
-        weights: [0, 0, 3, 3, 0, 3, 0, 0, 1, 1, 1, 3]
+        weights: [0, 1, 6, 3, 6, 0, 0, 0, 0, 0, 0, 0]
     },
     {
         id: 16,
         icon: '🏥',
         name: 'Santé, Bien-être & Médical', 
-        weights: [0, 1, 2, 3, 0, 1, 3, 2, 1, 1, 3, 1]
+        weights: [0, 0, 3, 0, 0, 0, 0, 0, 0, 6, 6, 1]
     },
     {
         id: 17,
         icon: '🔬',
         name: 'Sciences, Recherche & Innovation', 
-        weights: [0, 0, 3, 3, 0, 3, 0, 0, 1, 1, 2, 2]
+        weights: [1, 0, 6, 6, 3, 0, 0, 0, 0, 0, 0, 0]
     },
     {
         id: 18,
         icon: '🚨',
         name: 'Sécurité, Défense & Urgence', 
-        weights: [2, 1, 2, 1, 0, 1, 1, 1, 2, 3, 3, 1]
+        weights: [1, 0, 0, 0, 0, 0, 6, 3, 0, 6, 0, 0]
     },
     {
         id: 19,
         icon: '❤️',
         name: 'Social, Aide & Solidarité', 
-        weights: [0, 0, 1, 0, 0, 1, 3, 3, 1, 1, 2, 0]
+        weights: [0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 6, 6]
     },
     {
         id: 20,
         icon: '⚽',
-        name: 'Sport, Loisirs & Vie active', 
-        weights: [3, 1, 1, 0, 1, 1, 3, 3, 1, 2, 1, 0]
+        name: 'Sport, Loisirs & Vie Active', 
+        weights: [0, 0, 0, 0, 0, 3, 6, 0, 0, 0, 6, 1]
     },
     {
         id: 21,
         icon: '🚀',
         name: 'Technologies émergentes & Futur du travail', 
-        weights: [0, 0, 3, 3, 0, 3, 0, 1, 3, 3, 1, 3]
+        weights: [0, 0, 1, 6, 6, 0, 0, 0, 3, 0, 0, 0]
     }
 ];
