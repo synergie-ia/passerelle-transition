@@ -59,31 +59,6 @@ body {
     opacity: 0.9;
 }
 
-.info-banner {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
-    padding: 25px;
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    border-bottom: 3px solid #ffc107;
-}
-
-.info-icon {
-    font-size: 2.5em;
-    flex-shrink: 0;
-}
-
-.info-text {
-    line-height: 1.6;
-    color: #856404;
-}
-
-.info-text strong {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.1em;
-}
-
 .content {
     padding: 40px;
 }
@@ -115,6 +90,14 @@ body {
     font-weight: 600;
     color: #333;
     font-size: 1.05em;
+}
+
+.question-block small {
+    display: block;
+    color: #666;
+    font-size: 0.85em;
+    margin-top: 5px;
+    font-style: italic;
 }
 
 .question-block input[type="text"],
@@ -179,7 +162,7 @@ body {
 }
 
 .submit-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
     color: white;
     border: none;
     padding: 18px 50px;
@@ -188,22 +171,22 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
 }
 
 .submit-btn:hover {
+    background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
     transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 15px 40px rgba(39, 174, 96, 0.5);
 }
 
 .submit-btn:active {
     transform: translateY(-1px);
 }
 
-/* Styles de validation */
-.question-block input:invalid,
-.question-block select:invalid,
-.question-block textarea:invalid {
+.question-block input:invalid:not(:focus),
+.question-block select:invalid:not(:focus),
+.question-block textarea:invalid:not(:focus) {
     border-color: #e74c3c;
 }
 
@@ -233,11 +216,6 @@ body {
     }
     
     .section {
-        padding: 20px;
-    }
-    
-    .info-banner {
-        flex-direction: column;
         padding: 20px;
     }
     
