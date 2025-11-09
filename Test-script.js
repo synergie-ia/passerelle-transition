@@ -249,6 +249,16 @@ function viewUniverseDetails(universeId) {
 
 // Charger les réponses sauvegardées au chargement
 document.addEventListener('DOMContentLoaded', function() {
+  // Vérifier que les données sont bien chargées
+  if (typeof interests === 'undefined' || typeof universes === 'undefined') {
+    console.error('Erreur: Les données (interests ou universes) ne sont pas chargées!');
+    alert('Erreur de chargement des données. Veuillez recharger la page.');
+    return;
+  }
+  
+  console.log('Données chargées:', interests.length, 'intérêts et', universes.length, 'univers');
+  
+  // Charger les réponses sauvegardées
   try {
     const saved = localStorage.getItem('reconversion360_test_ratings');
     if (saved) {
@@ -258,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Impossible de charger les réponses:', e);
   }
   
+  // Générer les questions
   renderInterests();
   
   // Restaurer les sélections visuelles
