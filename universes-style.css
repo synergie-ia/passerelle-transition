@@ -68,7 +68,7 @@ body {
     flex-wrap: wrap;
 }
 
-.test-btn, .download-btn {
+.test-btn {
     padding: 16px 32px;
     border: none;
     border-radius: 50px;
@@ -77,9 +77,6 @@ body {
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.test-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
@@ -89,23 +86,6 @@ body {
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-.download-btn {
-    background: #27ae60;
-    color: white;
-}
-
-.download-btn:hover:not(:disabled) {
-    background: #229954;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
-}
-
-.download-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
 .selection-info {
     text-align: center;
     padding: 15px;
@@ -113,51 +93,58 @@ body {
     font-weight: 600;
     color: #27ae60;
     font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
 }
 
 .universes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
+    gap: 25px;
     padding: 40px;
 }
 
 .universe-card {
-    background: white;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 15px;
     padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     transition: all 0.3s;
     cursor: pointer;
     position: relative;
-    border: 3px solid transparent;
+    border: 3px solid #e0e0e0;
 }
 
 .universe-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+    border-color: #667eea;
 }
 
 .universe-card.selected {
     border-color: #27ae60;
-    background: #f0fff4;
+    background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
 }
 
 .selection-checkbox {
     position: absolute;
     top: 15px;
     right: 15px;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     background: white;
     border: 3px solid #ddd;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5em;
+    font-size: 1.8em;
     transition: all 0.3s;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .universe-card.selected .selection-checkbox {
@@ -166,14 +153,39 @@ body {
 }
 
 .selection-checkbox:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+}
+
+.view-details-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 45px;
+    height: 45px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.view-details-btn:hover {
+    background: #5568d3;
+    transform: scale(1.15);
 }
 
 .universe-image {
     font-size: 4em;
     text-align: center;
     margin-bottom: 20px;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 
 .universe-content {
@@ -181,14 +193,14 @@ body {
 }
 
 .universe-name {
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: bold;
-    color: #333;
+    color: #222;
     margin-bottom: 12px;
 }
 
 .universe-description {
-    color: #666;
+    color: #555;
     line-height: 1.6;
     font-size: 0.95em;
 }
@@ -324,7 +336,7 @@ body {
         padding: 20px;
     }
     
-    .test-btn, .download-btn {
+    .test-btn {
         width: 100%;
     }
     
