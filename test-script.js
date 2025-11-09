@@ -30,7 +30,6 @@ function renderInterests() {
   container.innerHTML = interests.map(interest => `
     <div class="interest-card" id="interest-${interest.id}">
       <div class="interest-header">
-        <div class="interest-name">${interest.id}. ${interest.name}</div>
         <div class="interest-question">${interest.question}</div>
       </div>
       <div class="statements">
@@ -107,8 +106,17 @@ function calculateResults() {
   // Calculer les moyennes par intérêt
   const interestAverages = calculateInterestAverages();
   
+  // Créer le profil d'intérêts
+  const interestProfile = interests.map(interest => ({
+    id: interest.id,
+    name: interest.name,
+    code: interest.code,
+    score: interestAverages[interest.id],
+    percentage: Math.round((interestAverages[interest.id] / 4) * 100)
+  })).sort((a, b) => b.percentage - a.percentage);
+  
   // Calcul du score pour chaque univers
-  const results = universes.map(universe => {
+  const universeResults = universes.map(universe => {
     let score = 0;
     let maxScore = 0;
     
@@ -125,7 +133,7 @@ function calculateResults() {
     });
     
     // Calcul du pourcentage de compatibilité
-    const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+    const percentage = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
     
     return {
       id: universe.id,
@@ -137,21 +145,22 @@ function calculateResults() {
   });
 
   // Trier par pourcentage décroissant
-  results.sort((a, b) => b.percentage - a.percentage);
+  universeResults.sort((a, b) => b.percentage - a.percentage);
   
   // Sauvegarder les résultats
   try {
-    localStorage.setItem('reconversion360_test_results', JSON.stringify(results));
+    localStorage.setItem('reconversion360_interest_profile', JSON.stringify(interestProfile));
+    localStorage.setItem('reconversion360_test_results', JSON.stringify(universeResults));
   } catch (e) {
     console.log('Impossible de sauvegarder les résultats:', e);
   }
   
-  // Afficher les résultats
-  displayResults(results);
+  // Afficher le profil d'intérêts d'abord
+  displayInterestProfile(interestProfile, universeResults);
 }
 
-// Fonction d'affichage des résultats
-function displayResults(results) {
+// Fonction d'affichage du profil d'intérêts
+function displayInterestProfile(interestProfile, universeResults) {
   const container = document.getElementById('resultsList');
   
   if (!container) {
@@ -159,11 +168,56 @@ function displayResults(results) {
     return;
   }
   
-  // Afficher seulement les 5 premiers
-  const top5 = results.slice(0, 5);
-  const remaining = results.slice(5);
+  let html = '<h2 style="text-align: center; color: #333; font-size: 2em; margin-bottom: 30px;">📊 Votre profil d\'intérêts</h2>';
+  
+  html += interestProfile.map((interest, index) => `
+    <div class="result-card">
+      <div class="result-info">
+        <div class="result-title">#${index + 1} ${interest.name}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${interest.percentage}%"></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <div class="result-score">${interest.percentage}%</div>
+      </div>
+    </div>
+  `).join('');
 
-  let html = top5.map((result, index) => `
+  html += `
+    <div style="text-align: center; margin-top: 30px;">
+      <button onclick="displayUniverseResults()" class="calculate-btn">
+        🌐 Découvrez les univers professionnels qui vous correspondent
+      </button>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Sauvegarder les résultats d'univers pour l'affichage suivant
+  window.universeResultsData = universeResults;
+
+  // Affichage de la section résultats avec animation
+  const resultsSection = document.getElementById('results');
+  if (resultsSection) {
+    resultsSection.classList.add('show');
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Fonction pour afficher les résultats des univers
+function displayUniverseResults() {
+  const container = document.getElementById('resultsList');
+  const universeResults = window.universeResultsData;
+  
+  if (!universeResults) {
+    console.error('No universe results found');
+    return;
+  }
+  
+  let html = '<h2 style="text-align: center; color: #333; font-size: 2em; margin-bottom: 30px;">🌐 Vos univers professionnels</h2>';
+  
+  html += universeResults.map((result, index) => `
     <div class="result-card">
       <div class="result-info">
         <div class="result-title">${result.icon} #${index + 1} ${result.name}</div>
@@ -172,42 +226,14 @@ function displayResults(results) {
         </div>
       </div>
       <div class="result-actions">
-        <div class="result-score">${Math.round(result.percentage)}%</div>
-        <button class="view-universe-btn" onclick="viewUniverseDetails(${result.id})" title="Voir les sous-univers">
+        <div class="result-score">${result.percentage}%</div>
+        <button class="view-universe-btn-small" onclick="viewUniverseDetails(${result.id})" title="Voir les sous-univers">
           🔍
         </button>
       </div>
     </div>
   `).join('');
 
-  // Ajouter le bouton pour voir les univers restants
-  if (remaining.length > 0) {
-    html += `
-      <button class="show-more-btn" onclick="showRemainingUniverses()" id="showMoreBtn">
-        👁️ Voir les ${remaining.length} univers restants
-      </button>
-      <div id="remainingUniverses" style="display: none;">
-        ${remaining.map((result, index) => `
-          <div class="result-card">
-            <div class="result-info">
-              <div class="result-title">${result.icon} #${index + 6} ${result.name}</div>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${result.percentage}%"></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <div class="result-score">${Math.round(result.percentage)}%</div>
-              <button class="view-universe-btn" onclick="viewUniverseDetails(${result.id})" title="Voir les sous-univers">
-                🔍
-              </button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  // Ajouter le bouton Retour
   html += `
     <div style="text-align: center; margin-top: 30px;">
       <button onclick="window.history.back()" class="show-more-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">← Retour</button>
@@ -215,29 +241,11 @@ function displayResults(results) {
   `;
 
   container.innerHTML = html;
-
-  // Affichage de la section résultats avec animation
+  
+  // Scroll vers le haut des résultats
   const resultsSection = document.getElementById('results');
   if (resultsSection) {
-    resultsSection.classList.add('show');
-    
-    // Scroll automatique vers les résultats
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-
-// Fonction pour afficher les univers restants
-function showRemainingUniverses() {
-  const remainingDiv = document.getElementById('remainingUniverses');
-  const btn = document.getElementById('showMoreBtn');
-  
-  if (remainingDiv.style.display === 'none') {
-    remainingDiv.style.display = 'block';
-    btn.textContent = '👁️ Masquer les univers restants';
-  } else {
-    remainingDiv.style.display = 'none';
-    const remaining = document.querySelectorAll('#remainingUniverses .result-card').length;
-    btn.textContent = `👁️ Voir les ${remaining} univers restants`;
   }
 }
 
