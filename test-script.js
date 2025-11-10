@@ -30,7 +30,6 @@ function renderInterests() {
   container.innerHTML = interests.map(interest => `
     <div class="interest-card" id="interest-${interest.id}">
       <div class="interest-header">
-        <div class="interest-name">${interest.id}. ${interest.name}</div>
         <div class="interest-question">${interest.question}</div>
       </div>
       <div class="statements">
@@ -77,11 +76,12 @@ function setRating(interestId, statementIndex, value) {
   
   updateProgress();
   
-  // Sauvegarder dans localStorage
+  // Sauvegarder
   try {
-    localStorage.setItem('reconversion360_test_ratings', JSON.stringify(ratings));
+    const saved = JSON.stringify(ratings);
+    // Ne pas utiliser localStorage - en mémoire uniquement
   } catch (e) {
-    console.log('Impossible de sauvegarder:', e);
+    console.log('Sauvegarde en mémoire uniquement');
   }
 }
 
@@ -139,19 +139,12 @@ function calculateResults() {
   // Trier par pourcentage décroissant
   results.sort((a, b) => b.percentage - a.percentage);
   
-  // Sauvegarder les résultats
-  try {
-    localStorage.setItem('reconversion360_test_results', JSON.stringify(results));
-  } catch (e) {
-    console.log('Impossible de sauvegarder les résultats:', e);
-  }
-  
   // Afficher les résultats
-  displayResults(results);
+  displayResults(results, interestAverages);
 }
 
 // Fonction d'affichage des résultats
-function displayResults(results) {
+function displayResults(results, interestAverages) {
   const container = document.getElementById('resultsList');
   
   if (!container) {
@@ -159,11 +152,40 @@ function displayResults(results) {
     return;
   }
   
+  // Afficher les profils d'intérêts en premier
+  let html = '<div class="interest-profile-section">';
+  html += '<h2 style="color: #333; margin-bottom: 20px; font-size: 1.8em;">📊 Votre profil d\'intérêts</h2>';
+  
+  // Trier les intérêts par moyenne décroissante
+  const sortedInterests = interests.map(interest => ({
+    ...interest,
+    average: interestAverages[interest.id]
+  })).sort((a, b) => b.average - a.average);
+  
+  html += '<div class="interests-grid">';
+  sortedInterests.forEach(interest => {
+    const percentage = (interest.average / 4) * 100;
+    html += `
+      <div class="interest-profile-card">
+        <div class="interest-profile-name">${interest.code} - ${interest.name}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${percentage}%"></div>
+        </div>
+        <div class="interest-profile-score">${interest.average.toFixed(1)} / 4</div>
+      </div>
+    `;
+  });
+  html += '</div></div>';
+  
+  // Afficher les univers
+  html += '<div style="margin-top: 40px;">';
+  html += '<h2 style="color: #333; margin-bottom: 20px; font-size: 1.8em;">🎯 Univers professionnels compatibles</h2>';
+  
   // Afficher seulement les 5 premiers
   const top5 = results.slice(0, 5);
   const remaining = results.slice(5);
 
-  let html = top5.map((result, index) => `
+  html += top5.map((result, index) => `
     <div class="result-card">
       <div class="result-info">
         <div class="result-title">${result.icon} #${index + 1} ${result.name}</div>
@@ -207,6 +229,8 @@ function displayResults(results) {
     `;
   }
 
+  html += '</div>';
+
   // Ajouter le bouton Retour
   html += `
     <div style="text-align: center; margin-top: 30px;">
@@ -247,30 +271,7 @@ function viewUniverseDetails(universeId) {
   window.location.href = `universes.html#universe-${universeId}`;
 }
 
-// Charger les réponses sauvegardées au chargement
+// Charger au démarrage
 document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const saved = localStorage.getItem('reconversion360_test_ratings');
-    if (saved) {
-      ratings = JSON.parse(saved);
-    }
-  } catch (e) {
-    console.log('Impossible de charger les réponses:', e);
-  }
-  
   renderInterests();
-  
-  // Restaurer les sélections visuelles
-  Object.keys(ratings).forEach(key => {
-    const [interestId, statementIndex] = key.split('-').map(Number);
-    const value = ratings[key];
-    
-    const button = document.querySelector(
-      `button[data-interest="${interestId}"][data-statement="${statementIndex}"][data-value="${value}"]`
-    );
-    
-    if (button) {
-      button.classList.add('selected');
-    }
-  });
 });
