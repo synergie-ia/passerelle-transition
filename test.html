@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Test d'intérêts - Reconversion 360 IA</title>
-  <link rel="stylesheet" href="test-style.css">
+  <link rel="stylesheet" href="test-style.css" />
 </head>
 <body>
+  <!-- Barre de progression -->
   <div class="progress-container">
     <div class="progress-indicator" id="progressBar"></div>
   </div>
-  
+
   <div class="container">
     <div class="header">
       <a href="index.html" class="back-home-btn">← Retour</a>
@@ -19,54 +20,37 @@
     </div>
 
     <div class="content">
-
       <div class="legend">
         <h3>📝 Comment répondre ?</h3>
-        <p style="margin-bottom: 15px; font-weight: 600;">Pour chaque situation, indiquez à quel point elle vous correspond :</p>
+        <p style="margin-bottom: 15px; font-weight: 600;">
+          Pour chaque question, choisissez la proposition qui vous ressemble le plus.
+        </p>
 
         <div class="legend-item">
-          <div class="legend-box" style="background: #e74c3c;"></div>
-          <span><strong>0 - Pas du tout</strong> : Ça ne me correspond pas</span>
+          <div class="legend-box" style="background:#667eea;"></div>
+          <span>Un seul choix par question (A, B, C ou D).</span>
         </div>
-
         <div class="legend-item">
-          <div class="legend-box" style="background: #e67e22;"></div>
-          <span><strong>1 - Un peu</strong> : Ça me correspond légèrement</span>
-        </div>
-
-        <div class="legend-item">
-          <div class="legend-box" style="background: #f39c12;"></div>
-          <span><strong>2 - Moyennement</strong> : Ça me correspond modérément</span>
-        </div>
-
-        <div class="legend-item">
-          <div class="legend-box" style="background: #2ecc71;"></div>
-          <span><strong>3 - Plutôt</strong> : Ça me correspond bien</span>
-        </div>
-
-        <div class="legend-item">
-          <div class="legend-box" style="background: #27ae60;"></div>
-          <span><strong>4 - Totalement</strong> : Ça me correspond parfaitement</span>
+          <div class="legend-box" style="background:#2ecc71;"></div>
+          <span>Le score se calcule automatiquement à la fin.</span>
         </div>
       </div>
 
-      <div id="interestsList"></div>
+      <!-- Questions -->
+      <div id="questionsList"></div>
 
-      <!-- ✅ Bouton corrigé -->
-      <button class="calculate-btn" id="calculateBtn">
-        🎯 Calculer mes résultats
-      </button>
+      <!-- Bouton calcul -->
+      <button class="calculate-btn" id="calculateBtn">🎯 Calculer mes résultats</button>
 
+      <!-- Résultats -->
       <div class="results" id="results">
         <div id="resultsList"></div>
       </div>
-
     </div>
   </div>
 
-  <!-- ✅ Ordre correct -->
+  <!-- Scripts : données puis logique -->
   <script src="test-data.js"></script>
   <script src="test-script.js"></script>
-
 </body>
 </html>
