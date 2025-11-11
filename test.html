@@ -1,59 +1,52 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Test d'intérêts professionnels - IA360</title>
-  <link rel="stylesheet" href="test-style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test d'intérêts professionnels</title>
+  <link rel="stylesheet" href="test-style.css">
 </head>
 <body>
 
-  <div class="page-actions top-actions">
-    <button class="btn-outlined" id="btn-back-univers-top">← Retour aux univers</button>
+<div class="top-nav">
+  <button class="nav-btn" onclick="location.href='index.html'">← Retour à l'accueil</button>
+</div>
+
+<div class="container">
+
+  <h1 class="title">🎯 Découvrir mon profil professionnel</h1>
+
+  <p class="instructions">
+    Pour chaque ligne, choisis ce qui te correspond le plus.<br>
+    <strong>0 = Pas du tout</strong>, <strong>1 = Un peu</strong>, <strong>2 = Moyennement</strong>, 
+    <strong>3 = Plutôt</strong>, <strong>4 = Totalement</strong><br><br>
+    Réponds spontanément — <em>il n’y a pas de bonne ou de mauvaise réponse.</em>
+  </p>
+
+  <div id="questionnaire"></div>
+
+  <button id="calcBtn" class="main-btn">✅ Calculer mon profil</button>
+
+  <div id="profile-section" class="hidden">
+    <h2 class="section-title">📊 Ton profil d'intérêts</h2>
+    <div id="profile-results"></div>
+
+    <button id="showUniversBtn" class="main-btn">🌍 Voir les univers qui me correspondent</button>
   </div>
 
-  <div class="container">
-    <h1 class="page-title">🎯 Test d'intérêts professionnels</h1>
-
-    <p class="intro">
-      Pour chaque proposition, indique à quel point cela te correspond.<br>
-      <strong>0 = Pas du tout</strong> → <strong>4 = Totalement</strong>
-    </p>
-
-    <div id="questionnaire"></div>
-
-    <div class="cta-row">
-      <button id="btn-calc-profile" class="btn-primary">✅ Calculer mon profil</button>
-    </div>
-
-    <div id="recalc-banner" class="recalc-banner hidden">
-      Des réponses ont changé. <button id="btn-recalc-inline" class="btn-inline">🔄 Recalculer</button>
-    </div>
-
-    <div id="profile-section" class="hidden">
-      <h2>📊 Ton profil d'intérêts</h2>
-      <div id="profile-results"></div>
-
-      <div class="cta-row">
-        <button id="btn-calc-univers" class="btn-primary" disabled>
-          🌍 Voir les univers qui me correspondent
-        </button>
-      </div>
-    </div>
-
-    <div id="univers-section" class="hidden">
-      <h2>🌍 Univers professionnels recommandés</h2>
-      <div id="univers-results"></div>
-
-      <button id="btn-show-all" class="btn-outlined hidden">Voir tous les univers</button>
-    </div>
+  <div id="univers-section" class="hidden">
+    <h2 class="section-title">🌍 Univers professionnels recommandés</h2>
+    <div id="univers-container"></div>
   </div>
 
-  <div class="page-actions bottom-actions">
-    <button class="btn-outlined" id="btn-back-univers-bottom">← Retour aux univers</button>
-  </div>
+</div>
 
-  <script src="test-data.js"></script>
-  <script src="test-script.js"></script>
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="location.href='index.html'">← Retour à l'accueil</button>
+</div>
+
+<script src="test-data.js"></script>
+<script src="test-script.js"></script>
+
 </body>
 </html>
