@@ -8,7 +8,7 @@ let profileComputed = false;
 
 /* ----- RENDU DES QUESTIONS ----- */
 function renderQuestions(){
-  const root = document.getElementById("questionnaire");
+  const root = document.getElementById("questionsContainer"); // ✅ CORRIGÉ
 
   root.innerHTML = QUESTIONS.map(q => `
     <div class="question-block">
@@ -46,7 +46,7 @@ function renderQuestions(){
 
       // Si le profil a déjà été calculé une 1ère fois, propose REcalculer
       if(profileComputed){
-        const btnCalc = document.getElementById("btn-calc-profile");
+        const btnCalc = document.getElementById("calculateBtn");
         btnCalc.textContent = "🔁 Recalculer mon profil";
       }
     });
@@ -72,9 +72,9 @@ function percentFromSum(sum){
   return Math.round((sum/16)*100);
 }
 
-document.getElementById("btn-calc-profile").addEventListener("click", ()=>{
+document.getElementById("calculateBtn").addEventListener("click", ()=>{
   const scores = calcProfile();
-  const root = document.getElementById("profile-results");
+  const root = document.getElementById("profileResults");
 
   root.innerHTML = DIMENSIONS.map(dim=>{
     const sum = scores[dim.code];
@@ -88,10 +88,10 @@ document.getElementById("btn-calc-profile").addEventListener("click", ()=>{
     `;
   }).join("");
 
-  document.getElementById("profile-section").classList.remove("hidden");
+  document.getElementById("profileSection").classList.remove("hidden");
 
   // Première fois -> texte devient "Recalculer"
-  const btnCalc = document.getElementById("btn-calc-profile");
+  const btnCalc = document.getElementById("calculateBtn");
   btnCalc.textContent = "🔁 Recalculer mon profil";
   profileComputed = true;
 });
@@ -112,7 +112,7 @@ function calcUnivers(){
 }
 
 /* ----- AFFICHAGE UNIVERS ----- */
-document.getElementById("btn-calc-univers").addEventListener("click", ()=>{
+document.getElementById("goUniversesBtn").addEventListener("click", ()=>{
   const list = calcUnivers();
   const root = document.getElementById("univers-results");
 
