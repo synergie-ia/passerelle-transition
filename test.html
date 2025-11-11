@@ -2,56 +2,43 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Test d'intérêts – Reconversion 360 IA</title>
-  <link rel="stylesheet" href="test-style.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test d'intérêts professionnels - IA360</title>
+  <link rel="stylesheet" href="test-style.css" />
 </head>
 <body>
-  <div class="progress-container">
-    <div class="progress-indicator" id="progressBar"></div>
-  </div>
 
   <div class="container">
-    <div class="header">
-      <a href="index.html" class="back-home-btn">← Retour</a>
-      <h1>🎯 Test d'intérêts professionnels</h1>
-      <p>Évalue chaque proposition de 0 à 4. <strong>0 = pas du tout</strong> / <strong>4 = totalement</strong>.</p>
+    <h1 class="page-title">🎯 Test d'intérêts professionnels</h1>
+
+    <p class="intro">
+      Pour chaque proposition, indique à quel point cela te correspond.<br>
+      <strong>0 = Pas du tout</strong> → <strong>4 = Totalement</strong>
+    </p>
+
+    <div id="questionnaire"></div>
+
+    <button id="btn-calc-profile" class="main-btn">✅ Calculer mon profil</button>
+
+    <div id="profile-section" class="hidden">
+      <h2>📊 Ton profil d'intérêts</h2>
+      <div id="profile-results"></div>
+
+      <button id="btn-calc-univers" class="main-btn">
+        🌍 Voir les univers qui me correspondent
+      </button>
     </div>
 
-    <div class="content">
-      <div class="legend">
-        <h3>📝 Échelle de notation</h3>
-        <p>Pour chaque ligne, clique sur un carré :</p>
-        <div class="legend-row">
-          <span class="legend-chip lvl-0">0</span><span>Pas du tout</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-chip lvl-1">1</span><span>Un peu</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-chip lvl-2">2</span><span>Moyennement</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-chip lvl-3">3</span><span>Plutôt</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-chip lvl-4">4</span><span>Totalement (💚)</span>
-        </div>
-      </div>
+    <div id="univers-section" class="hidden">
+      <h2>🌍 Univers professionnels recommandés</h2>
+      <div id="univers-results"></div>
 
-      <div id="questionsHost"></div>
-
-      <div class="actions">
-        <button id="btnCalcProfile" class="primary">📊 Calculer mon profil</button>
-        <button id="btnSeeUniverses" class="secondary" disabled>🌍 Voir les univers qui me correspondent</button>
-      </div>
-
-      <section id="profileSection" class="results"></section>
-      <section id="universesSection" class="results"></section>
+      <button id="btn-show-all" class="alt-btn hidden">Voir tous les univers</button>
     </div>
   </div>
 
   <script src="test-data.js"></script>
   <script src="test-script.js"></script>
+
 </body>
 </html>
