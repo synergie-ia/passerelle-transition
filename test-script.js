@@ -1,10 +1,11 @@
 /* 
-  Script questionnaire + calculs avec sélection d'univers
+  Script questionnaire + calculs avec validation complète
 */
 
 let answers = {};
 let profileComputed = false;
 let selectedUnivers = new Set();
+let totalQuestions = 0;
 
 // Charger les sélections depuis localStorage
 function loadSelections(){
@@ -32,6 +33,20 @@ function loadAnswers(){
 // Sauvegarder les réponses dans localStorage
 function saveAnswers(){
   localStorage.setItem('questionnaire_answers', JSON.stringify(answers));
+}
+
+// Compter le nombre total de questions
+function countTotalQuestions(){
+  let count = 0;
+  QUESTIONS.forEach(q => {
+    count += q.options.length;
+  });
+  return count;
+}
+
+// Vérifier si toutes les questions ont une réponse
+function allQuestionsAnswered(){
+  return Object.keys(answers).length === totalQuestions;
 }
 
 function renderQuestions(){
@@ -78,10 +93,16 @@ function renderQuestions(){
       });
       btn.classList.add("selected", `v${v}`);
 
+      // Cacher le message d'erreur si toutes les questions sont répondues
+      if(allQuestionsAnswered()){
+        document.getElementById("errorMessage").classList.add("hidden");
+      }
+
       if(profileComputed){
-        const btnCalc = document.getElementById("calculateBtn");
-        btnCalc.textContent = "🔁 Recalculer mon profil";
-        btnCalc.classList.add("needs-recalc");
+        // Si le profil a déjà été calculé, cacher les sections
+        document.getElementById("profileSection").classList.add("hidden");
+        document.getElementById("univers-section").classList.add("hidden");
+        profileComputed = false;
       }
     });
   });
@@ -104,7 +125,7 @@ function calcUnivers(){
   const s = calcProfile();
   return universesData.map(u=>{
     let score=0, max=0;
-    // Utiliser les poids de test-data.js si disponibles, sinon calcul par défaut
+    // Utiliser les poids de test-data.js si disponibles
     if(typeof universes !== 'undefined' && universes.length > 0){
       const universMatch = universes.find(uv => uv.id === u.id);
       if(universMatch && universMatch.weights){
@@ -115,7 +136,7 @@ function calcUnivers(){
         });
       }
     } else {
-      // Calcul par défaut si pas de weights
+      // Calcul par défaut
       Object.values(s).forEach(val => {
         score += val;
         max += 16;
@@ -162,14 +183,16 @@ function renderUniversCard(u){
           <div class="univers-icon">${u.icon}</div>
           <div class="univers-name">${u.name}</div>
         </div>
-        <div class="univers-score">${u.pct}%</div>
-        <div class="univers-actions">
-          ${hasSubUnivers 
-            ? `<button class="btn-toggle-sub" data-id="${u.id}" title="Voir les sous-univers">🔎</button>` 
-            : ''}
-          <button class="btn-select-univers ${isSelected ? 'selected' : ''}" data-id="${u.id}" title="Sélectionner cet univers">
-            <span class="tick">${isSelected ? '✓' : ''}</span>
-          </button>
+        <div class="univers-right">
+          <div class="univers-score">${u.pct}%</div>
+          <div class="univers-actions">
+            ${hasSubUnivers 
+              ? `<button class="btn-toggle-sub" data-id="${u.id}" title="Voir les sous-univers">🔎</button>` 
+              : '<div style="width:40px"></div>'}
+            <button class="btn-select-univers ${isSelected ? 'selected' : ''}" data-id="${u.id}" title="Sélectionner cet univers">
+              <span class="tick">${isSelected ? '✓' : ''}</span>
+            </button>
+          </div>
         </div>
       </div>
       ${subUniversHTML}
@@ -188,7 +211,7 @@ function attachUniversEvents(){
       if(subList){
         const isVisible = subList.classList.contains("visible");
         subList.classList.toggle("visible");
-        btn.textContent = isVisible ? "🔎" : "🔼";
+        btn.textContent = isVisible ? "🔎" : "❌";
         btn.title = isVisible ? "Voir les sous-univers" : "Masquer les sous-univers";
       }
     });
@@ -221,14 +244,26 @@ function attachUniversEvents(){
 
 document.addEventListener('DOMContentLoaded', function() {
   loadSelections();
-  const hasAnswers = loadAnswers();
+  loadAnswers();
+  
+  totalQuestions = countTotalQuestions();
   
   renderQuestions();
 
-  const btnCalc = document.getElementById("calculateBtn");
+  const btnValidate = document.getElementById("validateBtn");
+  const errorMessage = document.getElementById("errorMessage");
   
-  function calculerEtAfficherProfil() {
-    // Force le recalcul des scores
+  // Validation de la saisie
+  btnValidate.addEventListener("click", ()=>{
+    if(!allQuestionsAnswered()){
+      errorMessage.classList.remove("hidden");
+      errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    
+    errorMessage.classList.add("hidden");
+    
+    // Calculer et afficher le profil
     const scores = calcProfile();
     const root = document.getElementById("profileResults");
     
@@ -254,31 +289,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById("profileSection").classList.remove("hidden");
     profileComputed = true;
-    btnCalc.classList.remove("needs-recalc");
-    btnCalc.textContent = "🔁 Recalculer mon profil";
     
-    // Masquer la section univers pour forcer un nouveau calcul
-    const universSection = document.getElementById("univers-section");
-    if(universSection && !universSection.classList.contains("hidden")){
-      universSection.classList.add("hidden");
-    }
-  }
-  
-  btnCalc.addEventListener("click", calculerEtAfficherProfil);
-
-  // Si on a des réponses sauvegardées, afficher automatiquement le profil
-  if(hasAnswers && Object.keys(answers).length > 0){
-    calculerEtAfficherProfil();
-  }
+    // Scroll vers le profil
+    setTimeout(() => {
+      document.getElementById("profileSection").scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  });
 
   const btnUnivers = document.getElementById("goUniversesBtn");
   btnUnivers.addEventListener("click", ()=>{
-    if(btnCalc.classList.contains("needs-recalc")){
-      alert("⚠️ Vous avez modifié vos réponses. Cliquez d'abord sur 'Recalculer mon profil' avant de voir les univers.");
-      return;
-    }
-    
-    // Recalcule les univers à chaque fois
+    // Recalcule les univers
     const list = calcUnivers();
     const root = document.getElementById("univers-results");
     const top5 = list.slice(0,5);
@@ -311,18 +331,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
   });
 
-  // Boutons Accueil (haut et bas)
-  const btnAccueil = document.getElementById("btnAccueil");
-  if(btnAccueil){
-    btnAccueil.addEventListener("click", ()=>{
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
+  // Bouton Accueil (retour à index.html)
   const btnAccueilBottom = document.getElementById("btnAccueilBottom");
   if(btnAccueilBottom){
     btnAccueilBottom.addEventListener("click", ()=>{
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.location.href = 'index.html';
     });
   }
 });
