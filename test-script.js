@@ -1,9 +1,8 @@
-let answers = {}; // { "Q-DIM" : value }
+let answers = JSON.parse(localStorage.getItem("ia360_answers") || "{}");
 
-/* Rendu du questionnaire */
+/* rendu questionnaire */
 function renderQuestions() {
   const root = document.getElementById("questionnaire");
-
   root.innerHTML = QUESTIONS.map(q => `
     <div class="question-block">
       <div class="question-title">${q.title}</div>
@@ -12,7 +11,8 @@ function renderQuestions() {
           <div class="option-text">${opt.text}</div>
           <div class="rating-buttons">
             ${[0,1,2,3,4].map(v => `
-              <div class="rate-btn" data-q="${q.id}" data-dim="${opt.dim}" data-value="${v}">${v}</div>
+              <div class="rate-btn ${answers[q.id+"-"+opt.dim]===v?"selected":""}"
+                data-q="${q.id}" data-dim="${opt.dim}" data-value="${v}"></div>
             `).join("")}
           </div>
         </div>
@@ -20,77 +20,94 @@ function renderQuestions() {
     </div>
   `).join("");
 
-  document.querySelectorAll(".rate-btn").forEach(btn => {
+  document.querySelectorAll(".rate-btn").forEach(btn =>
     btn.addEventListener("click", () => {
       const q = btn.dataset.q, dim = btn.dataset.dim, v = Number(btn.dataset.value);
       answers[q+"-"+dim] = v;
-
-      document.querySelectorAll(`.rate-btn[data-q='${q}'][data-dim='${dim}']`)
-        .forEach(b => b.classList.remove("selected"));
+      localStorage.setItem("ia360_answers", JSON.stringify(answers));
+      document.querySelectorAll(`.rate-btn[data-q='${q}'][data-dim='${dim}']`).forEach(b=>b.classList.remove("selected"));
       btn.classList.add("selected");
-    });
-  });
+    })
+  );
 }
 renderQuestions();
 
-/* Score des 12 Dimensions */
+/* calcul profil */
 function calcProfile() {
-  let scores = Object.fromEntries(DIMENSIONS.map(d => [d.code,0]));
-  Object.keys(answers).forEach(key => scores[key.split("-")[1]] += answers[key]);
+  let scores = Object.fromEntries(DIMENSIONS.map(d => [d.code, 0]));
+  Object.keys(answers).forEach(key => {
+    const dim = key.split("-")[1];
+    scores[dim] += answers[key];
+  });
   return scores;
 }
 
-/* Affichage du profil */
+/* affichage profil trié ↓ */
 document.getElementById("btn-calc-profile").addEventListener("click", () => {
   const scores = calcProfile();
-  const root = document.getElementById("profile-results");
+  const sorted = Object.entries(scores)
+    .map(([code,val]) => ({code,val}))
+    .sort((a,b)=>b.val-a.val);
 
-  root.innerHTML = DIMENSIONS.map(dim => {
-    const val = scores[dim.code];
-    const pct = Math.round((val / 16) * 100);
+  const root = document.getElementById("profile-results");
+  root.innerHTML = sorted.map(d => {
+    const dim = DIMENSIONS.find(x=>x.code===d.code);
+    const percent = Math.round(d.val/16*100);
     return `
       <div class="profile-row">
         <div class="profile-label">${dim.name}</div>
-        <div class="profile-bar"><div class="profile-fill" style="width:${pct}%"></div></div>
-        <div>${pct}%</div>
-      </div>`;
+        <div class="profile-bar"><div class="profile-fill" style="width:${percent}%"></div></div>
+        <div>${percent}%</div>
+      </div>
+    `;
   }).join("");
 
   document.getElementById("profile-section").classList.remove("hidden");
+  showBackButtons();
 });
 
-/* Calcul des univers */
+/* calcul univers */
 function calcUnivers() {
   const scores = calcProfile();
-  return universes.map(u => {
-    let score = 0, max = 0;
-    u.weights.forEach((w,i) => {
-      score += scores[DIMENSIONS[i].code] * w;
-      max += 16 * w;
+  return universes.map(u=>{
+    let score=0,max=0;
+    u.weights.forEach((w,i)=>{
+      const dim = DIMENSIONS[i].code;
+      score += scores[dim]*w;
+      max += 16*w;
     });
-    return {...u,pct:Math.round((score/max)*100)};
+    return {...u, pct:Math.round(score/max*100)};
   }).sort((a,b)=>b.pct-a.pct);
 }
 
-/* Affichage univers */
+/* affichage univers */
 document.getElementById("btn-calc-univers").addEventListener("click", () => {
   const list = calcUnivers();
   const root = document.getElementById("univers-results");
 
-  const top5 = list.slice(0,5), others = list.slice(5);
+  const top5 = list.slice(0,5);
+  const rest = list.slice(5);
 
-  root.innerHTML = top5.map(u => `
+  root.innerHTML = top5.map(u=>`
     <div class="univers-card"><div>${u.icon} ${u.name}</div><div><strong>${u.pct}%</strong></div></div>
   `).join("");
 
-  const btnShow = document.getElementById("btn-show-all");
-  btnShow.classList.remove("hidden");
-  btnShow.onclick = () => {
-    root.innerHTML += others.map(u => `
+  const btn = document.getElementById("btn-show-all");
+  btn.classList.remove("hidden");
+  btn.onclick = () => {
+    root.innerHTML += rest.map(u=>`
       <div class="univers-card"><div>${u.icon} ${u.name}</div><div><strong>${u.pct}%</strong></div></div>
     `).join("");
-    btnShow.classList.add("hidden");
+    btn.classList.add("hidden");
   };
 
   document.getElementById("univers-section").classList.remove("hidden");
+  showBackButtons();
 });
+
+/* navigation retour */
+function showBackButtons() {
+  document.getElementById("btn-back-top").classList.remove("hidden");
+  document.getElementById("btn-back-bottom").classList.remove("hidden");
+}
+document.getElementById("btn-back-top").onclick = document.getElementById("btn-back-bottom").onclick = () => window.scrollTo({top:0,behavior:"smooth"});
