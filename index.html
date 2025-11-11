@@ -1,40 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Reconversion 360 IA</title>
-  <link rel="stylesheet" href="home-style.css">
+  <link rel="stylesheet" href="index-style.css" />
 </head>
 <body>
+  <div class="container">
+    <header class="hero">
+      <h1 class="hero-title">Bienvenue sur la plateforme<br><span class="brand">Reconversion 360 IA</span></h1>
+      <p class="hero-subtitle">L'intelligence artificielle au service de la reconversion professionnelle et du bilan de compétences</p>
+    </header>
 
-<div class="container">
+    <div class="cards-grid">
+      <!-- Carte 1 -->
+      <div class="action-card">
+        <div class="card-icon">📋</div>
+        <h2 class="card-title">Copier mes données pour les transmettre à l'IA</h2>
+        <p class="card-desc">Exportez vos résultats de profil et d'univers métiers pour les utiliser avec un assistant IA personnalisé.</p>
+        <button class="card-btn" onclick="window.location.href='copy-data.html'">
+          Copier mes données
+        </button>
+      </div>
 
-  <h1 class="title">🧭 Reconversion 360 IA</h1>
-  <p class="subtitle">Ton parcours d’orientation & reconversion professionnelle</p>
+      <!-- Carte 2 -->
+      <div class="action-card highlight">
+        <div class="card-icon">🎯</div>
+        <h2 class="card-title">Réaliser le bilan de ma situation actuelle</h2>
+        <p class="card-desc">Découvrez votre profil d'intérêts professionnels et identifiez les univers métiers qui vous correspondent.</p>
+        <button class="card-btn primary" onclick="window.location.href='test.html'">
+          Démarrer le questionnaire
+        </button>
+      </div>
 
-  <div class="main-buttons">
-    <button class="main-btn" onclick="location.href='test.html'">
-      🎯 Découvrir mon profil professionnel & choisir mes univers métiers
-    </button>
+      <!-- Carte 3 -->
+      <div class="action-card">
+        <div class="card-icon">🚀</div>
+        <h2 class="card-title">Construire mon projet professionnel avec l'aide de l'IA</h2>
+        <p class="card-desc">Bénéficiez d'un accompagnement personnalisé par IA pour élaborer votre plan de reconversion.</p>
+        <button class="card-btn" onclick="window.location.href='project.html'">
+          Construire mon projet
+        </button>
+      </div>
+    </div>
 
-    <button class="main-btn" onclick="location.href='situation.html'">
-      📋 Faire mon bilan de situation
-    </button>
-
-    <button id="coachBtn" class="main-btn disabled">
-      🤝 Me faire accompagner par le coach virtuel
-    </button>
+    <footer class="page-footer">
+      <p>© 2025 Synergie IA - Reconversion 360 IA | Tous droits réservés</p>
+    </footer>
   </div>
-
-  <div class="copy-section">
-    <div class="copy-label">Copier mes données pour les transmettre au coach</div>
-    <div class="copy-icon" onclick="copyData()" title="Copier maintenant">📄</div>
-  </div>
-
-</div>
-
-<script src="home-script.js"></script>
-
 </body>
 </html>
