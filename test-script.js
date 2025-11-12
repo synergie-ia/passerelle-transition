@@ -1,8 +1,8 @@
 /* 
   ============================================
-  RECONVERSION 360 IA - QUESTIONNAIRE PROFIL
+  ORIENTATION 360 IA - QUESTIONNAIRE PROFIL
   ============================================
-  Algorithme de calcul QUADRATIQUE
+  Algorithme OPTIMISÉ avec moyenne pondérée normalisée
   Les réponses sont mises au carré pour accentuer les différences
 */
 
@@ -142,7 +142,7 @@ function percentFromSum(sum){
   return Math.round((sum / maxQuadratique) * 100);
 }
 
-/* ===== CALCUL DES UNIVERS ===== */
+/* ===== CALCUL DES UNIVERS (MOYENNE PONDÉRÉE OPTIMISÉE) ===== */
 
 function calcUnivers(){
   const s = calcProfile();
@@ -153,39 +153,45 @@ function calcUnivers(){
     return [];
   }
   
-  return universesData.map(u=>{
-    let score = 0;
-    let max = 0;
+  return universesData.map(u => {
+    let sommePonderee = 0;  // Somme des (score × poids)
+    let sommePoids = 0;      // Somme des poids
     
     // Chercher les poids correspondants dans universes (de test-data.js)
     if(typeof universes !== 'undefined'){
       const universMatch = universes.find(uv => uv.id === u.id);
       
       if(universMatch && universMatch.weights){
-        universMatch.weights.forEach((w, i)=>{
+        universMatch.weights.forEach((poids, i) => {
           if(i < DIMENSIONS.length){
             const dimCode = DIMENSIONS[i].code;
-            score += s[dimCode] * w;  // score quadratique × poids
-            max += 64 * w;            // max quadratique (64) × poids
+            const scoreQuadratique = s[dimCode]; // 0-64
+            
+            // ✨ MOYENNE PONDÉRÉE NORMALISÉE
+            sommePonderee += scoreQuadratique * poids;
+            sommePoids += poids;
           }
         });
       } else {
         // Pas de poids trouvés, calcul par défaut égal
         DIMENSIONS.forEach(dim => {
-          score += s[dim.code];
-          max += 64;
+          sommePonderee += s[dim.code];
+          sommePoids += 1;
         });
       }
     } else {
       // Pas de fichier universes, calcul par défaut
       DIMENSIONS.forEach(dim => {
-        score += s[dim.code];
-        max += 64;
+        sommePonderee += s[dim.code];
+        sommePoids += 1;
       });
     }
     
-    const pct = max > 0 ? Math.round((score / max) * 100) : 0;
-    return {...u, pct};
+    // ✨ NORMALISATION : Moyenne / Maximum (64)
+    const moyennePonderee = sommePoids > 0 ? sommePonderee / sommePoids : 0;
+    const pourcentage = Math.round((moyennePonderee / 64) * 100);
+    
+    return {...u, pct: pourcentage};
   }).sort((a, b) => b.pct - a.pct); // Tri décroissant
 }
 
