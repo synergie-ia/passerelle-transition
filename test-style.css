@@ -538,3 +538,28 @@ html,body{
     height:36px;
   }
 }
+/* ===== QUESTIONS NON RÉPONDUES ===== */
+.option-row.unanswered{
+  background:#fee;
+  border:2px solid #ef4444;
+  border-radius:10px;
+  padding:10px;
+  margin:8px 0;
+  animation:pulse-red 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { 
+    background:#fee;
+    border-color:#ef4444;
+  }
+  50% { 
+    background:#fecaca;
+    border-color:#dc2626;
+  }
+}
+
+.option-row.unanswered .option-text{
+  font-weight:600;
+  color:#991b1b;
+}
