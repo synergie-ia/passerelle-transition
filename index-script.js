@@ -1,41 +1,74 @@
 /* 
-  Script pour copier les résultats
+  Script pour la page d'accueil avec validation
 */
 
 document.addEventListener('DOMContentLoaded', function() {
   
   const btnCopy = document.getElementById('btnCopyResults');
+  const btnProject = document.getElementById('btnProject');
   
+  // Vérifier si toutes les données nécessaires sont présentes
+  function checkDataComplete(){
+    const answers = localStorage.getItem('questionnaire_answers');
+    const selectedUnivers = localStorage.getItem('selectedUnivers');
+    const situationData = localStorage.getItem('situation_data');
+    
+    return {
+      hasAnswers: !!answers,
+      hasUnivers: !!selectedUnivers && JSON.parse(selectedUnivers).length > 0,
+      hasSituation: !!situationData,
+      allComplete: !!answers && !!selectedUnivers && JSON.parse(selectedUnivers).length > 0 && !!situationData
+    };
+  }
+  
+  // Vérifier si les données ont été copiées
+  function hasBeenCopied(){
+    return localStorage.getItem('data_copied') === 'true';
+  }
+  
+  /* ===== BOUTON COPIER ===== */
   if(btnCopy){
     btnCopy.addEventListener('click', function(){
       
-      // Récupérer les données du localStorage
+      const status = checkDataComplete();
+      
+      // Vérifier que TOUT est complet
+      if(!status.allComplete){
+        let message = "❌ Données incomplètes. Vous devez compléter :\n\n";
+        
+        if(!status.hasAnswers){
+          message += "• Le questionnaire de profil\n";
+        }
+        if(!status.hasUnivers){
+          message += "• La sélection des univers-métiers\n";
+        }
+        if(!status.hasSituation){
+          message += "• Le bilan de situation\n";
+        }
+        
+        alert(message);
+        return;
+      }
+      
+      // Récupérer toutes les données
       const answers = localStorage.getItem('questionnaire_answers');
       const selectedUnivers = localStorage.getItem('selectedUnivers');
       const situationData = localStorage.getItem('situation_data');
       
-      if(!answers && !selectedUnivers && !situationData){
-        alert("❌ Aucune donnée à copier. Complétez d'abord le questionnaire et/ou votre bilan de situation.");
-        return;
-      }
-      
       // Construire le texte à copier
-      let textToCopy = "=== MES DONNÉES ORIENTATION 360 IA ===\n\n";
+      let textToCopy = "=== MES DONNÉES RECONVERSION 360 IA ===\n\n";
       
-      // Ajouter les réponses du questionnaire
       if(answers){
         textToCopy += "📊 PROFIL D'INTÉRÊTS\n";
         textToCopy += "Questionnaire complété\n\n";
       }
       
-      // Ajouter les univers sélectionnés
       if(selectedUnivers){
         const univers = JSON.parse(selectedUnivers);
-        textToCopy += "🌍 UNIVERS MÉTIERS SÉLECTIONNÉS\n";
+        textToCopy += "🌍 UNIVERS-MÉTIERS SÉLECTIONNÉS\n";
         textToCopy += `${univers.length} univers choisis\n\n`;
       }
       
-      // Ajouter les données de situation
       if(situationData){
         try {
           const situation = JSON.parse(situationData);
@@ -83,13 +116,16 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       textToCopy += "=== FIN DES DONNÉES ===\n";
-      textToCopy += "Généré par Orientation 360 IA - Synergie IA";
+      textToCopy += "Généré par Reconversion 360 IA - Synergie IA";
       
       // Copier dans le presse-papier
       navigator.clipboard.writeText(textToCopy).then(() => {
+        // Marquer comme copié
+        localStorage.setItem('data_copied', 'true');
+        
         // Feedback visuel
         const originalText = btnCopy.innerHTML;
-        btnCopy.innerHTML = '<span style="color:#22c55e">✓ Copié !</span>';
+        btnCopy.innerHTML = '<span style="color:#22c55e">✓ Données copiées !</span>';
         btnCopy.style.borderColor = '#22c55e';
         
         setTimeout(() => {
@@ -102,6 +138,21 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erreur copie:', err);
       });
       
+    });
+  }
+  
+  /* ===== BOUTON CONSTRUIRE MON PROJET ===== */
+  if(btnProject){
+    btnProject.addEventListener('click', function(e){
+      
+      if(!hasBeenCopied()){
+        e.preventDefault();
+        alert("⚠️ Vous devez d'abord copier vos données avant d'accéder à cette section.\n\nCliquez sur le bouton 'Copier mes résultats pour l'IA' ci-dessous.");
+        return;
+      }
+      
+      // Si copié, rediriger
+      window.location.href = 'project.html';
     });
   }
   
