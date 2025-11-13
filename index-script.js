@@ -7,41 +7,34 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnCopy = document.getElementById('btnCopyResults');
   const btnProject = document.getElementById('btnProject');
   
-  // Vérifier si le profil a été calculé
-  function isProfileCalculated(){
-    const answers = localStorage.getItem('questionnaire_answers');
-    if(!answers) return false;
-    
-    // Vérifier qu'il y a 48 réponses (12 questions × 4 options)
-    const answersObj = JSON.parse(answers);
-    return Object.keys(answersObj).length === 48;
-  }
-  
-  // Vérifier si des univers ont été sélectionnés
-  function hasUniversSelected(){
+  // Vérifier si au moins 3 univers ont été sélectionnés
+  function hasMinimumUniversSelected(){
     const selectedUnivers = localStorage.getItem('selectedUnivers');
     if(!selectedUnivers) return false;
     
     const univers = JSON.parse(selectedUnivers);
-    return univers.length > 0;
+    return univers.length >= 3;
   }
   
-  // Vérifier si le bilan de situation est complet
+  // Vérifier si le bilan de situation est complet (TOUTES les questions obligatoires)
   function isSituationComplete(){
     const situationData = localStorage.getItem('situation_data');
     if(!situationData) return false;
     
     const situation = JSON.parse(situationData);
     
-    // Vérifier les champs obligatoires
-    const required = ['prenom', 'age', 'q1', 'q2', 'q3', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q17', 'q18'];
+    // TOUTES les questions sont obligatoires
+    const required = [
+      'prenom', 'age', 
+      'q1', 'q2', 'q3', 'q4',
+      'q5', 'q6', 'q7', 'q8', 
+      'q9', 'q10',
+      'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17',
+      'q18',
+      'q19'
+    ];
     
-    return required.every(field => situation[field] && situation[field].trim() !== '');
-  }
-  
-  // Vérifier si tout est prêt pour la copie
-  function canCopy(){
-    return isProfileCalculated() && hasUniversSelected() && isSituationComplete();
+    return required.every(field => situation[field] && situation[field].toString().trim() !== '');
   }
   
   // Vérifier si les données ont été copiées
@@ -49,9 +42,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return localStorage.getItem('data_copied') === 'true';
   }
   
-  // Calculer le profil d'intérêts (copie de la fonction de test-script.js)
-  function calcProfile(){
-    const answers = JSON.parse(localStorage.getItem('questionnaire_answers'));
+  // Calculer le profil d'intérêts avec pourcentages
+  function calcProfileWithPercentages(){
+    const answers = JSON.parse(localStorage.getItem('questionnaire_answers') || '{}');
     const DIMENSIONS = [
       { code: "MO", name: "Méthode & organisation" },
       { code: "PT", name: "Pratique & technique" },
@@ -75,136 +68,112 @@ document.addEventListener('DOMContentLoaded', function() {
       scores[dim] += val * val;
     });
     
-    // Convertir en pourcentages
-    const percentages = {};
-    DIMENSIONS.forEach(dim => {
-      const sum = scores[dim.code];
-      percentages[dim.name] = Math.round((sum / 64) * 100);
-    });
+    const percentages = DIMENSIONS.map(dim => ({
+      name: dim.name,
+      percent: Math.round((scores[dim.code] / 64) * 100)
+    }));
+    
+    percentages.sort((a, b) => b.percent - a.percent);
     
     return percentages;
   }
   
-  // Mettre à jour l'état des boutons
-  function updateButtonStates(){
-    const copyReady = canCopy();
-    const copied = hasBeenCopied();
+  // Récupérer les univers sélectionnés avec leurs pourcentages
+  function getSelectedUniversWithPercentages(){
+    const selectedIds = JSON.parse(localStorage.getItem('selectedUnivers') || '[]');
+    const universPercentages = JSON.parse(localStorage.getItem('univers_percentages') || '{}');
     
-    // Bouton copier
-    if(btnCopy){
-      btnCopy.disabled = !copyReady;
+    if(typeof universesData === 'undefined'){
+      return selectedIds.map(id => ({
+        id: id,
+        name: `Univers ${id}`,
+        percent: universPercentages[id] || 0
+      }));
     }
     
-    // Bouton projet
-    if(btnProject){
-      btnProject.disabled = !copied;
-    }
+    return selectedIds.map(id => {
+      const univers = universesData.find(u => u.id === id);
+      return {
+        id: id,
+        name: univers ? univers.name : `Univers ${id}`,
+        percent: universPercentages[id] || 0
+      };
+    }).sort((a, b) => b.percent - a.percent);
   }
   
-  // Initialiser l'état des boutons
-  updateButtonStates();
-  
-  /* ===== BOUTON COPIER ===== */
+  /* ===== BOUTON COPIER (TOUJOURS ACTIF) ===== */
   if(btnCopy){
     btnCopy.addEventListener('click', function(){
       
-      if(!canCopy()){
-        let message = "❌ Données incomplètes. Vous devez compléter :\n\n";
-        
-        if(!isProfileCalculated()){
-          message += "• Le questionnaire de profil (48 réponses nécessaires)\n";
-        }
-        if(!hasUniversSelected()){
-          message += "• La sélection des univers-métiers\n";
-        }
-        if(!isSituationComplete()){
-          message += "• Le bilan de situation (toutes les questions obligatoires)\n";
-        }
-        
-        alert(message);
+      // Vérifier les conditions
+      if(!hasMinimumUniversSelected()){
+        alert("❌ Vous devez sélectionner au moins 3 univers-métiers.\n\nRetournez au questionnaire de profil et sélectionnez vos univers.");
+        return;
+      }
+      
+      if(!isSituationComplete()){
+        alert("❌ Le bilan de situation est incomplet.\n\nToutes les questions doivent être remplies.\n\nRetournez au formulaire de situation et complétez toutes les réponses.");
         return;
       }
       
       // Récupérer toutes les données
-      const selectedUnivers = JSON.parse(localStorage.getItem('selectedUnivers'));
+      const profileData = calcProfileWithPercentages();
+      const universData = getSelectedUniversWithPercentages();
       const situationData = JSON.parse(localStorage.getItem('situation_data'));
-      const profilePercentages = calcProfile();
       
       // Construire le texte à copier
       let textToCopy = "=== MES DONNÉES RECONVERSION 360 IA ===\n\n";
       
-      // PROFIL D'INTÉRÊTS
+      // 📊 PROFIL D'INTÉRÊTS
       textToCopy += "📊 PROFIL D'INTÉRÊTS\n\n";
-      
-      // Trier par score décroissant
-      const sortedProfile = Object.entries(profilePercentages)
-        .sort((a, b) => b[1] - a[1]);
-      
-      sortedProfile.forEach(([dimension, percent]) => {
-        textToCopy += `${dimension}: ${percent}%\n`;
+      profileData.forEach(dim => {
+        textToCopy += `${dim.name}: ${dim.percent}%\n`;
       });
-      
       textToCopy += "\n";
       
-      // UNIVERS-MÉTIERS SÉLECTIONNÉS
-      if(selectedUnivers && selectedUnivers.length > 0){
-        textToCopy += "🌍 UNIVERS-MÉTIERS SÉLECTIONNÉS\n\n";
-        
-        // Récupérer les univers avec leurs pourcentages depuis universesData
-        if(typeof universesData !== 'undefined'){
-          selectedUnivers.forEach(id => {
-            const univers = universesData.find(u => u.id === id);
-            if(univers){
-              // On ne peut pas recalculer le pourcentage ici sans avoir accès aux matrices
-              // On indique juste le nom
-              textToCopy += `• ${univers.name}\n`;
-            }
-          });
-        } else {
-          textToCopy += `${selectedUnivers.length} univers sélectionnés\n`;
-        }
-        
-        textToCopy += "\n";
-      }
+      // 🌍 UNIVERS-MÉTIERS SÉLECTIONNÉS
+      textToCopy += "🌍 UNIVERS-MÉTIERS SÉLECTIONNÉS\n\n";
+      universData.forEach(u => {
+        textToCopy += `${u.name}: ${u.percent}%\n`;
+      });
+      textToCopy += "\n";
       
-      // BILAN DE SITUATION
+      // 📋 BILAN DE SITUATION
       textToCopy += "📋 BILAN DE SITUATION\n\n";
       
       if(situationData.prenom) textToCopy += `Prénom: ${situationData.prenom}\n`;
       if(situationData.age) textToCopy += `Âge: ${situationData.age}\n\n`;
       
       textToCopy += "=== SITUATION & PARCOURS ===\n";
-      if(situationData.q1) textToCopy += `Objectif professionnel: ${situationData.q1}\n`;
-      if(situationData.q2) textToCopy += `Statut actuel: ${situationData.q2}\n`;
-      if(situationData.q3) textToCopy += `Niveau de formation: ${situationData.q3}\n`;
-      if(situationData.q4) textToCopy += `Certifications: ${situationData.q4}\n\n`;
+      if(situationData.q1) textToCopy += `Q1. Objectif professionnel: ${situationData.q1}\n\n`;
+      if(situationData.q2) textToCopy += `Q2. Statut actuel: ${situationData.q2}\n\n`;
+      if(situationData.q3) textToCopy += `Q3. Niveau de formation: ${situationData.q3}\n\n`;
+      if(situationData.q4) textToCopy += `Q4. Certifications: ${situationData.q4}\n\n`;
       
       textToCopy += "=== RESSOURCES & COMPÉTENCES ===\n";
-      if(situationData.q5) textToCopy += `Compétences techniques: ${situationData.q5}\n`;
-      if(situationData.q6) textToCopy += `Compétences à réutiliser: ${situationData.q6}\n`;
-      if(situationData.q7) textToCopy += `Compétences relationnelles: ${situationData.q7}\n`;
-      if(situationData.q8) textToCopy += `Expériences marquantes: ${situationData.q8}\n\n`;
+      if(situationData.q5) textToCopy += `Q5. Compétences techniques: ${situationData.q5}\n\n`;
+      if(situationData.q6) textToCopy += `Q6. Compétences à réutiliser: ${situationData.q6}\n\n`;
+      if(situationData.q7) textToCopy += `Q7. Compétences relationnelles: ${situationData.q7}\n\n`;
+      if(situationData.q8) textToCopy += `Q8. Expériences marquantes: ${situationData.q8}\n\n`;
       
       textToCopy += "=== VALEURS & SENS ===\n";
-      if(situationData.q9) textToCopy += `Valeurs essentielles: ${situationData.q9}\n`;
-      if(situationData.q10) textToCopy += `Secteurs à éviter: ${situationData.q10}\n\n`;
+      if(situationData.q9) textToCopy += `Q9. Valeurs essentielles: ${situationData.q9}\n\n`;
+      if(situationData.q10) textToCopy += `Q10. Secteurs à éviter: ${situationData.q10}\n\n`;
       
       textToCopy += "=== CONTRAINTES & CONDITIONS ===\n";
-      if(situationData.q11) textToCopy += `Mobilité: ${situationData.q11}\n`;
-      if(situationData.q12) textToCopy += `Conditions de travail: ${situationData.q12}\n`;
-      if(situationData.q13) textToCopy += `Horaires: ${situationData.q13}\n`;
-      if(situationData.q14) textToCopy += `Limitations: ${situationData.q14}\n`;
-      if(situationData.q15) textToCopy += `Rémunération souhaitée: ${situationData.q15}\n`;
-      if(situationData.q16) textToCopy += `Situations à éviter: ${situationData.q16}\n`;
-      if(situationData.q17) textToCopy += `Environnement idéal: ${situationData.q17}\n\n`;
+      if(situationData.q11) textToCopy += `Q11. Mobilité: ${situationData.q11}\n\n`;
+      if(situationData.q12) textToCopy += `Q12. Conditions de travail: ${situationData.q12}\n\n`;
+      if(situationData.q13) textToCopy += `Q13. Horaires: ${situationData.q13}\n\n`;
+      if(situationData.q14) textToCopy += `Q14. Limitations: ${situationData.q14}\n\n`;
+      if(situationData.q15) textToCopy += `Q15. Rémunération souhaitée: ${situationData.q15}\n\n`;
+      if(situationData.q16) textToCopy += `Q16. Situations à éviter: ${situationData.q16}\n\n`;
+      if(situationData.q17) textToCopy += `Q17. Environnement idéal: ${situationData.q17}\n\n`;
       
       textToCopy += "=== FORMATION ===\n";
-      if(situationData.q18) textToCopy += `Formation envisagée: ${situationData.q18}\n\n`;
+      if(situationData.q18) textToCopy += `Q18. Formation envisagée: ${situationData.q18}\n\n`;
       
-      if(situationData.q19) {
-        textToCopy += "=== INFORMATIONS COMPLÉMENTAIRES ===\n";
-        textToCopy += `${situationData.q19}\n\n`;
-      }
+      textToCopy += "=== OUVERTURE ===\n";
+      if(situationData.q19) textToCopy += `Q19. Informations complémentaires: ${situationData.q19}\n\n`;
       
       textToCopy += "=== FIN DES DONNÉES ===\n";
       textToCopy += "Généré par Reconversion 360 IA - Synergie IA";
@@ -213,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
       navigator.clipboard.writeText(textToCopy).then(() => {
         // Marquer comme copié
         localStorage.setItem('data_copied', 'true');
-        updateButtonStates();
         
         // Feedback visuel
         const originalText = btnCopy.innerHTML;
@@ -223,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
           btnCopy.innerHTML = originalText;
           btnCopy.style.borderColor = '';
-        }, 2000);
+        }, 3000);
         
       }).catch(err => {
         alert("❌ Erreur lors de la copie. Veuillez réessayer.");
