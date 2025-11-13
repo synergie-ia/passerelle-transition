@@ -49,23 +49,32 @@
       </div>
     </div>
 
-    <!-- Bouton Copier les résultats -->
-    <div class="copy-section">
-      <button id="btnCopyResults" class="copy-btn">
-        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <!-- Boutons Réinitialiser et Copier -->
+    <div class="action-buttons-section">
+      <button id="btnResetData" class="action-btn reset-btn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        <span>Réinitialiser mes données</span>
+      </button>
+      
+      <button id="btnCopyResults" class="action-btn copy-btn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
         <span>Copier mes résultats pour l'IA</span>
       </button>
-      <p class="copy-notice">Copiez vos résultats (profil, univers, situation) pour les transmettre à un assistant IA</p>
     </div>
+
+    <p class="action-notice">Copiez vos résultats (profil, univers, situation) pour les transmettre à un assistant IA</p>
 
     <footer class="page-footer">
       <p>© 2025 Synergie IA - Reconversion 360 IA</p>
     </footer>
   </div>
 
-  <script src="index-script.js"></script>
+  <script src="index-script.js?v=23"></script>
 </body>
 </html>
