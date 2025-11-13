@@ -153,6 +153,48 @@ html,body{
 .dot-3{background:var(--c3)}
 .dot-4{background:var(--c4)}
 
+/* ===== LÉGENDE DES ÉTOILES ===== */
+.stars-legend{
+  background:#fff;
+  border:3px solid #cbd5e1;
+  border-radius:12px;
+  padding:16px;
+  margin:0 0 20px 0;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.legend-title{
+  font-weight:700;
+  font-size:16px;
+  color:var(--ink);
+  margin-bottom:12px;
+  text-align:center;
+}
+
+.legend-items{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+}
+
+.legend-items .legend-item{
+  background:#f9fafb;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+@media (max-width: 640px) {
+  .legend-items{
+    grid-template-columns:1fr;
+  }
+}
+
 /* ===== MESSAGE D'ERREUR ===== */
 .error-message{
   background:#fee;
@@ -422,10 +464,97 @@ html,body{
   flex-shrink:0;
 }
 
-.univers-score{
-  font-weight:700;
-  font-size:18px;
+/* ===== ÉTOILES ET RONDS DE COMPATIBILITÉ ===== */
+.univers-stars{
+  font-size:26px;
+  line-height:1;
+  letter-spacing:2px;
   flex-shrink:0;
+}
+
+/* Couleurs par niveau de compatibilité */
+
+/* Niveau 5 - Très compatible (⭐⭐⭐) */
+.univers-card.level-5{
+  border-left:5px solid #10b981;
+  background:linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+}
+
+.univers-card.level-5:hover{
+  box-shadow:0 8px 24px rgba(16, 185, 129, 0.2);
+}
+
+/* Niveau 4 - Compatible (⭐⭐) */
+.univers-card.level-4{
+  border-left:5px solid #3b82f6;
+  background:linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+}
+
+.univers-card.level-4:hover{
+  box-shadow:0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+/* Niveau 3 - Assez compatible (⭐) */
+.univers-card.level-3{
+  border-left:5px solid #f59e0b;
+  background:linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.univers-card.level-3:hover{
+  box-shadow:0 8px 24px rgba(245, 158, 11, 0.2);
+}
+
+/* Niveau 2 - Peu compatible (⚪) */
+.univers-card.level-2{
+  border-left:5px solid #94a3b8;
+  background:linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.univers-card.level-2:hover{
+  box-shadow:0 8px 24px rgba(148, 163, 184, 0.2);
+}
+
+/* Niveau 1 - Très peu compatible (⚫) */
+.univers-card.level-1{
+  border-left:5px solid #6b7280;
+  background:linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+  opacity:0.85;
+}
+
+.univers-card.level-1:hover{
+  box-shadow:0 8px 24px rgba(107, 114, 128, 0.15);
+}
+
+/* État sélectionné - accentué pour tous les niveaux */
+.univers-card.selected.level-5{
+  border-left-width:8px;
+  background:linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+  box-shadow:0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.univers-card.selected.level-4{
+  border-left-width:8px;
+  background:linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  box-shadow:0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.univers-card.selected.level-3{
+  border-left-width:8px;
+  background:linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  box-shadow:0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.univers-card.selected.level-2{
+  border-left-width:8px;
+  background:linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%);
+  box-shadow:0 4px 12px rgba(148, 163, 184, 0.3);
+}
+
+.univers-card.selected.level-1{
+  border-left-width:8px;
+  background:linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow:0 4px 12px rgba(107, 114, 128, 0.25);
+  opacity:1;
 }
 
 .univers-actions{
@@ -616,6 +745,10 @@ html,body{
   .univers-right{
     order:2;
     margin-left:auto;
+  }
+  
+  .univers-stars{
+    font-size:22px;
   }
   
   .btn-toggle-sub{
