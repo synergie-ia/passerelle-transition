@@ -1,8 +1,174 @@
 // ============================================
-// RECONVERSION 360 IA - DONNÉES DES UNIVERS
+// RECONVERSION 360 IA - DONNÉES COMPLÈTES
 // ============================================
 
-// Liste complète des 21 univers avec leurs sous-domaines
+// ===== DIMENSIONS =====
+const DIMENSIONS = [
+  { code: "MO", name: "Méthode & organisation" },
+  { code: "PT", name: "Pratique & technique" },
+  { code: "AL", name: "Analyse & logique" },
+  { code: "SI", name: "Sciences & innovation" },
+  { code: "CS", name: "Conception & structuration d'idées" },
+  { code: "EC", name: "Expression & création" },
+  { code: "CP", name: "Coordination & pilotage" },
+  { code: "IP", name: "Initiative & projet" },
+  { code: "MP", name: "Mouvement & plein air" },
+  { code: "AE", name: "Action & efficacité terrain" },
+  { code: "AA", name: "Aide & Accompagnement" },
+  { code: "RI", name: "Relation & influence" }
+];
+
+// ===== QUESTIONS DU QUESTIONNAIRE =====
+const QUESTIONS = [
+  {
+    id: "q1",
+    title: "Dans une équipe, vous choisissez :",
+    options: [
+      { text: "Organiser le planning et structurer les tâches", dim: "MO" },
+      { text: "Utiliser des outils techniques et équipements", dim: "PT" },
+      { text: "Analyser les données et faire des bilans", dim: "AL" },
+      { text: "Tester de nouvelles méthodes et expérimenter", dim: "SI" }
+    ]
+  },
+  {
+    id: "q2",
+    title: "Dans un projet créatif, vous préférez :",
+    options: [
+      { text: "Concevoir la structure et l'organisation générale", dim: "CS" },
+      { text: "Créer les éléments visuels ou artistiques", dim: "EC" },
+      { text: "Coordonner l'équipe et répartir les rôles", dim: "CP" },
+      { text: "Proposer des idées nouvelles et lancer des pistes", dim: "IP" }
+    ]
+  },
+  {
+    id: "q3",
+    title: "Au travail, vous préférez :",
+    options: [
+      { text: "Être en mouvement et travailler dehors", dim: "MP" },
+      { text: "Agir rapidement pour régler des situations urgentes", dim: "AE" },
+      { text: "Écouter et aider les personnes en difficulté", dim: "AA" },
+      { text: "Convaincre et faire changer d'avis", dim: "RI" }
+    ]
+  },
+  {
+    id: "q4",
+    title: "Pour progresser, vous choisissez d'apprendre à :",
+    options: [
+      { text: "Mieux planifier et suivre l'avancement des projets", dim: "MO" },
+      { text: "Maîtriser de nouvelles techniques manuelles", dim: "PT" },
+      { text: "Résoudre des problèmes complexes par l'analyse", dim: "AL" },
+      { text: "Comprendre les dernières avancées scientifiques", dim: "SI" }
+    ]
+  },
+  {
+    id: "q5",
+    title: "Dans un nouveau projet, vous préférez :",
+    options: [
+      { text: "Définir le concept et l'architecture d'ensemble", dim: "CS" },
+      { text: "Créer l'identité visuelle et l'ambiance", dim: "EC" },
+      { text: "Superviser l'avancement et gérer les priorités", dim: "CP" },
+      { text: "Lancer de nouvelles initiatives sans attendre", dim: "IP" }
+    ]
+  },
+  {
+    id: "q6",
+    title: "Votre journée idéale inclut :",
+    options: [
+      { text: "Bouger, vous déplacer et être en extérieur", dim: "MP" },
+      { text: "Intervenir sur le terrain avec des résultats directs", dim: "AE" },
+      { text: "Accompagner des personnes individuellement", dim: "AA" },
+      { text: "Négocier et défendre des positions", dim: "RI" }
+    ]
+  },
+  {
+    id: "q7",
+    title: "On vous confie une mission, vous choisissez de :",
+    options: [
+      { text: "Mettre en place des procédures claires", dim: "MO" },
+      { text: "Réparer, assembler ou fabriquer quelque chose", dim: "PT" },
+      { text: "Examiner la situation et établir un diagnostic", dim: "AL" },
+      { text: "Explorer des solutions innovantes", dim: "SI" }
+    ]
+  },
+  {
+    id: "q8",
+    title: "Dans un projet culturel, vous préférez :",
+    options: [
+      { text: "Structurer le contenu et le scénario", dim: "CS" },
+      { text: "Créer l'univers sonore ou visuel", dim: "EC" },
+      { text: "Organiser la production et les équipes", dim: "CP" },
+      { text: "Inventer de nouveaux formats d'expression", dim: "IP" }
+    ]
+  },
+  {
+    id: "q9",
+    title: "Dans une association, vous choisissez de :",
+    options: [
+      { text: "Partir en mission dans des lieux variés", dim: "MP" },
+      { text: "Répondre aux urgences et situations critiques", dim: "AE" },
+      { text: "Soutenir et conseiller les bénéficiaires", dim: "AA" },
+      { text: "Représenter l'association et mobiliser des partenaires", dim: "RI" }
+    ]
+  },
+  {
+    id: "q10",
+    title: "Vous souhaitez développer vos compétences en :",
+    options: [
+      { text: "Organisation et gestion du temps", dim: "MO" },
+      { text: "Savoir-faire technique et pratique", dim: "PT" },
+      { text: "Raisonnement logique et synthèse", dim: "AL" },
+      { text: "Recherche et découverte de nouvelles connaissances", dim: "SI" }
+    ]
+  },
+  {
+    id: "q11",
+    title: "Dans une équipe créative, vous aimez :",
+    options: [
+      { text: "Concevoir la stratégie globale", dim: "CS" },
+      { text: "Produire les créations artistiques", dim: "EC" },
+      { text: "Piloter le projet et coordonner", dim: "CP" },
+      { text: "Proposer des approches originales", dim: "IP" }
+    ]
+  },
+  {
+    id: "q12",
+    title: "Vous êtes attiré(e) par des activités de :",
+    options: [
+      { text: "Animation sportive en plein air", dim: "MP" },
+      { text: "Intervention rapide en situation d'urgence", dim: "AE" },
+      { text: "Écoute et médiation avec les personnes", dim: "AA" },
+      { text: "Persuasion et influence dans les discussions", dim: "RI" }
+    ]
+  }
+];
+
+// ===== MATRICES DE CORRÉLATION =====
+// Ordre : MO, PT, AL, SI, CS, EC, CP, IP, MP, AE, AA, RI
+const universes = [
+  { id: 1, weights: [4, 10, 4, 5, 3, 2, 4, 4, 9, 8, 3, 2] },
+  { id: 2, weights: [3, 3, 2, 2, 10, 10, 4, 9, 2, 2, 3, 5] },
+  { id: 3, weights: [4, 1, 3, 2, 6, 4, 6, 9, 3, 5, 4, 10] },
+  { id: 4, weights: [4, 2, 4, 3, 9, 9, 5, 9, 1, 3, 3, 8] },
+  { id: 5, weights: [5, 10, 4, 5, 4, 1, 4, 3, 8, 9, 1, 2] },
+  { id: 6, weights: [9, 0, 10, 2, 8, 1, 5, 4, 0, 2, 3, 6] },
+  { id: 7, weights: [5, 2, 4, 2, 4, 3, 8, 5, 2, 3, 10, 8] },
+  { id: 8, weights: [5, 6, 8, 10, 7, 2, 5, 9, 4, 5, 3, 4] },
+  { id: 9, weights: [10, 0, 10, 2, 4, 0, 6, 3, 0, 1, 1, 3] },
+  { id: 10, weights: [7, 5, 3, 2, 4, 3, 7, 5, 4, 8, 8, 8] },
+  { id: 11, weights: [7, 5, 5, 3, 6, 2, 6, 8, 2, 4, 3, 9] },
+  { id: 12, weights: [7, 10, 7, 8, 5, 0, 6, 4, 1, 5, 1, 2] },
+  { id: 13, weights: [9, 6, 5, 3, 3, 0, 8, 4, 6, 9, 2, 3] },
+  { id: 14, weights: [6, 1, 6, 4, 9, 2, 10, 10, 1, 3, 3, 9] },
+  { id: 15, weights: [5, 6, 9, 10, 7, 2, 4, 7, 0, 2, 1, 3] },
+  { id: 16, weights: [6, 6, 8, 9, 4, 1, 5, 4, 3, 5, 10, 4] },
+  { id: 17, weights: [5, 3, 9, 10, 8, 1, 4, 8, 0, 1, 1, 3] },
+  { id: 18, weights: [5, 5, 4, 2, 2, 0, 7, 4, 8, 10, 6, 5] },
+  { id: 19, weights: [5, 2, 4, 2, 4, 3, 8, 5, 2, 3, 10, 8] },
+  { id: 20, weights: [3, 3, 2, 2, 3, 2, 4, 4, 10, 8, 6, 6] },
+  { id: 21, weights: [3, 2, 7, 10, 9, 3, 5, 10, 1, 2, 1, 5] }
+];
+
+// ===== DONNÉES DES UNIVERS =====
 const universesData = [
   {
     id: 1,
@@ -428,34 +594,4 @@ const universesData = [
       { icon: "🌐", name: "Économie collaborative & plateformes", description: "Partage, freelance, gig economy." }
     ]
   }
-];
-
-// ============================================
-// MATRICE DE CORRÉLATION (ORDRE DES DIMENSIONS)
-// ============================================
-// Index des dimensions (ordre fixe et immuable) :
-// 0:MO, 1:PT, 2:AL, 3:SI, 4:CS, 5:EC, 6:CP, 7:IP, 8:MP, 9:AE, 10:AA, 11:RI
-
-const universes = [
-  { id: 1, weights: [4, 10, 4, 5, 3, 2, 4, 4, 9, 8, 3, 2] },  // Agriculture, nature & animaux
-  { id: 2, weights: [3, 3, 2, 2, 10, 10, 4, 9, 2, 2, 3, 5] },  // Arts, design & création
-  { id: 3, weights: [4, 1, 3, 2, 6, 4, 6, 9, 3, 5, 4, 10] },   // Commerce, marketing & vente
-  { id: 4, weights: [4, 2, 4, 3, 9, 9, 5, 9, 1, 3, 3, 8] },    // Communication, médias & culture
-  { id: 5, weights: [5, 10, 4, 5, 4, 1, 4, 3, 8, 9, 1, 2] },   // Construction, BTP & habitat
-  { id: 6, weights: [9, 0, 10, 2, 8, 1, 5, 4, 0, 2, 3, 6] },   // Droit, administration & politique publique
-  { id: 7, weights: [5, 2, 4, 2, 4, 3, 8, 5, 2, 3, 10, 8] },   // Éducation, formation & apprentissage (= Social, éducation & insertion)
-  { id: 8, weights: [5, 6, 8, 10, 7, 2, 5, 9, 4, 5, 3, 4] },   // Environnement, climat & énergies
-  { id: 9, weights: [10, 0, 10, 2, 4, 0, 6, 3, 0, 1, 1, 3] },  // Gestion, finance & comptabilité
-  { id: 10, weights: [7, 5, 3, 2, 4, 3, 7, 5, 4, 8, 8, 8] },   // Hôtellerie, restauration & tourisme
-  { id: 11, weights: [7, 5, 5, 3, 6, 2, 6, 8, 2, 4, 3, 9] },   // Immobilier & patrimoine
-  { id: 12, weights: [7, 10, 7, 8, 5, 0, 6, 4, 1, 5, 1, 2] },  // Industrie, ingénierie & production
-  { id: 13, weights: [9, 6, 5, 3, 3, 0, 8, 4, 6, 9, 2, 3] },   // Logistique, transport & mobilité
-  { id: 14, weights: [6, 1, 6, 4, 9, 2, 10, 10, 1, 3, 3, 9] }, // Management, entrepreneuriat & stratégie
-  { id: 15, weights: [5, 6, 9, 10, 7, 2, 4, 7, 0, 2, 1, 3] },  // Numérique, informatique & data
-  { id: 16, weights: [6, 6, 8, 9, 4, 1, 5, 4, 3, 5, 10, 4] },  // Santé, médical & paramédical
-  { id: 17, weights: [5, 3, 9, 10, 8, 1, 4, 8, 0, 1, 1, 3] },  // Sciences, recherche & innovation
-  { id: 18, weights: [5, 5, 4, 2, 2, 0, 7, 4, 8, 10, 6, 5] },  // Sécurité, défense & protection
-  { id: 19, weights: [5, 2, 4, 2, 4, 3, 8, 5, 2, 3, 10, 8] },  // Social, aide & solidarité
-  { id: 20, weights: [3, 3, 2, 2, 3, 2, 4, 4, 10, 8, 6, 6] },  // Sport, loisirs & vie active
-  { id: 21, weights: [3, 2, 7, 10, 9, 3, 5, 10, 1, 2, 1, 5] }  // Technologies émergentes & futur du travail
 ];
