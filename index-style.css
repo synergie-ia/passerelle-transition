@@ -1,10 +1,11 @@
 /*
   =====================================================
-  RECONVERSION 360 IA — STYLE (VERSION FINALE 2025)
-  Titre multi-lignes centré · Cartes alignées · Responsive propre
+  RECONVERSION 360 IA — STYLE (VERSION 31 FINALE)
+  Titre multi-lignes centré · Police uniforme · Boutons centrés mobile
   =====================================================
 */
 
+/* ===== VARIABLES ===== */
 :root {
   --primary: #5a4af4;
   --accent: #22c55e;
@@ -16,12 +17,14 @@
   --card: #ffffff;
 }
 
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ===== GLOBAL ===== */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   background: var(--bg);
@@ -29,6 +32,7 @@ body {
   line-height: 1.5;
 }
 
+/* ===== CONTAINER ===== */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -39,7 +43,7 @@ body {
 }
 
 /* =====================================================
-   TITRE (DEUX LIGNES, PETIT ET CENTRÉ)
+   TITRE PRINCIPAL — UNIFORMISÉ ET PLUS PETIT
    ===================================================== */
 
 .hero {
@@ -47,28 +51,36 @@ body {
   padding-top: 10px;
 }
 
+/* Titre en deux lignes, police identique, centré */
 .hero-title {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   text-align: center;
   margin-bottom: 10px;
+  font-family: inherit !important; /* même police partout */
 }
 
+/* Ligne 1 */
 .hero-title .title-line1 {
-  font-size: clamp(17px, 2vw, 24px);
+  font-size: clamp(17px, 2vw, 24px); /* plus petit */
   font-weight: 800;
   line-height: 1.25;
   padding: 0 12px;
+  color: var(--text);
+  font-family: inherit !important;
 }
 
+/* Ligne 2 */
 .hero-title .title-line2 {
-  font-size: clamp(15px, 1.8vw, 22px);
+  font-size: clamp(15px, 1.8vw, 22px); /* plus petit */
   font-weight: 700;
   line-height: 1.25;
   padding: 0 12px;
   text-align: center;
+  color: var(--text);
+  font-family: inherit !important;
 }
 
 /* =====================================================
@@ -93,13 +105,13 @@ body {
   justify-content: space-between;
   text-align: center;
 
-  transition: 0.25s;
+  transition: 0.25s ease;
   box-shadow: 0 3px 10px rgba(0,0,0,0.06);
 }
 
 .action-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.12);
 }
 
 .card-icon {
@@ -134,7 +146,7 @@ body {
 }
 
 /* =====================================================
-   BOUTONS BAS
+   BOUTONS BAS (RESET + COPIER)
    ===================================================== */
 
 .action-buttons-section {
@@ -163,6 +175,7 @@ body {
   background: #f3f4f6;
 }
 
+/* Bouton réinitialiser = contour rouge */
 .reset-btn {
   border-color: #ef4444 !important;
   color: #ef4444 !important;
@@ -179,10 +192,7 @@ body {
   color: var(--muted);
 }
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
+/* FOOTER */
 .page-footer {
   text-align: center;
   padding: 10px 0;
@@ -191,7 +201,7 @@ body {
 }
 
 /* =====================================================
-   RESPONSIVE SMARTPHONE
+   RESPONSIVE SMARTPHONE (BOUTONS CENTRÉS)
    ===================================================== */
 
 @media (max-width: 640px) {
@@ -201,6 +211,7 @@ body {
     padding: 16px;
   }
 
+  /* Titre adapté mobile */
   .hero-title .title-line1 {
     font-size: 17px;
   }
@@ -209,14 +220,16 @@ body {
     font-size: 16px;
   }
 
+  /* Boutons centrés parfaitement */
   .action-buttons-section {
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
 
   .action-btn-small {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px; /* largeur optimale smartphone */
     justify-content: center;
   }
 }
