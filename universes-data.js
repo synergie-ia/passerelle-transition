@@ -22,122 +22,100 @@ const DIMENSIONS = [
 const QUESTIONS = [
   {
     id: "q1",
-    title: "Dans une équipe, vous choisissez :",
+    title: "SITUATION 1 — Découvrir un nouveau sujet",
     options: [
-      { text: "Organiser le planning et structurer les tâches", dim: "MO" },
-      { text: "Utiliser des outils techniques et équipements", dim: "PT" },
-      { text: "Analyser les données et faire des bilans", dim: "AL" },
-      { text: "Tester de nouvelles méthodes et expérimenter", dim: "SI" }
+      { text: "J’ai besoin de mettre de l’ordre dans les informations (étapes, catégories, priorités) pour commencer à être à l’aise.", dim: "MO" },
+      { text: "J’ai envie de manipuler concrètement quelque chose en lien avec le sujet (objet, outil, support, dispositif) pour mieux le comprendre.", dim: "PT" },
+      { text: "Je cherche spontanément à observer, comparer et analyser pour comprendre les causes et les conséquences.", dim: "AL" },
+      { text: "Ce qui m’attire le plus, c’est d’explorer des idées, des hypothèses ou des découvertes liées à ce sujet.", dim: "SI" }
     ]
   },
+
   {
     id: "q2",
-    title: "Dans un projet créatif, vous préférez :",
+    title: "SITUATION 2 — Contribuer à un projet",
     options: [
-      { text: "Concevoir la structure et l'organisation générale", dim: "CS" },
-      { text: "Créer les éléments visuels ou artistiques", dim: "EC" },
-      { text: "Coordonner l'équipe et répartir les rôles", dim: "CP" },
-      { text: "Proposer des idées nouvelles et lancer des pistes", dim: "IP" }
+      { text: "J’aime concevoir la structure globale du projet : l’architecture, les grands axes, le “scénario” d’ensemble.", dim: "CS" },
+      { text: "Je prends plaisir à imaginer et produire des contenus créatifs (idées visuelles, textes, ambiances, mises en forme).", dim: "EC" },
+      { text: "Je suis naturellement porté(e) vers le fait de superviser, planifier et gérer les priorités pour que le projet avance.", dim: "CP" },
+      { text: "Je me reconnais dans le fait de lancer, entreprendre, oser : proposer de nouveaux projets, prendre l’initiative, démarrer quelque chose.", dim: "IP" }
     ]
   },
+
   {
     id: "q3",
-    title: "Au travail, vous préférez :",
+    title: "SITUATION 3 — Agir avec et pour les autres",
     options: [
-      { text: "Être en mouvement et travailler dehors", dim: "MP" },
-      { text: "Agir rapidement pour régler des situations urgentes", dim: "AE" },
-      { text: "Écouter et aider les personnes en difficulté", dim: "AA" },
-      { text: "Convaincre et faire changer d'avis", dim: "RI" }
+      { text: "J’aime quand une activité me permet de bouger, me déplacer, être physiquement actif(ve) plutôt que de rester toujours au même endroit.", dim: "MP" },
+      { text: "Je suis à l’aise quand il faut intervenir vite, passer à l’action et être efficace sur le terrain.", dim: "AE" },
+      { text: "Je me retrouve bien dans le fait de soutenir, écouter, former ou prendre soin des autres.", dim: "AA" },
+      { text: "Je me sens dans mon élément lorsque je peux convaincre, négocier, influencer ou représenter un groupe, une idée, une position.", dim: "RI" }
     ]
   },
+
   {
     id: "q4",
-    title: "Pour progresser, vous choisissez d'apprendre à :",
+    title: "SITUATION 4 — Porter une responsabilité ou un dossier",
     options: [
-      { text: "Mieux planifier et suivre l'avancement des projets", dim: "MO" },
-      { text: "Maîtriser de nouvelles techniques manuelles", dim: "PT" },
-      { text: "Résoudre des problèmes complexes par l'analyse", dim: "AL" },
-      { text: "Comprendre les dernières avancées scientifiques", dim: "SI" }
+      { text: "Je veille naturellement à structurer le travail : procédures, méthodes, outils d’organisation, suivi rigoureux.", dim: "MO" },
+      { text: "Je me vois bien dans un rôle où je supervise, coordonne et ajuste le travail des autres au fil du temps.", dim: "CP" },
+      { text: "Ce qui me correspond, c’est de prendre des initiatives, proposer des projets, ouvrir des pistes nouvelles plutôt que d’attendre qu’on me dise quoi faire.", dim: "IP" },
+      { text: "J’accorde une place importante au fait de accompagner les personnes, les soutenir, les rassurer, les aider à progresser.", dim: "AA" }
     ]
   },
+
   {
     id: "q5",
-    title: "Dans un nouveau projet, vous préférez :",
+    title: "SITUATION 5 — Résoudre un problème concret",
     options: [
-      { text: "Définir le concept et l'architecture d'ensemble", dim: "CS" },
-      { text: "Créer l'identité visuelle et l'ambiance", dim: "EC" },
-      { text: "Superviser l'avancement et gérer les priorités", dim: "CP" },
-      { text: "Lancer de nouvelles initiatives sans attendre", dim: "IP" }
+      { text: "J’aime être en lien avec la dimension pratique ou technique : manipuler, ajuster, bricoler, faire fonctionner un dispositif ou un outil.", dim: "PT" },
+      { text: "Mon premier réflexe est souvent d’analyser calmement la situation : observer, poser un “diagnostic”, comprendre ce qui cloche.", dim: "AL" },
+      { text: "Je prends plaisir à formuler des hypothèses, à tester des pistes, à chercher des explications “scientifiques” ou rationnelles.", dim: "SI" },
+      { text: "Ce qui m’attire, c’est de passer rapidement à l’action pour tester une solution concrète et voir si elle fonctionne.", dim: "AE" }
     ]
   },
+
   {
     id: "q6",
-    title: "Votre journée idéale inclut :",
+    title: "SITUATION 6 — Activités qui vous nourrissent vraiment",
     options: [
-      { text: "Bouger, vous déplacer et être en extérieur", dim: "MP" },
-      { text: "Intervenir sur le terrain avec des résultats directs", dim: "AE" },
-      { text: "Accompagner des personnes individuellement", dim: "AA" },
-      { text: "Négocier et défendre des positions", dim: "RI" }
+      { text: "Je suis stimulé(e) par le fait de concevoir des idées structurées, des concepts, des scénarios, des plans d’ensemble.", dim: "CS" },
+      { text: "Je ressens un vrai plaisir à créer : écrire, dessiner, imaginer des univers, produire des choses expressives ou artistiques.", dim: "EC" },
+      { text: "J’aime que mon activité me permette d’être en mouvement, de changer de lieu, d’avoir une part physique ou “plein air”.", dim: "MP" },
+      { text: "Je me sens vivant(e) quand je peux parler, argumenter, influencer, créer un lien fort par la parole ou la présence.", dim: "RI" }
     ]
   },
+
   {
     id: "q7",
-    title: "On vous confie une mission, vous choisissez de :",
+    title: "SITUATION 7 — Une journée de travail variée",
     options: [
-      { text: "Mettre en place des procédures claires", dim: "MO" },
-      { text: "Réparer, assembler ou fabriquer quelque chose", dim: "PT" },
-      { text: "Examiner la situation et établir un diagnostic", dim: "AL" },
-      { text: "Explorer des solutions innovantes", dim: "SI" }
+      { text: "J’apprécie les moments où je peux organiser : préparer un planning, structurer des dossiers, clarifier les priorités.", dim: "MO" },
+      { text: "J’aime aussi les moments où je peux faire quelque chose de concret avec mes mains : assembler, installer, ajuster, manipuler des outils ou du matériel.", dim: "PT" },
+      { text: "Je suis à l’aise dès que mon activité me permet de bouger, d’alterner les lieux ou les postures, de ne pas rester figé.", dim: "MP" },
+      { text: "Je me retrouve bien dans des tâches où il faut agir efficacement, aller au résultat, être utile de façon très pratique.", dim: "AE" }
     ]
   },
+
   {
     id: "q8",
-    title: "Dans un projet culturel, vous préférez :",
+    title: "SITUATION 8 — Réfléchir à une décision importante",
     options: [
-      { text: "Structurer le contenu et le scénario", dim: "CS" },
-      { text: "Créer l'univers sonore ou visuel", dim: "EC" },
-      { text: "Organiser la production et les équipes", dim: "CP" },
-      { text: "Inventer de nouveaux formats d'expression", dim: "IP" }
+      { text: "Je prends le temps d’observer la situation sous plusieurs angles, d’identifier les signaux faibles, les risques, les effets possibles.", dim: "AL" },
+      { text: "Je cherche à m’appuyer sur des principes généraux, des connaissances, des explications solides pour orienter mon choix.", dim: "SI" },
+      { text: "Je pense naturellement à la répartition des rôles, au calendrier, aux priorités, comme si j’organisais un petit système.", dim: "CP" },
+      { text: "Je tiens compte de la façon dont je pourrai expliquer, défendre et faire accepter cette décision aux autres.", dim: "RI" }
     ]
   },
+
   {
     id: "q9",
-    title: "Dans une association, vous choisissez de :",
+    title: "SITUATION 9 — Imaginer un projet qui a du sens pour vous",
     options: [
-      { text: "Partir en mission dans des lieux variés", dim: "MP" },
-      { text: "Répondre aux urgences et situations critiques", dim: "AE" },
-      { text: "Soutenir et conseiller les bénéficiaires", dim: "AA" },
-      { text: "Représenter l'association et mobiliser des partenaires", dim: "RI" }
-    ]
-  },
-  {
-    id: "q10",
-    title: "Vous souhaitez développer vos compétences en :",
-    options: [
-      { text: "Organisation et gestion du temps", dim: "MO" },
-      { text: "Savoir-faire technique et pratique", dim: "PT" },
-      { text: "Raisonnement logique et synthèse", dim: "AL" },
-      { text: "Recherche et découverte de nouvelles connaissances", dim: "SI" }
-    ]
-  },
-  {
-    id: "q11",
-    title: "Dans une équipe créative, vous aimez :",
-    options: [
-      { text: "Concevoir la stratégie globale", dim: "CS" },
-      { text: "Produire les créations artistiques", dim: "EC" },
-      { text: "Piloter le projet et coordonner", dim: "CP" },
-      { text: "Proposer des approches originales", dim: "IP" }
-    ]
-  },
-  {
-    id: "q12",
-    title: "Vous êtes attiré(e) par des activités de :",
-    options: [
-      { text: "Animation sportive en plein air", dim: "MP" },
-      { text: "Intervention rapide en situation d'urgence", dim: "AE" },
-      { text: "Écoute et médiation avec les personnes", dim: "AA" },
-      { text: "Persuasion et influence dans les discussions", dim: "RI" }
+      { text: "J’aimerais pouvoir concevoir la logique d’ensemble d’un projet : son concept, son architecture, la façon dont tout s’articule.", dim: "CS" },
+      { text: "J’aimerais aussi que ce projet laisse de la place à l’expression, la créativité, la production de contenus originaux.", dim: "EC" },
+      { text: "Il serait important pour moi que ce projet me permette d’accompagner, former, soutenir ou prendre soin d’autres personnes.", dim: "AA" },
+      { text: "Je me vois bien dans un projet que je pourrais lancer moi-même, faire évoluer, développer avec une part de prise de risque ou d’innovation.", dim: "IP" }
     ]
   }
 ];
