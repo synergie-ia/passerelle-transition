@@ -331,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
           alert(
             "✅ Vos données ont été copiées !\n\n" +
             "Vous pouvez maintenant les coller dans une conversation avec l'IA de votre choix.\n\n" +
-            "💡 Conseil : Commencez par expliquer à l'IA que vous êtes en reconversion professionnelle et collez vos données pour obtenir des conseils personnalisés.\n\n" +
             "🎯 L'accès à 'Construire mon projet' est maintenant débloqué !"
           );
           
