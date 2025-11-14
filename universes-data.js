@@ -122,69 +122,71 @@ const QUESTIONS = [
 
 // ===== MATRICES DE CORRÉLATION =====
 // Ordre : MO, PT, AL, SI, CS, EC, CP, IP, MP, AE, AA, RI
-const universes = [
+const UNIVERS_WEIGHTS = [
+
   // 1 — Agriculture, nature & animaux
-  { id: 1,  weights: [1, 4, 1, 1, 0, 0, 1, 1, 4, 3, 2, 0] },
+  { id: 1,  weights: [3,12,0,6,0,0,6,0,12,0,0,3] },
 
   // 2 — Arts, design & création
-  { id: 2,  weights: [0, 1, 0, 0, 3, 4, 0, 1, 0, 0, 0, 3] },
+  { id: 2,  weights: [0,0,3,3,12,12,0,6,0,0,6,0] },
 
   // 3 — Commerce, marketing & vente
-  { id: 3,  weights: [1, 1, 1, 0, 1, 2, 2, 4, 0, 1, 0, 4] },
+  { id: 3,  weights: [0,0,0,0,3,6,3,12,0,6,12,0] },
 
   // 4 — Communication, médias & culture
-  { id: 4,  weights: [0, 0, 1, 0, 2, 4, 2, 1, 0, 0, 0, 4] },
+  { id: 4,  weights: [0,0,3,0,6,12,0,6,0,3,12,0] },
 
   // 5 — Construction, BTP & habitat
-  { id: 5,  weights: [2, 4, 1, 0, 0, 0, 2, 1, 1, 3, 0, 0] },
+  { id: 5,  weights: [6,12,3,3,0,0,12,0,0,6,0,0] },
 
   // 6 — Droit, administration & politique publique
-  { id: 6,  weights: [2, 0, 4, 1, 0, 0, 3, 1, 0, 0, 1, 3] },
+  { id: 6,  weights: [0,0,12,0,3,0,0,3,0,12,6,6] },
 
   // 7 — Éducation, formation & apprentissage
-  { id: 7,  weights: [1, 0, 1, 0, 2, 1, 2, 1, 0, 0, 4, 4] },
+  { id: 7,  weights: [0,0,0,0,3,0,0,3,0,6,6,12] },
 
   // 8 — Environnement, climat & énergies
-  { id: 8,  weights: [2, 1, 3, 4, 1, 0, 2, 1, 1, 1, 0, 0] },
+  { id: 8,  weights: [0,3,6,12,0,0,3,0,6,0,0,3] },
 
   // 9 — Gestion, finance & comptabilité
-  { id: 9,  weights: [2, 0, 4, 1, 0, 0, 3, 1, 0, 0, 0, 1] },
+  { id: 9,  weights: [3,0,12,0,3,0,0,6,0,12,0,0] },
 
   // 10 — Hôtellerie, restauration & tourisme
-  { id: 10, weights: [1, 1, 0, 0, 0, 0, 2, 1, 2, 3, 1, 2] },
+  { id: 10, weights: [0,3,0,0,0,0,6,3,6,6,3,3] },
 
   // 11 — Immobilier & patrimoine
-  { id: 11, weights: [2, 1, 1, 0, 0, 0, 3, 2, 0, 1, 0, 3] },
+  { id: 11, weights: [3,0,6,0,0,0,3,6,0,12,6,0] },
 
   // 12 — Industrie, fabrication & production
-  { id: 12, weights: [1, 4, 1, 2, 0, 0, 2, 1, 0, 3, 0, 0] },
+  { id: 12, weights: [6,12,3,3,0,0,6,0,0,3,0,0] },
 
   // 13 — Logistique, transport & mobilité
-  { id: 13, weights: [2, 3, 1, 0, 0, 0, 4, 1, 1, 3, 0, 0] },
+  { id: 13, weights: [3,12,3,0,0,0,6,3,6,6,0,0] },
 
   // 14 — Management, entrepreneuriat & stratégie
-  { id: 14, weights: [2, 0, 2, 1, 1, 0, 3, 4, 0, 0, 0, 3] },
+  { id: 14, weights: [3,0,6,0,6,0,0,12,0,12,3,0] },
 
   // 15 — Numérique, informatique & data
-  { id: 15, weights: [1, 0, 3, 4, 1, 0, 2, 1, 0, 0, 0, 0] },
+  { id: 15, weights: [0,0,12,12,0,0,0,6,0,6,0,0] },
 
   // 16 — Santé, bien-être & médical
-  { id: 16, weights: [1, 0, 1, 1, 0, 0, 1, 0, 0, 2, 4, 2] },
+  { id: 16, weights: [0,0,3,0,0,0,0,0,0,3,6,12] },
 
   // 17 — Sciences, recherche & innovation
-  { id: 17, weights: [1, 0, 4, 4, 1, 0, 2, 1, 0, 0, 0, 0] },
+  { id: 17, weights: [0,0,12,12,6,0,0,0,0,3,0,0] },
 
   // 18 — Sécurité, défense & urgence
-  { id: 18, weights: [1, 1, 0, 0, 0, 0, 2, 1, 2, 4, 1, 0] },
+  { id: 18, weights: [0,3,0,0,0,0,12,0,6,12,3,0] },
 
   // 19 — Social, aide & solidarité
-  { id: 19, weights: [1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 4, 4] },
+  { id: 19, weights: [0,0,0,0,0,0,0,3,0,6,6,12] },
 
   // 20 — Sport, loisirs & vie active
-  { id: 20, weights: [0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 1, 0] },
+  { id: 20, weights: [0,6,0,0,0,0,6,0,12,6,3,0] },
 
   // 21 — Technologies émergentes & futur du travail
-  { id: 21, weights: [1, 0, 2, 4, 1, 0, 2, 3, 0, 0, 0, 1] }
+  { id: 21, weights: [0,0,6,12,6,0,0,12,0,3,0,0] }
+
 ];
 
 
