@@ -120,7 +120,7 @@ body {
 
 .hero-subtitle {
 
-  font-size: clamp(18px, 3vw, 24px);
+  font-size: clamp(16px, 3vw, 20px);
 
   color: #374151;
 
@@ -128,7 +128,7 @@ body {
 
   max-width: 800px;
 
-  margin: 0 auto 40px;
+  margin: 0 auto;
 
 }
 
@@ -144,7 +144,7 @@ body {
 
   gap: 24px;
 
-  margin-bottom: 10px;
+  margin-bottom: 50px;
 
 }
 
@@ -240,17 +240,17 @@ body {
 
   width: 100%;
 
-  padding: 24px 28px;
+  padding: 20px 32px;
 
   background: white;
 
-  color: var(--primary);
+  color: var(--muted);
 
-  border: 2px solid #d1d5db;
+  border: 3px solid var(--muted);
 
   border-radius: 12px;
 
-  font-size: 20px;
+  font-size: 19px;
 
   font-weight: 700;
 
@@ -268,9 +268,9 @@ body {
 
   transform: translateY(-2px);
 
-  box-shadow: 0 4px 16px rgba(90, 74, 244, 0.3);
+  box-shadow: 0 4px 16px rgba(107, 114, 128, 0.3);
 
-  background: var(--primary);
+  background: var(--muted);
 
   color: white;
 
@@ -520,6 +520,8 @@ body {
 
     gap: 18px;
 
+    margin-bottom: 40px;
+
   }
 
  
@@ -562,9 +564,9 @@ body {
 
   .card-btn {
 
-    padding: 14px 24px;
+    padding: 18px 28px;
 
-    font-size: 16px;
+    font-size: 18px;
 
   }
 
@@ -656,7 +658,7 @@ body {
 
     gap: 18px;
 
-    margin-bottom: 8px;
+    margin-bottom: 35px;
 
   }
 
@@ -702,9 +704,9 @@ body {
 
   .card-btn {
 
-    padding: 14px 24px;
+    padding: 16px 28px;
 
-    font-size: 16px;
+    font-size: 17px;
 
   }
 
@@ -784,7 +786,7 @@ body {
 
     gap: 14px;
 
-    margin-bottom: 6px;
+    margin-bottom: 25px;
 
   }
 
@@ -830,9 +832,9 @@ body {
 
   .card-btn {
 
-    padding: 12px 20px;
+    padding: 14px 24px;
 
-    font-size: 15px;
+    font-size: 16px;
 
   }
 
@@ -936,7 +938,7 @@ body {
 
     gap: 12px;
 
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 
   }
 
@@ -982,9 +984,9 @@ body {
 
   .card-btn {
 
-    padding: 10px 16px;
+    padding: 12px 20px;
 
-    font-size: 13px;
+    font-size: 14px;
 
   }
 
