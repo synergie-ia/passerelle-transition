@@ -6,7 +6,7 @@
   
   CORRECTIONS APPLIQUÉES :
   - Diviseur changé de 64 à 48 (pour 3 occurrences par dimension)
-  - Seuils de compatibilité ajustés (35%, 30%, 25%, 20%)
+  - Seuils de compatibilité ajustés (40%, 30%, 25%, 20%)
   - Code dimension "PT" (pratique manuelle & technique) vérifié
   
   ALGORITHME DE CALCUL :
@@ -219,7 +219,7 @@ function percentFromSum(sum){
   ============================================
 */
 function getCompatibilityLevel(pct){
-  if(pct >= 35){
+  if(pct >= 40){
     return {
       level: "Très compatible",
       stars: "🟢🟢🟢",
@@ -231,13 +231,13 @@ function getCompatibilityLevel(pct){
       stars: "🔵🔵",
       class: "level-4"
     };
-  } else if(pct >= 25){
+  } else if(pct >= 20){
     return {
       level: "Assez compatible",
       stars: "🟠",
       class: "level-3"
     };
-  } else if(pct >= 20){
+  } else if(pct >= 10){
     return {
       level: "Peu compatible",
       stars: "⚪",
