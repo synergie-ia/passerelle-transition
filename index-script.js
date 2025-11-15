@@ -5,7 +5,7 @@
   VERSION CORRIGÉE COMPLÈTE
   
   CORRECTIONS :
-  ✅ Lecture correcte des univers sélectionnés
+  ✅ Lecture correcte des univers sélectionnés avec scores
   ✅ Blocage de la copie si données incomplètes
   ✅ Blocage de "Construire son projet" si copie non faite
   ✅ Indicateurs visuels de progression
@@ -218,13 +218,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .sort((a, b) => b.pct - a.pct);
           
           sortedProfile.forEach(dim => {
-            output += `${dim.name} ${dim.pct}%\n`;
+            output += `${dim.name} : ${dim.pct}%\n`;
           });
           
           output += "\n";
         }
         
-        // 2. UNIVERS SÉLECTIONNÉS
+        // 2. UNIVERS SÉLECTIONNÉS (VERSION OPTIMISÉE)
         const selectedUniversData = localStorage.getItem('selected_univers_details');
         
         if(selectedUniversData){
@@ -234,12 +234,22 @@ document.addEventListener('DOMContentLoaded', function() {
           output += "🌍 UNIVERS-MÉTIERS SÉLECTIONNÉS\n";
           
           if(nbUnivers > 0){
+            // Tri par score décroissant
             const sortedUnivers = Object.entries(selectedUnivers)
               .map(([id, data]) => ({ id: parseInt(id), ...data }))
-              .sort((a, b) => b.pct - a.pct);
+              .sort((a, b) => {
+                // Utiliser score si disponible, sinon pct
+                const scoreA = data.score !== undefined ? data.score : data.pct || 0;
+                const scoreB = data.score !== undefined ? data.score : data.pct || 0;
+                return scoreB - scoreA;
+              });
             
             sortedUnivers.forEach(univers => {
-              output += `${univers.stars} ${univers.name} - ${univers.level}\n`;
+              // Afficher score ou pct selon ce qui est disponible
+              const scoreDisplay = univers.score !== undefined 
+                ? `${univers.score} pts` 
+                : `${univers.pct}%`;
+              output += `${univers.stars} ${univers.name} - ${univers.level} (${scoreDisplay})\n`;
             });
           }
           
