@@ -20,8 +20,6 @@ const DIMENSIONS = [
   { code: "RI", name: "Relation & influence" }
 ];
 
-// ===== FIN DU FICHIER =====
-
 // ===== QUESTIONS DU QUESTIONNAIRE =====
 const QUESTIONS = [
   {
@@ -73,8 +71,8 @@ const QUESTIONS = [
     title: "SITUATION 5 — Résoudre un problème concret",
     options: [
       { text: "J'aime être en lien avec la dimension pratique ou technique : manipuler, ajuster, bricoler, faire fonctionner un dispositif ou un outil.", dim: "PT" },
-      { text: "Mon premier réflexe est souvent d'analyser calmement la situation : observer, poser un "diagnostic", comprendre ce qui cloche.", dim: "AL" },
-      { text: "Je prends plaisir à formuler des hypothèses, à tester des pistes, à chercher des explications "scientifiques" ou rationnelles.", dim: "SI" },
+      { text: "Mon premier réflexe est souvent d'analyser calmement la situation : observer, poser un diagnostic, comprendre ce qui cloche.", dim: "AL" },
+      { text: "Je prends plaisir à formuler des hypothèses, à tester des pistes, à chercher des explications scientifiques ou rationnelles.", dim: "SI" },
       { text: "Ce qui m'attire, c'est de passer rapidement à l'action pour tester une solution concrète et voir si elle fonctionne.", dim: "AE" }
     ]
   },
@@ -85,7 +83,7 @@ const QUESTIONS = [
     options: [
       { text: "Je suis stimulé(e) par le fait de concevoir des idées structurées, des concepts, des scénarios, des plans d'ensemble.", dim: "CS" },
       { text: "Je ressens un vrai plaisir à créer : écrire, dessiner, imaginer des univers, produire des choses expressives ou artistiques.", dim: "EC" },
-      { text: "J'aime que mon activité me permette d'être en mouvement, de changer de lieu, d'avoir une part physique ou "plein air".", dim: "MP" },
+      { text: "J'aime que mon activité me permette d'être en mouvement, de changer de lieu, d'avoir une part physique ou plein air.", dim: "MP" },
       { text: "Je me sens vivant(e) quand je peux parler, argumenter, influencer, créer un lien fort par la parole ou la présence.", dim: "RI" }
     ]
   },
@@ -619,3 +617,6 @@ const universesData = [
       { icon: "🌐", name: "Économie collaborative & plateformes", description: "Partage, freelance, gig economy." }
     ]
   }
+];
+
+// ===== FIN DU FICHIER =====
