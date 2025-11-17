@@ -95,8 +95,8 @@ html,body{
 
 /* ===== BOÎTE D'INFORMATION ===== */
 .info-box{
-  background:#fff3cd;
-  border:1px solid #ffc107;
+  background:var(--bg);
+  border:2px solid #9ca3af;
   border-radius:10px;
   padding:12px 14px;
   margin:12px 0;
@@ -119,12 +119,12 @@ html,body{
 
 /* ===== LÉGENDE AVEC AVERTISSEMENT ===== */
 .legend-box{
-  background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border:3px solid #f59e0b;
+  background:var(--bg);
+  border:2px solid #9ca3af;
   border-radius:12px;
   padding:16px 18px;
   margin:16px 0 24px;
-  box-shadow:0 4px 12px rgba(245, 158, 11, 0.2);
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
 }
 
 .legend-warning{
@@ -134,7 +134,7 @@ html,body{
   text-align:center;
   margin-bottom:14px;
   padding-bottom:12px;
-  border-bottom:2px solid #fbbf24;
+  border-bottom:2px solid #d1d5db;
 }
 
 .legend-scale{
@@ -213,17 +213,9 @@ html,body{
   }
 }
 
-/* ===== NOTE D'HIÉRARCHIE DANS QUESTIONS ===== */
+/* ===== NOTE D'HIÉRARCHIE DANS QUESTIONS - SUPPRIMÉE ===== */
 .hierarchy-note{
-  background:#fef3c7;
-  border:2px solid #fbbf24;
-  border-radius:8px;
-  padding:10px 12px;
-  margin:0 0 16px 0;
-  font-size:13px;
-  font-weight:600;
-  color:#92400e;
-  text-align:center;
+  display:none;
 }
 
 /* ===== LÉGENDE DE COMPATIBILITÉ ===== */
