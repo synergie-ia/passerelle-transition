@@ -782,12 +782,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         alert("✅ Sélection de " + selectedUnivers.size + " univers enregistrée !\n\nVous pouvez retourner à l'accueil.");
         
-              } catch(error) {
+              }  catch(error) {
         console.error('❌ Erreur:', error);
         alert("❌ Erreur de sauvegarde.");
       }
-    }); // ← fermeture du addEventListener(btnValidateSelection)
-  } // ← fermeture du if(btnValidateSelection)
+    });
+  }
 
   const btnAccueilTop = document.getElementById("btnAccueilTop");
   if(btnAccueilTop){
@@ -802,7 +802,4 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = 'index.html';
     });
   }
-
-}); // ← fermeture du DOMContentLoaded
-
-
+});
