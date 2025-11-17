@@ -2,12 +2,12 @@
   ============================================
   RECONVERSION 360 IA - QUESTIONNAIRE PROFIL
   ============================================
-  VERSION AVEC HIÉRARCHISATION OBLIGATOIRE
+  VERSION AVEC 2 UTILISATIONS MAX PAR NOTE
   Novembre 2025
   
   FONCTIONNALITÉ :
-  ✅ Chaque note (0-4) ne peut être utilisée qu'une seule fois par question
-  ✅ Validation en temps réel des doublons
+  ✅ Chaque note (0-4) peut être utilisée MAXIMUM 2 FOIS par question
+  ✅ Validation en temps réel des utilisations
   ✅ Feedback visuel sur les notes disponibles/indisponibles
   
   ============================================
@@ -98,45 +98,46 @@ function highlightUnansweredQuestions(){
   return unanswered;
 }
 
-/* ===== VALIDATION HIÉRARCHIE ===== */
+/* ===== VALIDATION HIÉRARCHIE (2 UTILISATIONS MAX) ===== */
 
-// Vérifie si une valeur est déjà utilisée dans une question
-function isValueUsedInQuestion(questionId, value){
+// Compte combien de fois une valeur est utilisée dans une question
+function countValueUsageInQuestion(questionId, value){
   const question = QUESTIONS.find(q => q.id === questionId);
-  if(!question) return false;
+  if(!question) return 0;
   
+  let count = 0;
   for(const opt of question.options){
     const key = `${questionId}-${opt.dim}`;
     if(answers[key] === value){
-      return true;
+      count++;
     }
   }
-  return false;
+  return count;
 }
 
-// Récupère les valeurs disponibles pour une question
+// Vérifie si une valeur peut encore être utilisée (max 2 fois)
+function canUseValueInQuestion(questionId, value){
+  return countValueUsageInQuestion(questionId, value) < 2;
+}
+
+// Récupère les valeurs disponibles pour une question avec leur statut
 function getAvailableValuesForQuestion(questionId){
-  const available = [0, 1, 2, 3, 4]; // Toutes les valeurs possibles
-  const used = new Set();
+  const valuesStatus = {};
   
-  const question = QUESTIONS.find(q => q.id === questionId);
-  if(!question) return available;
-  
-  // Parcourir toutes les options de cette question
-  question.options.forEach(opt => {
-    const key = `${questionId}-${opt.dim}`;
-    const value = answers[key];
-    if(value !== undefined){
-      used.add(value);
-    }
+  [0, 1, 2, 3, 4].forEach(v => {
+    const usage = countValueUsageInQuestion(questionId, v);
+    valuesStatus[v] = {
+      usage: usage,
+      available: usage < 2
+    };
   });
   
-  return available.filter(v => !used.has(v));
+  return valuesStatus;
 }
 
 // Met à jour l'état visuel des boutons d'une question
 function updateButtonStatesForQuestion(questionId){
-  const availableValues = getAvailableValuesForQuestion(questionId);
+  const valuesStatus = getAvailableValuesForQuestion(questionId);
   
   // Mettre à jour tous les boutons de cette question
   document.querySelectorAll(`.rate-btn[data-q='${questionId}']`).forEach(btn => {
@@ -148,14 +149,24 @@ function updateButtonStatesForQuestion(questionId){
     // Si le bouton est sélectionné, le garder actif
     if(isSelected){
       btn.classList.remove('disabled');
+      btn.classList.remove('limited');
       return;
     }
     
-    // Sinon, vérifier si la valeur est disponible
-    if(availableValues.includes(value)){
+    // Sinon, vérifier le statut de la valeur
+    const status = valuesStatus[value];
+    
+    if(status.available){
       btn.classList.remove('disabled');
+      // Ajouter un indicateur visuel si déjà utilisé 1 fois
+      if(status.usage === 1){
+        btn.classList.add('limited');
+      } else {
+        btn.classList.remove('limited');
+      }
     } else {
       btn.classList.add('disabled');
+      btn.classList.remove('limited');
     }
   });
 }
@@ -224,9 +235,10 @@ function attachRatingEvents(){
       if(answers[key] === v){
         delete answers[key];
       } else {
-        // Vérifier que la valeur n'est pas déjà utilisée
-        if(isValueUsedInQuestion(q, v)){
-          alert("⚠️ Cette note est déjà utilisée pour une autre option de cette question.\n\nChaque note de 0 à 4 ne peut être attribuée qu'une seule fois par question.");
+        // Vérifier que la valeur peut encore être utilisée (max 2 fois)
+        if(!canUseValueInQuestion(q, v)){
+          const usage = countValueUsageInQuestion(q, v);
+          alert(`⚠️ Cette note est déjà utilisée ${usage} fois pour cette question.\n\nChaque note peut être attribuée maximum 2 fois par question.`);
           return;
         }
         
