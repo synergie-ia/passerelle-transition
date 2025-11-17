@@ -5,7 +5,7 @@
   VERSION AVEC HIÉRARCHISATION OBLIGATOIRE
   Novembre 2025
   
-  NOUVELLE FONCTIONNALITÉ :
+  FONCTIONNALITÉ :
   ✅ Chaque note (0-4) ne peut être utilisée qu'une seule fois par question
   ✅ Validation en temps réel des doublons
   ✅ Feedback visuel sur les notes disponibles/indisponibles
@@ -168,7 +168,6 @@ function renderQuestions(){
   root.innerHTML = QUESTIONS.map(q => `
     <div class="question-block" id="block-${q.id}">
       <div class="question-title">${q.title}</div>
-      <div class="hierarchy-note">⚠️ Chaque note de 0 à 4 ne peut être utilisée qu'une seule fois</div>
       ${q.options.map(opt => {
         const key = `${q.id}-${opt.dim}`;
         return `
