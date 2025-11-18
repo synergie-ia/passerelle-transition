@@ -530,60 +530,82 @@ html,body{
   flex-shrink:0;
 }
 
-/* ===== BADGE POURCENTAGE DE COMPATIBILITÉ ===== */
+/* ===== BADGE POURCENTAGE DE COMPATIBILITÉ - VERSION DISCRÈTE ===== */
 .univers-percentage{
-  font-size:clamp(16px, 3.5vw, 18px);
-  font-weight:700;
-  padding:6px 12px;
-  border-radius:20px;
-  background:#f3f4f6;
-  color:#374151;
-  border:2px solid #e5e7eb;
+  font-size:clamp(12px, 2.5vw, 13px);
+  font-weight:600;
+  padding:3px 8px;
+  border-radius:12px;
+  background:#f9fafb;
+  color:#6b7280;
+  border:1px solid #e5e7eb;
   flex-shrink:0;
-  min-width:clamp(60px, 12vw, 70px);
+  min-width:clamp(45px, 9vw, 50px);
   text-align:center;
   transition:all .2s ease;
-  box-shadow:0 2px 4px rgba(0,0,0,.08);
+  opacity:0.8;
 }
 
-/* Couleurs du badge selon le niveau */
+/* Couleurs discrètes du badge selon le niveau */
 .univers-card.level-5 .univers-percentage{
-  background:var(--very-compatible);
-  color:#fff;
-  border-color:var(--very-compatible);
-  box-shadow:0 2px 8px rgba(4, 120, 87, 0.3);
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#d1fae5;
 }
 
 .univers-card.level-4 .univers-percentage{
-  background:var(--compatible);
-  color:#fff;
-  border-color:var(--compatible);
-  box-shadow:0 2px 8px rgba(16, 185, 129, 0.3);
+  background:#ecfdf5;
+  color:#10b981;
+  border-color:#d1fae5;
 }
 
 .univers-card.level-3 .univers-percentage{
-  background:#9ca3af;
-  color:#fff;
-  border-color:#6b7280;
-  box-shadow:0 2px 8px rgba(156, 163, 175, 0.3);
+  background:#f3f4f6;
+  color:#6b7280;
+  border-color:#e5e7eb;
 }
 
 .univers-card.level-2 .univers-percentage{
-  background:var(--low-compatible);
-  color:#fff;
-  border-color:var(--low-compatible);
-  box-shadow:0 2px 8px rgba(249, 115, 22, 0.3);
+  background:#fff7ed;
+  color:#f97316;
+  border-color:#fed7aa;
 }
 
 .univers-card.level-1 .univers-percentage{
-  background:var(--not-compatible);
-  color:#fff;
-  border-color:var(--not-compatible);
-  box-shadow:0 2px 8px rgba(220, 38, 38, 0.3);
+  background:#fef2f2;
+  color:#dc2626;
+  border-color:#fecaca;
 }
 
 .univers-card:hover .univers-percentage{
-  transform:scale(1.05);
+  opacity:1;
+}
+
+/* ===== NUMÉRO DE RANG ===== */
+.univers-rank{
+  font-size:clamp(16px, 3.5vw, 18px);
+  font-weight:700;
+  color:#9ca3af;
+  min-width:clamp(28px, 6vw, 32px);
+  text-align:center;
+  flex-shrink:0;
+}
+
+.univers-card.level-5 .univers-rank,
+.univers-card.level-4 .univers-rank{
+  color:#10b981;
+}
+
+.univers-card.level-3 .univers-rank{
+  color:#6b7280;
+}
+
+.univers-card.level-2 .univers-rank{
+  color:#f97316;
+}
+
+.univers-card.level-1 .univers-rank{
+  color:#dc2626;
 }
 
 /* ===== ROND DE COMPATIBILITÉ - SUPPRIMÉ ===== */
@@ -865,8 +887,13 @@ html,body{
   }
   
   .univers-percentage{
+    font-size:11px;
+    padding:2px 6px;
+    min-width:40px;
+  }
+  
+  .univers-rank{
     font-size:15px;
-    padding:5px 10px;
-    min-width:55px;
+    min-width:26px;
   }
 }
