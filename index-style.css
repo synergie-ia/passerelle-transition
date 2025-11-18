@@ -205,6 +205,11 @@ body {
   color: var(--success);
 }
 
+.download-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
 /* ===== ACTION NOTICE ===== */
 .action-notice {
   text-align: center;
