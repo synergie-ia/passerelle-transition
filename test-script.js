@@ -590,20 +590,14 @@ function displayUnivers(){
     const root = document.getElementById("univers-results");
     const top10 = list.slice(0, 10);
 
-    const legendHTML = `
-      <div class="stars-legend">
-        <div class="legend-title">📊 Échelle de compatibilité</div>
-        <div class="legend-items">
-          <div class="legend-item"><span class="dot" style="background:#047857;width:12px;height:12px;"></span> très compatible</div>
-          <div class="legend-item"><span class="dot" style="background:#10b981;width:12px;height:12px;"></span> compatible</div>
-          <div class="legend-item"><span class="dot" style="background:#d1d5db;width:12px;height:12px;"></span> moyennement</div>
-          <div class="legend-item"><span class="dot" style="background:#f97316;width:12px;height:12px;"></span> peu compatible</div>
-          <div class="legend-item"><span class="dot" style="background:#dc2626;width:12px;height:12px;"></span> pas compatible</div>
-        </div>
+    // Message informatif à la place de la légende
+    const infoHTML = `
+      <div class="univers-info-message">
+        Les pourcentages donnent une tendance basée sur vos réponses. Ce ne sont que des indications : vous restez libre de choisir les univers métiers qui vous correspondent le mieux.
       </div>
     `;
 
-    root.innerHTML = legendHTML + top10.map((u, index) => renderUniversCard(u, index)).join("");
+    root.innerHTML = infoHTML + top10.map((u, index) => renderUniversCard(u, index)).join("");
     attachUniversEvents();
     updateUniversCounter();
 
@@ -614,7 +608,7 @@ function displayUnivers(){
     btnShow.parentNode.replaceChild(newBtnShow, btnShow);
     
     newBtnShow.addEventListener("click", ()=>{
-      root.innerHTML = legendHTML + list.map((u, index) => renderUniversCard(u, index)).join("");
+      root.innerHTML = infoHTML + list.map((u, index) => renderUniversCard(u, index)).join("");
       attachUniversEvents();
       newBtnShow.classList.add("hidden");
     });
