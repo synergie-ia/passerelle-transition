@@ -97,7 +97,8 @@ function resetAllData() {
       'univers_details',
       'selected_univers_details',
       'selectedUnivers',
-      'situation_data'
+      'situation_data',
+      'data_exported' // Réinitialiser aussi le flag d'export
     ];
     
     keysToRemove.forEach(key => {
@@ -157,7 +158,7 @@ function checkRequiredData() {
   if(situationData) {
     try {
       const situation = JSON.parse(situationData);
-      hasSituation = situation && Object.keys(situation).length > 2; // Au moins prénom, âge + 1 question
+      hasSituation = situation && Object.keys(situation).length > 2;
       console.log(`📋 Bilan: ${hasSituation ? 'Rempli' : 'Incomplet'}`);
     } catch(e) {
       console.error("❌ Erreur lecture bilan:", e);
@@ -325,6 +326,8 @@ function copyResultsToClipboard() {
       navigator.clipboard.writeText(textToCopy)
         .then(() => {
           console.log("✅ Texte copié avec succès");
+          // Marquer que les données ont été exportées
+          localStorage.setItem('data_exported', 'true');
           showCopySuccess();
         })
         .catch(err => {
@@ -368,8 +371,6 @@ function downloadPDF() {
       alert("⚠️ Bilan personnel non rempli.\n\nVeuillez compléter votre bilan personnel avant de générer le PDF.");
       return;
     }
-    
-    alert("📄 Génération du PDF en cours...\n\nLe téléchargement va démarrer dans quelques secondes.");
     
     const profileData = localStorage.getItem('profile_percentages');
     const universData = localStorage.getItem('selected_univers_details');
@@ -510,6 +511,9 @@ function downloadPDF() {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
     
+    // Marquer que les données ont été exportées
+    localStorage.setItem('data_exported', 'true');
+    
     console.log("✅ Fichier téléchargé");
     showDownloadSuccess();
     
@@ -524,33 +528,53 @@ function downloadPDF() {
 function checkProjectAccess() {
   const { hasCompleteQuestionnaire, hasUnivers, hasSituation } = checkRequiredData();
   
-  if(!hasCompleteQuestionnaire && !hasUnivers && !hasSituation){
-    alert("⚠️ Accès non autorisé\n\nPour construire votre projet, vous devez d'abord :\n\n1. Compléter le questionnaire (12 questions)\n2. Sélectionner au moins 3 univers\n3. Remplir votre bilan personnel");
+  // Vérifier d'abord que toutes les données sont complètes
+  if(!hasCompleteQuestionnaire || !hasUnivers || !hasSituation){
+    if(!hasCompleteQuestionnaire && !hasUnivers && !hasSituation){
+      alert("⚠️ Accès non autorisé\n\nPour construire votre projet, vous devez d'abord :\n\n1. Compléter le questionnaire (12 questions)\n2. Sélectionner au moins 3 univers\n3. Remplir votre bilan personnel");
+      return;
+    }
+    
+    if(!hasCompleteQuestionnaire){
+      alert("⚠️ Questionnaire incomplet\n\nVeuillez répondre aux 12 questions du questionnaire avant d'accéder à la construction de votre projet.");
+      return;
+    }
+    
+    if(!hasUnivers){
+      alert("⚠️ Univers non sélectionnés\n\nVeuillez sélectionner au moins 3 univers dans le questionnaire avant d'accéder à la construction de votre projet.");
+      return;
+    }
+    
+    if(!hasSituation){
+      alert("⚠️ Bilan personnel non rempli\n\nVeuillez compléter votre bilan personnel avant d'accéder à la construction de votre projet.");
+      return;
+    }
+  }
+  
+  // Vérifier si les données ont été exportées (copiées OU téléchargées)
+  const dataExported = localStorage.getItem('data_exported');
+  
+  if(!dataExported || dataExported !== 'true'){
+    alert(
+      "⚠️ COPIE OU TÉLÉCHARGEMENT OBLIGATOIRE\n\n" +
+      "Avant d'accéder à l'IA, vous devez obligatoirement :\n\n" +
+      "➡️ Cliquer sur \"Copier mes résultats pour l'IA\"\n" +
+      "      OU\n" +
+      "➡️ Cliquer sur \"Télécharger PDF\"\n\n" +
+      "Ces données devront être transmises à l'IA pour débuter votre accompagnement.\n\n" +
+      "⚠️ Sans cette étape, vous ne pourrez pas construire votre projet."
+    );
     return;
   }
   
-  if(!hasCompleteQuestionnaire){
-    alert("⚠️ Questionnaire incomplet\n\nVeuillez répondre aux 12 questions du questionnaire avant d'accéder à la construction de votre projet.");
-    return;
-  }
-  
-  if(!hasUnivers){
-    alert("⚠️ Univers non sélectionnés\n\nVeuillez sélectionner au moins 3 univers dans le questionnaire avant d'accéder à la construction de votre projet.");
-    return;
-  }
-  
-  if(!hasSituation){
-    alert("⚠️ Bilan personnel non rempli\n\nVeuillez compléter votre bilan personnel avant d'accéder à la construction de votre projet.");
-    return;
-  }
-  
-  // Message indiquant la nécessité de copier ou télécharger les résultats
+  // Si tout est OK, afficher le message de rappel et ouvrir l'IA
   alert(
-    "📋 IMPORTANT - Copie ou téléchargement obligatoire\n\n" +
-    "Pour construire votre projet avec l'IA, vous devez d'abord :\n\n" +
-    "1. Cliquer sur \"Copier mes résultats pour l'IA\" OU \"Télécharger PDF\"\n" +
-    "2. Transmettre ces données à l'IA dans la conversation\n\n" +
-    "La fenêtre de l'IA va s'ouvrir dans quelques secondes..."
+    "✅ Accès autorisé !\n\n" +
+    "📋 RAPPEL IMPORTANT :\n\n" +
+    "N'oubliez pas de transmettre vos données à l'IA en :\n" +
+    "• Collant le texte copié (Ctrl+V ou Cmd+V)\n" +
+    "• OU en envoyant le fichier téléchargé\n\n" +
+    "La fenêtre de l'IA va s'ouvrir dans 3 secondes..."
   );
   
   // Délai de 3 secondes pour laisser le temps de lire le message
@@ -577,6 +601,8 @@ function fallbackCopy(text) {
     
     if(successful){
       console.log("✅ Copie réussie (méthode alternative)");
+      // Marquer que les données ont été exportées
+      localStorage.setItem('data_exported', 'true');
       showCopySuccess();
     } else {
       throw new Error("execCommand a échoué");
@@ -616,7 +642,12 @@ function showCopySuccess() {
     btn.style.borderColor = '';
   }, 3000);
   
-  alert("✅ Vos résultats ont été copiés dans le presse-papiers !\n\nVous pouvez maintenant les coller dans une conversation avec l'IA.");
+  alert(
+    "✅ DONNÉES COPIÉES AVEC SUCCÈS !\n\n" +
+    "📋 Vos résultats ont été copiés dans le presse-papiers.\n\n" +
+    "➡️ Vous pouvez maintenant cliquer sur \"Construire mon projet\"\n" +
+    "➡️ Puis coller ces données dans la conversation avec l'IA (Ctrl+V ou Cmd+V)"
+  );
 }
 
 function showDownloadSuccess() {
@@ -643,4 +674,11 @@ function showDownloadSuccess() {
     btn.style.color = originalColor;
     btn.style.borderColor = '';
   }, 3000);
+  
+  alert(
+    "✅ FICHIER TÉLÉCHARGÉ AVEC SUCCÈS !\n\n" +
+    "📄 Votre fichier a été enregistré sur votre ordinateur.\n\n" +
+    "➡️ Vous pouvez maintenant cliquer sur \"Construire mon projet\"\n" +
+    "➡️ Puis transmettre ce fichier à l'IA dans la conversation"
+  );
 }
