@@ -2,8 +2,8 @@
   ============================================
   RECONVERSION 360 IA - QUESTIONNAIRE PROFIL
   ============================================
-  VERSION 48 ITEMS - 12 QUESTIONS × 4 DIMENSIONS
-  Chaque note (0-4) peut être utilisée 2 fois maximum par question
+  VERSION 12 QUESTIONS - 1 QUESTION PAR DIMENSION
+  Limitation stricte des notes : 0(×2), 1(×3), 2(×3), 3(×4), 4(×3)
   LIMITE: 3 à 5 univers sélectionnables
   Novembre 2025
   ============================================
@@ -12,7 +12,16 @@
 let answers = {};
 let profileComputed = false;
 let selectedUnivers = new Set();
-let totalQuestions = 0;
+let totalQuestions = 12;
+
+// Limitations strictes par note
+const NOTE_LIMITS = {
+  0: 2,  // Max 2 fois
+  1: 3,  // Max 3 fois
+  2: 3,  // Max 3 fois
+  3: 4,  // Max 4 fois
+  4: 3   // Max 3 fois
+};
 
 /* ===== GESTION DU LOCALSTORAGE ===== */
 
@@ -42,14 +51,6 @@ function saveAnswers(){
 
 /* ===== UTILITAIRES ===== */
 
-function countTotalQuestions(){
-  let count = 0;
-  QUESTIONS.forEach(q => {
-    count += q.options.length;
-  });
-  return count;
-}
-
 function allQuestionsAnswered(){
   const currentCount = Object.keys(answers).length;
   console.log(`Réponses: ${currentCount}/${totalQuestions}`);
@@ -60,87 +61,77 @@ function getUnansweredQuestions(){
   const unanswered = [];
   
   QUESTIONS.forEach(q => {
-    q.options.forEach(opt => {
-      const key = `${q.id}-${opt.dim}`;
-      if(answers[key] === undefined){
-        unanswered.push({
-          questionId: q.id,
-          questionTitle: q.title,
-          optionText: opt.text,
-          key: key
-        });
-      }
-    });
+    if(answers[q.id] === undefined){
+      unanswered.push({
+        questionId: q.id,
+        questionTitle: q.title,
+        questionText: q.text
+      });
+    }
   });
   
   return unanswered;
 }
 
 function highlightUnansweredQuestions(){
-  document.querySelectorAll('.option-row').forEach(row => {
-    row.classList.remove('unanswered');
+  document.querySelectorAll('.question-card').forEach(card => {
+    card.classList.remove('unanswered');
   });
   
   const unanswered = getUnansweredQuestions();
   
   unanswered.forEach(item => {
-    const selector = `.option-row[data-key="${item.key}"]`;
-    const row = document.querySelector(selector);
-    if(row){
-      row.classList.add('unanswered');
+    const card = document.getElementById(`card-${item.questionId}`);
+    if(card){
+      card.classList.add('unanswered');
     }
   });
   
   return unanswered;
 }
 
-/* ===== VALIDATION HIÉRARCHIE (2 UTILISATIONS MAX) ===== */
+/* ===== VALIDATION LIMITATIONS GLOBALES ===== */
 
-function countValueUsageInQuestion(questionId, value){
-  const question = QUESTIONS.find(q => q.id === questionId);
-  if(!question) return 0;
-  
+function countNoteUsage(value){
   let count = 0;
-  for(const opt of question.options){
-    const key = `${questionId}-${opt.dim}`;
-    if(answers[key] === value){
-      count++;
-    }
-  }
+  Object.values(answers).forEach(v => {
+    if(v === value) count++;
+  });
   return count;
 }
 
-function canUseValueInQuestion(questionId, value, currentKey){
-  const usageCount = countValueUsageInQuestion(questionId, value);
-  
-  if(answers[currentKey] === value){
+function canUseNote(value, currentQuestionId){
+  // Si c'est déjà la note sélectionnée pour cette question, toujours autoriser
+  if(answers[currentQuestionId] === value){
     return true;
   }
   
-  return usageCount < 2;
+  const usage = countNoteUsage(value);
+  return usage < NOTE_LIMITS[value];
+}
+
+function updateAllButtonStates(){
+  QUESTIONS.forEach(q => {
+    updateButtonStatesForQuestion(q.id);
+  });
 }
 
 function updateButtonStatesForQuestion(questionId){
-  const question = QUESTIONS.find(q => q.id === questionId);
-  if(!question) return;
+  const card = document.getElementById(`card-${questionId}`);
+  if(!card) return;
   
-  const usage = {};
-  [0, 1, 2, 3, 4].forEach(v => {
-    usage[v] = countValueUsageInQuestion(questionId, v);
-  });
-  
-  document.querySelectorAll(`.rate-btn[data-q='${questionId}']`).forEach(btn => {
-    const value = Number(btn.dataset.val);
-    const dim = btn.dataset.dim;
-    const key = `${questionId}-${dim}`;
-    const isSelected = answers[key] === value;
+  [0, 1, 2, 3, 4].forEach(value => {
+    const btn = card.querySelector(`.rate-btn[data-val='${value}']`);
+    if(!btn) return;
+    
+    const isSelected = answers[questionId] === value;
     
     if(isSelected){
       btn.classList.remove('disabled');
       return;
     }
     
-    if(usage[value] < 2){
+    if(canUseNote(value, questionId)){
       btn.classList.remove('disabled');
     } else {
       btn.classList.add('disabled');
@@ -154,80 +145,88 @@ function renderQuestions(){
   const root = document.getElementById("questionsContainer");
   
   root.innerHTML = QUESTIONS.map(q => `
-    <div class="question-block" id="block-${q.id}">
-      <div class="question-title">${q.title}</div>
-      ${q.options.map(opt => {
-        const key = `${q.id}-${opt.dim}`;
-        return `
-        <div class="option-row" data-key="${key}">
-          <div class="option-text">${opt.text}</div>
-          <div class="rating-buttons">
-            ${[0,1,2,3,4].map(v => `
-              <div class="rate-btn" data-q="${q.id}" data-dim="${opt.dim}" data-val="${v}">${v}</div>
-            `).join("")}
-          </div>
-        </div>
-      `}).join("")}
+    <div class="question-card" id="card-${q.id}">
+      <div class="question-header">
+        <div class="question-title">${q.title}</div>
+      </div>
+      <div class="question-text">${q.text}</div>
+      <div class="rating-scale">
+        ${[0,1,2,3,4].map(v => `
+          <button class="rate-btn" data-q="${q.id}" data-val="${v}">
+            <span class="rate-value">${v}</span>
+            <span class="rate-label">${getLabelForNote(v)}</span>
+          </button>
+        `).join("")}
+      </div>
     </div>
   `).join("");
 
-  Object.keys(answers).forEach(key=>{
-    const [q, dim] = key.split("-");
-    const v = answers[key];
-    const selector = `.rate-btn[data-q='${q}'][data-dim='${dim}'][data-val='${v}']`;
-    const btn = document.querySelector(selector);
-    if(btn){
-      btn.classList.add("selected", `v${v}`);
+  // Restaurer les sélections
+  Object.keys(answers).forEach(qId => {
+    const v = answers[qId];
+    const card = document.getElementById(`card-${qId}`);
+    if(card){
+      const btn = card.querySelector(`.rate-btn[data-val='${v}']`);
+      if(btn){
+        btn.classList.add("selected", `v${v}`);
+      }
     }
   });
 
-  QUESTIONS.forEach(q => {
-    updateButtonStatesForQuestion(q.id);
-  });
-
+  updateAllButtonStates();
   attachRatingEvents();
+}
+
+function getLabelForNote(value){
+  const labels = {
+    0: "Aucun intérêt",
+    1: "Intérêt faible",
+    2: "Intérêt moyen",
+    3: "Intérêt fort",
+    4: "Intérêt très fort"
+  };
+  return labels[value];
 }
 
 function attachRatingEvents(){
   document.querySelectorAll(".rate-btn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
-      const q = btn.dataset.q;
-      const dim = btn.dataset.dim;
+      const qId = btn.dataset.q;
       const v = Number(btn.dataset.val);
-      const key = `${q}-${dim}`;
       
-      if(answers[key] === v){
-        delete answers[key];
+      // Si déjà sélectionné, on désélectionne
+      if(answers[qId] === v){
+        delete answers[qId];
       } else {
-        if(!canUseValueInQuestion(q, v, key)){
+        // Vérifier si on peut utiliser cette note
+        if(!canUseNote(v, qId)){
           btn.style.transform = 'scale(0.95)';
           setTimeout(() => {
             btn.style.transform = '';
           }, 100);
-          alert("⚠️ Cette note est déjà utilisée 2 fois dans cette question.\n\nChaque note peut être attribuée au maximum 2 fois par question.");
+          
+          const remaining = NOTE_LIMITS[v] - countNoteUsage(v);
+          alert(`⚠️ Limite atteinte pour la note ${v}\n\nCette note peut être utilisée au maximum ${NOTE_LIMITS[v]} fois.\n\nUtilisations restantes : ${remaining}`);
           return;
         }
         
-        answers[key] = v;
+        answers[qId] = v;
       }
       
       saveAnswers();
 
-      const selector = `.rate-btn[data-q='${q}'][data-dim='${dim}']`;
-      document.querySelectorAll(selector).forEach(b=>{
+      // Mettre à jour l'affichage
+      const card = document.getElementById(`card-${qId}`);
+      card.querySelectorAll('.rate-btn').forEach(b => {
         b.classList.remove("selected","v0","v1","v2","v3","v4");
       });
       
-      if(answers[key] !== undefined){
-        btn.classList.add("selected", `v${answers[key]}`);
+      if(answers[qId] !== undefined){
+        btn.classList.add("selected", `v${answers[qId]}`);
       }
 
-      updateButtonStatesForQuestion(q);
-
-      const row = document.querySelector(`.option-row[data-key="${key}"]`);
-      if(row){
-        row.classList.remove('unanswered');
-      }
+      card.classList.remove('unanswered');
+      updateAllButtonStates();
 
       if(allQuestionsAnswered()){
         document.getElementById("errorMessage").classList.add("hidden");
@@ -246,13 +245,16 @@ function attachRatingEvents(){
 function calcProfile(){
   const scores = Object.fromEntries(DIMENSIONS.map(d => [d.code, 0]));
   
-  Object.keys(answers).forEach(key => {
-    const [, dim] = key.split("-");
-    const val = answers[key];
-    scores[dim] += val;
+  Object.keys(answers).forEach(qId => {
+    const question = QUESTIONS.find(q => q.id === qId);
+    if(question){
+      const dim = question.dim;
+      const val = answers[qId];
+      scores[dim] = val;
+    }
   });
   
-  console.log("📊 Scores bruts par dimension:");
+  console.log("📊 Scores par dimension:");
   DIMENSIONS.forEach(d => {
     console.log(`   ${d.code} (${d.name}): ${scores[d.code]}`);
   });
@@ -344,9 +346,6 @@ function calcUnivers(){
     console.log(`${i+1}. ${u.name}: ${u.score} pts`);
   });
   
-  const ecartTop1Top5 = universTries[0].score - universTries[4].score;
-  console.log(`\n📊 Écart Top1-Top5 : ${ecartTop1Top5} pts`);
-  
   return universTries;
 }
 
@@ -390,7 +389,7 @@ function displayProfile(){
   const scores = calcProfile();
   const root = document.getElementById("profileResults");
   
-  const MAX_SCORE = 16;
+  const MAX_SCORE = 4;
   
   const dimensionsAvecScores = DIMENSIONS.map(dim => ({
     ...dim,
@@ -438,7 +437,7 @@ function displayProfile(){
   }, 100);
 }
 
-/* ===== COMPTEUR UNIVERS - MODIFIÉ POUR LIMITE 5 ===== */
+/* ===== COMPTEUR UNIVERS ===== */
 
 function updateUniversCounter(){
   const counter = document.getElementById("selectedUniversCounter");
@@ -513,7 +512,7 @@ function renderUniversCard(u, index){
   `;
 }
 
-/* ===== ÉVÉNEMENTS UNIVERS - MODIFIÉ POUR LIMITE 5 ===== */
+/* ===== ÉVÉNEMENTS UNIVERS ===== */
 
 function attachUniversEvents(){
   document.querySelectorAll(".btn-toggle-sub").forEach(btn=>{
@@ -543,7 +542,6 @@ function attachUniversEvents(){
         btn.classList.remove("selected");
         btn.querySelector(".tick").textContent = "";
       } else {
-        // LIMITE: Vérifier si déjà 5 univers sélectionnés
         if(selectedUnivers.size >= 5){
           alert("⚠️ Maximum 5 univers autorisés.\n\nVous devez d'abord désélectionner un univers avant d'en ajouter un nouveau.");
           return;
@@ -682,7 +680,6 @@ document.addEventListener('DOMContentLoaded', function() {
   loadSelections();
   loadAnswers();
   
-  totalQuestions = countTotalQuestions();
   console.log(`Total questions: ${totalQuestions}\n`);
   
   renderQuestions();
@@ -698,10 +695,10 @@ document.addEventListener('DOMContentLoaded', function() {
       errorMessage.classList.remove("hidden");
       
       if(unanswered.length > 0){
-        const firstRow = document.querySelector(`.option-row[data-key="${unanswered[0].key}"]`);
-        if(firstRow){
+        const firstCard = document.getElementById(`card-${unanswered[0].questionId}`);
+        if(firstCard){
           setTimeout(() => {
-            firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 100);
         }
       }
@@ -719,7 +716,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if(btnValidateSelection){
     btnValidateSelection.addEventListener('click', ()=>{
       
-      // LIMITE MODIFIÉE: minimum 3, maximum 5
       if(selectedUnivers.size < 3){
         alert("⚠️ Minimum 3 univers requis.\n\nActuellement : " + selectedUnivers.size);
         return;
