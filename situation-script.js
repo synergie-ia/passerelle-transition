@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', handleFormSubmit);
   }
   
-  // Auto-sauvegarde toutes les 30 secondes
+  // Auto-sauvegarde toutes les 30 secondes (silencieuse)
   setInterval(autoSave, 30000);
   
   console.log("✅ Initialisation terminée");
@@ -45,9 +45,6 @@ function loadSavedData() {
       });
       
       console.log("✅ Données chargées avec succès");
-      
-      // Afficher un message discret
-      showNotification("Vos données ont été chargées", "info");
     }
   } catch(error) {
     console.error("❌ Erreur lors du chargement:", error);
@@ -194,7 +191,7 @@ function collectFormData() {
   return formData;
 }
 
-/* ===== AUTO-SAUVEGARDE ===== */
+/* ===== AUTO-SAUVEGARDE (SILENCIEUSE) ===== */
 
 function autoSave() {
   try {
@@ -207,8 +204,8 @@ function autoSave() {
     
     if(hasData) {
       localStorage.setItem('situation_data_autosave', JSON.stringify(formData));
-      console.log("💾 Auto-sauvegarde effectuée");
-      showNotification("Sauvegarde automatique", "success", 1000);
+      console.log("💾 Auto-sauvegarde effectuée (silencieuse)");
+      // Pas de notification visuelle
     }
   } catch(error) {
     console.error("❌ Erreur auto-sauvegarde:", error);
@@ -240,39 +237,6 @@ function showSuccessMessage() {
   }, 3000);
 }
 
-function showNotification(message, type = 'info', duration = 2000) {
-  // Créer la notification
-  const notification = document.createElement('div');
-  notification.className = `notification notification-${type}`;
-  notification.textContent = message;
-  
-  // Style de la notification
-  notification.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    background: ${type === 'success' ? '#10b981' : '#3b82f6'};
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 9999;
-    animation: slideIn 0.3s ease;
-  `;
-  
-  document.body.appendChild(notification);
-  
-  // Supprimer après la durée spécifiée
-  setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease';
-    setTimeout(() => {
-      notification.remove();
-    }, 300);
-  }, duration);
-}
-
 /* ===== GESTION DES ERREURS DE SAISIE ===== */
 
 // Supprimer l'erreur quand l'utilisateur commence à taper
@@ -293,36 +257,11 @@ document.addEventListener('input', function(event) {
 // Ajouter les styles d'animation au document
 const style = document.createElement('style');
 style.textContent = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideOut {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
-  
   .btn-icon-small {
     width: 20px;
     height: 20px;
   }
 `;
 document.head.appendChild(style);
-
-/* ===== CONFIRMATION AVANT QUITTER - DÉSACTIVÉ ===== */
-// Les données sont automatiquement sauvegardées, pas besoin d'avertissement
 
 console.log("✅ Script situation chargé et prêt");
