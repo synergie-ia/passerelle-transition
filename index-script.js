@@ -3,7 +3,7 @@
   RECONVERSION 360 IA - PAGE D'ACCUEIL
   ============================================
   Gestion des badges de complétion et actions
-  VERSION MODIFIÉE - Copie uniquement bilan + univers
+  VERSION MODIFIÉE - Copie profil + univers + bilan
   ============================================
 */
 
@@ -121,7 +121,21 @@ function resetAllData() {
 /* ===== VÉRIFICATION DES DONNÉES REQUISES ===== */
 
 function checkRequiredData() {
-  // Vérifier uniquement les univers et le bilan
+  // Vérifier le profil
+  const profilePercentages = localStorage.getItem('profile_percentages');
+  let hasProfile = false;
+  
+  if(profilePercentages) {
+    try {
+      const profile = JSON.parse(profilePercentages);
+      hasProfile = profile && Object.keys(profile).length >= 12;
+      console.log(`🎯 Profil: ${hasProfile ? 'Complet' : 'Incomplet'}`);
+    } catch(e) {
+      console.error("❌ Erreur lecture profil:", e);
+    }
+  }
+  
+  // Vérifier les univers
   const selectedUniversDetails = localStorage.getItem('selected_univers_details');
   let hasUnivers = false;
   
@@ -136,6 +150,7 @@ function checkRequiredData() {
     }
   }
   
+  // Vérifier le bilan
   const situationData = localStorage.getItem('situation_data');
   let hasSituation = false;
   
@@ -150,6 +165,7 @@ function checkRequiredData() {
   }
   
   return { 
+    hasProfile,
     hasUnivers, 
     hasSituation 
   };
@@ -161,10 +177,15 @@ function copyResultsToClipboard() {
   try {
     console.log("📋 Début de la copie des résultats...");
     
-    const { hasUnivers, hasSituation } = checkRequiredData();
+    const { hasProfile, hasUnivers, hasSituation } = checkRequiredData();
     
-    if(!hasUnivers && !hasSituation){
-      alert("⚠️ Aucune donnée à copier.\n\nVeuillez d'abord :\n• Sélectionner au moins 3 univers\n• Compléter votre bilan personnel");
+    if(!hasProfile && !hasUnivers && !hasSituation){
+      alert("⚠️ Aucune donnée à copier.\n\nVeuillez d'abord :\n• Compléter le questionnaire\n• Sélectionner au moins 3 univers\n• Compléter votre bilan personnel");
+      return;
+    }
+    
+    if(!hasProfile){
+      alert("⚠️ Profil non calculé.\n\nVeuillez compléter le questionnaire pour générer votre profil avant de copier vos résultats.");
       return;
     }
     
@@ -178,12 +199,66 @@ function copyResultsToClipboard() {
       return;
     }
     
+    const profileData = localStorage.getItem('profile_percentages');
     const universData = localStorage.getItem('selected_univers_details');
     const situationData = localStorage.getItem('situation_data');
     
     let textToCopy = "═══════════════════════════════════════\n";
     textToCopy += "   RECONVERSION 360 IA - MES RÉSULTATS\n";
     textToCopy += "═══════════════════════════════════════\n\n";
+    
+    // PROFIL PSYCHOMÉTRIQUE
+    if(profileData){
+      try {
+        const profile = JSON.parse(profileData);
+        
+        textToCopy += "🎯 MON PROFIL PSYCHOMÉTRIQUE\n";
+        textToCopy += "───────────────────────────────────────\n\n";
+        
+        const dimensionNames = {
+          'D1': 'Leadership & Autorité',
+          'D2': 'Empathie & Relationnel',
+          'D3': 'Innovation & Créativité',
+          'D4': 'Rigueur & Organisation',
+          'D5': 'Technicité & Expertise',
+          'D6': 'Communication & Expression',
+          'D7': 'Travail Manuel & Pratique',
+          'D8': 'Analyse & Réflexion',
+          'D9': 'Autonomie & Indépendance',
+          'D10': 'Collaboration & Équipe',
+          'D11': 'Adaptabilité & Flexibilité',
+          'D12': 'Engagement & Valeurs'
+        };
+        
+        // Trier les dimensions par pourcentage décroissant
+        const sortedDimensions = Object.entries(profile)
+          .sort((a, b) => b[1] - a[1]);
+        
+        sortedDimensions.forEach(([dim, percentage]) => {
+          const name = dimensionNames[dim] || dim;
+          const roundedPercentage = Math.round(percentage);
+          
+          // Créer une barre visuelle
+          const barLength = Math.round(percentage / 5);
+          const bar = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
+          
+          textToCopy += `${name}\n`;
+          textToCopy += `${bar} ${roundedPercentage}%\n\n`;
+        });
+        
+        // Ajouter les 3 dimensions dominantes
+        textToCopy += "📊 Mes 3 dimensions dominantes:\n";
+        sortedDimensions.slice(0, 3).forEach(([dim, percentage], index) => {
+          const name = dimensionNames[dim] || dim;
+          textToCopy += `${index + 1}. ${name} (${Math.round(percentage)}%)\n`;
+        });
+        textToCopy += "\n";
+        
+        console.log("✅ Profil psychométrique ajouté");
+      } catch(e) {
+        console.error("❌ Erreur profil:", e);
+      }
+    }
     
     // UNIVERS SÉLECTIONNÉS
     if(universData){
@@ -304,10 +379,15 @@ function downloadPDF() {
   try {
     console.log("📄 Début de la génération PDF...");
     
-    const { hasUnivers, hasSituation } = checkRequiredData();
+    const { hasProfile, hasUnivers, hasSituation } = checkRequiredData();
     
-    if(!hasUnivers && !hasSituation){
-      alert("⚠️ Aucune donnée à télécharger.\n\nVeuillez d'abord :\n• Sélectionner au moins 3 univers\n• Compléter votre bilan personnel");
+    if(!hasProfile && !hasUnivers && !hasSituation){
+      alert("⚠️ Aucune donnée à télécharger.\n\nVeuillez d'abord :\n• Compléter le questionnaire\n• Sélectionner au moins 3 univers\n• Compléter votre bilan personnel");
+      return;
+    }
+    
+    if(!hasProfile){
+      alert("⚠️ Profil non calculé.\n\nVeuillez compléter le questionnaire pour générer votre profil avant de générer le PDF.");
       return;
     }
     
@@ -321,6 +401,7 @@ function downloadPDF() {
       return;
     }
     
+    const profileData = localStorage.getItem('profile_percentages');
     const universData = localStorage.getItem('selected_univers_details');
     const situationData = localStorage.getItem('situation_data');
     
@@ -336,6 +417,61 @@ function downloadPDF() {
       day: 'numeric' 
     }) + "\n\n";
     
+    // PROFIL PSYCHOMÉTRIQUE
+    if(profileData){
+      try {
+        const profile = JSON.parse(profileData);
+        
+        pdfContent += "───────────────────────────────────────────────────────\n";
+        pdfContent += "🎯 MON PROFIL PSYCHOMÉTRIQUE\n";
+        pdfContent += "───────────────────────────────────────────────────────\n\n";
+        
+        const dimensionNames = {
+          'D1': 'Leadership & Autorité',
+          'D2': 'Empathie & Relationnel',
+          'D3': 'Innovation & Créativité',
+          'D4': 'Rigueur & Organisation',
+          'D5': 'Technicité & Expertise',
+          'D6': 'Communication & Expression',
+          'D7': 'Travail Manuel & Pratique',
+          'D8': 'Analyse & Réflexion',
+          'D9': 'Autonomie & Indépendance',
+          'D10': 'Collaboration & Équipe',
+          'D11': 'Adaptabilité & Flexibilité',
+          'D12': 'Engagement & Valeurs'
+        };
+        
+        // Trier les dimensions par pourcentage décroissant
+        const sortedDimensions = Object.entries(profile)
+          .sort((a, b) => b[1] - a[1]);
+        
+        sortedDimensions.forEach(([dim, percentage]) => {
+          const name = dimensionNames[dim] || dim;
+          const roundedPercentage = Math.round(percentage);
+          
+          // Créer une barre visuelle
+          const barLength = Math.round(percentage / 5);
+          const bar = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
+          
+          pdfContent += `${name}\n`;
+          pdfContent += `${bar} ${roundedPercentage}%\n\n`;
+        });
+        
+        // Ajouter les 3 dimensions dominantes
+        pdfContent += "\n📊 Mes 3 dimensions dominantes:\n\n";
+        sortedDimensions.slice(0, 3).forEach(([dim, percentage], index) => {
+          const name = dimensionNames[dim] || dim;
+          pdfContent += `   ${index + 1}. ${name} (${Math.round(percentage)}%)\n`;
+        });
+        pdfContent += "\n";
+        
+        console.log("✅ Profil psychométrique ajouté au PDF");
+      } catch(e) {
+        console.error("❌ Erreur profil:", e);
+      }
+    }
+    
+    // UNIVERS SÉLECTIONNÉS
     if(universData){
       try {
         const univers = JSON.parse(universData);
@@ -361,6 +497,7 @@ function downloadPDF() {
       }
     }
     
+    // BILAN PERSONNEL
     if(situationData){
       try {
         const situation = JSON.parse(situationData);
@@ -451,11 +588,16 @@ function downloadPDF() {
 /* ===== VÉRIFICATION ACCÈS PROJET ===== */
 
 function checkProjectAccess() {
-  const { hasUnivers, hasSituation } = checkRequiredData();
+  const { hasProfile, hasUnivers, hasSituation } = checkRequiredData();
   
-  if(!hasUnivers || !hasSituation){
-    if(!hasUnivers && !hasSituation){
-      alert("⚠️ Accès non autorisé\n\nPour construire votre projet, vous devez d'abord :\n\n1. Sélectionner au moins 3 univers\n2. Remplir votre bilan personnel");
+  if(!hasProfile || !hasUnivers || !hasSituation){
+    if(!hasProfile && !hasUnivers && !hasSituation){
+      alert("⚠️ Accès non autorisé\n\nPour construire votre projet, vous devez d'abord :\n\n1. Compléter le questionnaire\n2. Sélectionner au moins 3 univers\n3. Remplir votre bilan personnel");
+      return;
+    }
+    
+    if(!hasProfile){
+      alert("⚠️ Profil non calculé\n\nVeuillez compléter le questionnaire pour générer votre profil avant d'accéder à la construction de votre projet.");
       return;
     }
     
