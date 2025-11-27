@@ -91,15 +91,52 @@
         </svg>
         <span>Télécharger PDF</span>
       </button>
+      
+      <!-- ===== BOUTON DEBUG PROVISOIRE ===== -->
+      <button id="btnDebugAtlas" class="action-btn-small" style="border-color: #ff6b6b; color: #ff6b6b;">
+        🔍 DEBUG: Voir données Atlas
+      </button>
     </div>
     
     <p class="action-notice">Copiez vos résultats pour les transmettre à l'IA</p>
+    
+    <!-- ===== SECTION CACHÉE POUR ATLAS ===== -->
+    <div id="atlasData" style="display: none;" aria-hidden="true">
+      <article id="atlasContent" data-type="reconversion-360-results">
+        <header>
+          <h1>Reconversion 360 IA - Résultats</h1>
+          <time id="atlasDate"></time>
+        </header>
+        
+        <section id="atlasProfile" data-section="profil-personnel">
+          <h2>Profil Personnel</h2>
+          <div id="atlasProfileData"></div>
+        </section>
+        
+        <section id="atlasUnivers" data-section="univers-selectionnes">
+          <h2>Univers Sélectionnés</h2>
+          <div id="atlasUniversData"></div>
+        </section>
+        
+        <section id="atlasBilan" data-section="bilan-personnel">
+          <h2>Bilan Personnel</h2>
+          <div id="atlasIdentite" data-subsection="identite"></div>
+          <div id="atlasSituation" data-subsection="situation"></div>
+          <div id="atlasRessources" data-subsection="ressources"></div>
+          <div id="atlasValeurs" data-subsection="valeurs"></div>
+          <div id="atlasContraintes" data-subsection="contraintes"></div>
+          <div id="atlasFormation" data-subsection="formation"></div>
+          <div id="atlasTests" data-subsection="tests"></div>
+          <div id="atlasOuverture" data-subsection="ouverture"></div>
+        </section>
+      </article>
+    </div>
     
     <footer class="page-footer">
       © 2025 Synergie IA - Reconversion 360 IA
     </footer>
   </div>
   
-  <script src="index-script.js?v=34"></script>
+  <script src="index-script.js?v=35"></script>
 </body>
 </html>
