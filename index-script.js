@@ -862,7 +862,7 @@ function checkProjectAccess() {
     "📋 AVANT DE CONTINUER - IMPORTANT :\n\n" +
     "🌐 Vous utilisez ATLAS (navigateur ChatGPT) ?\n" +
     "   → Cliquez OK (vos données seront lues automatiquement)\n\n" +
-    "📋 Vous N'utilisez PAS Atlas : si ce n'est pas fait, vous devez d'abord copier vos résultats ?\n" +
+    "📋 Vous N'utilisez PAS Atlas ? : si ce n'est pas déjà fait, vous devez d'abord copier vos résultats \n" +
     "   → Cliquez ANNULER\n" +
     "   → Copiez d'abord vos résultats avec le bouton ci-dessus\n" +
     "   → Puis revenez cliquer sur \"Construire mon projet\""
