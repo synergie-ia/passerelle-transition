@@ -4,6 +4,7 @@
   ============================================
   Gestion des badges de complétion et actions
   VERSION COMPLÈTE - Copie profil + univers + bilan
+  VERSION ATLAS - Section HTML cachée pour ChatGPT
   ============================================
 */
 
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log("====================================\n");
   
   updateCompletionBadges();
+  updateAtlasData(); // NOUVEAU : Remplir la section Atlas
   
   const btnReset = document.getElementById('btnResetData');
   if(btnReset){
@@ -34,14 +36,284 @@ document.addEventListener('DOMContentLoaded', function() {
     btnProject.addEventListener('click', checkProjectAccess);
   }
   
-  // Nouveau : Bouton univers-métiers
   const btnUniversMetiers = document.getElementById('btnUniversMetiers');
   if(btnUniversMetiers){
     btnUniversMetiers.addEventListener('click', function() {
       window.location.href = 'univers-metiers.html';
     });
   }
+  
+  // NOUVEAU : Bouton DEBUG provisoire
+  const btnDebugAtlas = document.getElementById('btnDebugAtlas');
+  if(btnDebugAtlas){
+    btnDebugAtlas.addEventListener('click', showAtlasData);
+  }
 });
+
+/* ===== NOUVELLE FONCTION : REMPLIR SECTION ATLAS ===== */
+
+function updateAtlasData() {
+  console.log("🌐 Atlas - Mise à jour des données...");
+  
+  const atlasDate = document.getElementById('atlasDate');
+  if(atlasDate){
+    atlasDate.textContent = new Date().toISOString();
+    atlasDate.setAttribute('datetime', new Date().toISOString());
+  }
+  
+  // 1. PROFIL PERSONNEL
+  const profileData = localStorage.getItem('profile_percentages');
+  const atlasProfileData = document.getElementById('atlasProfileData');
+  
+  if(profileData && atlasProfileData){
+    try {
+      const profile = JSON.parse(profileData);
+      let html = '<dl data-type="profil-dimensions">';
+      
+      const profileArray = Object.entries(profile)
+        .map(([code, data]) => ({
+          code: code,
+          name: data.name,
+          pct: data.pct,
+          score: data.score
+        }))
+        .sort((a, b) => b.pct - a.pct);
+      
+      profileArray.forEach(dim => {
+        html += `<div data-dimension="${dim.code}">`;
+        html += `<dt>${dim.code} - ${dim.name}</dt>`;
+        html += `<dd data-percentage="${dim.pct}" data-score="${dim.score}">${dim.pct}%</dd>`;
+        html += `</div>`;
+      });
+      
+      html += '</dl>';
+      
+      html += '<div data-type="top-dimensions">';
+      profileArray.slice(0, 3).forEach((dim, index) => {
+        html += `<div data-rank="${index + 1}" data-dimension="${dim.code}" data-percentage="${dim.pct}">`;
+        html += `${dim.code} (${dim.name}): ${dim.pct}%`;
+        html += `</div>`;
+      });
+      html += '</div>';
+      
+      atlasProfileData.innerHTML = html;
+      console.log("✅ Atlas - Profil ajouté");
+    } catch(e) {
+      console.error("❌ Atlas - Erreur profil:", e);
+    }
+  }
+  
+  // 2. UNIVERS SÉLECTIONNÉS
+  const universData = localStorage.getItem('selected_univers_details');
+  const atlasUniversData = document.getElementById('atlasUniversData');
+  
+  if(universData && atlasUniversData){
+    try {
+      const univers = JSON.parse(universData);
+      const universArray = Object.entries(univers);
+      
+      if(universArray.length > 0){
+        let html = '<ul data-type="univers-list">';
+        
+        universArray
+          .sort((a, b) => b[1].score - a[1].score)
+          .forEach(([id, data]) => {
+            const percentage = Math.round((data.score / 12) * 100);
+            html += `<li data-univers-id="${id}" data-score="${data.score}" data-percentage="${percentage}" data-level="${data.level}">`;
+            html += `<span data-field="name">${data.name}</span>`;
+            html += `<span data-field="compatibility">${percentage}%</span>`;
+            html += `<span data-field="level">${data.level}</span>`;
+            html += `</li>`;
+          });
+        
+        html += '</ul>';
+        atlasUniversData.innerHTML = html;
+        console.log("✅ Atlas - Univers ajoutés");
+      }
+    } catch(e) {
+      console.error("❌ Atlas - Erreur univers:", e);
+    }
+  }
+  
+  // 3. BILAN PERSONNEL
+  const situationData = localStorage.getItem('situation_data');
+  
+  if(situationData){
+    try {
+      const situation = JSON.parse(situationData);
+      
+      // Identité
+      const atlasIdentite = document.getElementById('atlasIdentite');
+      if(atlasIdentite){
+        let html = '<h3>Identité</h3><dl>';
+        if(situation.prenom) html += `<div><dt>Prénom</dt><dd data-field="prenom">${situation.prenom}</dd></div>`;
+        if(situation.age) html += `<div><dt>Âge</dt><dd data-field="age">${situation.age}</dd></div>`;
+        html += '</dl>';
+        atlasIdentite.innerHTML = html;
+      }
+      
+      // Situation & Parcours
+      const atlasSituation = document.getElementById('atlasSituation');
+      if(atlasSituation){
+        let html = '<h3>Situation & Parcours</h3><dl>';
+        if(situation.q1) html += `<div><dt>Objectif professionnel</dt><dd data-field="q1">${situation.q1}</dd></div>`;
+        if(situation.q2) html += `<div><dt>Statut actuel</dt><dd data-field="q2">${situation.q2}</dd></div>`;
+        if(situation.q3) html += `<div><dt>Niveau de formation</dt><dd data-field="q3">${situation.q3}</dd></div>`;
+        if(situation.q4) html += `<div><dt>Certifications</dt><dd data-field="q4">${situation.q4}</dd></div>`;
+        html += '</dl>';
+        atlasSituation.innerHTML = html;
+      }
+      
+      // Ressources & Compétences
+      const atlasRessources = document.getElementById('atlasRessources');
+      if(atlasRessources){
+        let html = '<h3>Ressources & Compétences</h3><dl>';
+        if(situation.q5) html += `<div><dt>Compétences techniques</dt><dd data-field="q5">${situation.q5}</dd></div>`;
+        if(situation.q6) html += `<div><dt>Compétences à réutiliser</dt><dd data-field="q6">${situation.q6}</dd></div>`;
+        if(situation.q7) html += `<div><dt>Compétences relationnelles</dt><dd data-field="q7">${situation.q7}</dd></div>`;
+        if(situation.q8) html += `<div><dt>Expériences marquantes</dt><dd data-field="q8">${situation.q8}</dd></div>`;
+        html += '</dl>';
+        atlasRessources.innerHTML = html;
+      }
+      
+      // Valeurs & Sens du travail
+      const atlasValeurs = document.getElementById('atlasValeurs');
+      if(atlasValeurs){
+        let html = '<h3>Valeurs & Sens du travail</h3><dl>';
+        if(situation.q9) html += `<div><dt>Valeurs essentielles</dt><dd data-field="q9">${situation.q9}</dd></div>`;
+        if(situation.q10) html += `<div><dt>Secteurs à éviter</dt><dd data-field="q10">${situation.q10}</dd></div>`;
+        html += '</dl>';
+        atlasValeurs.innerHTML = html;
+      }
+      
+      // Contraintes & Conditions
+      const atlasContraintes = document.getElementById('atlasContraintes');
+      if(atlasContraintes){
+        let html = '<h3>Contraintes & Conditions</h3><dl>';
+        if(situation.q11) html += `<div><dt>Géographie/Mobilité</dt><dd data-field="q11">${situation.q11}</dd></div>`;
+        if(situation.q12) html += `<div><dt>Conditions de travail</dt><dd data-field="q12">${situation.q12}</dd></div>`;
+        if(situation.q13) html += `<div><dt>Horaires</dt><dd data-field="q13">${situation.q13}</dd></div>`;
+        if(situation.q14) html += `<div><dt>Limitations</dt><dd data-field="q14">${situation.q14}</dd></div>`;
+        if(situation.q15) html += `<div><dt>Rémunération minimale</dt><dd data-field="q15">${situation.q15}</dd></div>`;
+        if(situation.q16) html += `<div><dt>Situations à éviter</dt><dd data-field="q16">${situation.q16}</dd></div>`;
+        if(situation.q17) html += `<div><dt>Environnement idéal</dt><dd data-field="q17">${situation.q17}</dd></div>`;
+        if(situation.q18) html += `<div><dt>Échéance du projet</dt><dd data-field="q18">${situation.q18}</dd></div>`;
+        html += '</dl>';
+        atlasContraintes.innerHTML = html;
+      }
+      
+      // Formation
+      const atlasFormation = document.getElementById('atlasFormation');
+      if(atlasFormation){
+        let html = '<h3>Formation</h3><dl>';
+        if(situation.q19) html += `<div><dt>Formation envisagée</dt><dd data-field="q19">${situation.q19}</dd></div>`;
+        html += '</dl>';
+        atlasFormation.innerHTML = html;
+      }
+      
+      // Tests psychotechniques
+      const atlasTests = document.getElementById('atlasTests');
+      if(atlasTests){
+        let html = '<h3>Tests psychotechniques</h3><dl>';
+        if(situation.q21) html += `<div><dt>Tests passés</dt><dd data-field="q21">${situation.q21}</dd></div>`;
+        html += '</dl>';
+        atlasTests.innerHTML = html;
+      }
+      
+      // Ouverture
+      const atlasOuverture = document.getElementById('atlasOuverture');
+      if(atlasOuverture){
+        let html = '<h3>Ouverture</h3><dl>';
+        if(situation.q20) html += `<div><dt>Informations complémentaires</dt><dd data-field="q20">${situation.q20}</dd></div>`;
+        html += '</dl>';
+        atlasOuverture.innerHTML = html;
+      }
+      
+      console.log("✅ Atlas - Bilan complet ajouté");
+    } catch(e) {
+      console.error("❌ Atlas - Erreur bilan:", e);
+    }
+  }
+  
+  console.log("✅ Atlas - Mise à jour terminée");
+}
+
+/* ===== NOUVELLE FONCTION : AFFICHER DONNÉES ATLAS (DEBUG) ===== */
+
+function showAtlasData() {
+  const atlasData = document.getElementById('atlasData');
+  
+  if(!atlasData){
+    alert("❌ Section Atlas introuvable");
+    return;
+  }
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 10000;
+    overflow: auto;
+    padding: 20px;
+  `;
+  
+  const content = document.createElement('div');
+  content.style.cssText = `
+    background: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 10px;
+    position: relative;
+  `;
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ Fermer';
+  closeBtn.style.cssText = `
+    position: sticky;
+    top: 10px;
+    float: right;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    z-index: 1;
+  `;
+  closeBtn.onclick = () => document.body.removeChild(modal);
+  
+  const title = document.createElement('h2');
+  title.textContent = '🔍 DEBUG - Données Atlas (HTML caché)';
+  title.style.cssText = 'color: #333; margin-bottom: 20px; clear: both;';
+  
+  const htmlDisplay = document.createElement('pre');
+  htmlDisplay.textContent = atlasData.innerHTML;
+  htmlDisplay.style.cssText = `
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  `;
+  
+  content.appendChild(closeBtn);
+  content.appendChild(title);
+  content.appendChild(htmlDisplay);
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  
+  console.log("🔍 DEBUG - HTML Atlas affiché");
+  console.log(atlasData.innerHTML);
+}
 
 /* ===== BADGES DE COMPLÉTION ===== */
 
@@ -114,6 +386,9 @@ function resetAllData() {
       console.log(`🗑️ Supprimé: ${key}`);
     });
     
+    // NOUVEAU : Vider la section Atlas
+    clearAtlasData();
+    
     console.log('✅ Toutes les données ont été supprimées');
     
     alert("✅ Toutes vos données ont été supprimées avec succès.\n\nLa page va se recharger.");
@@ -126,10 +401,41 @@ function resetAllData() {
   }
 }
 
+/* ===== NOUVELLE FONCTION : VIDER SECTION ATLAS ===== */
+
+function clearAtlasData() {
+  console.log("🌐 Atlas - Suppression des données...");
+  
+  const atlasProfileData = document.getElementById('atlasProfileData');
+  const atlasUniversData = document.getElementById('atlasUniversData');
+  const atlasIdentite = document.getElementById('atlasIdentite');
+  const atlasSituation = document.getElementById('atlasSituation');
+  const atlasRessources = document.getElementById('atlasRessources');
+  const atlasValeurs = document.getElementById('atlasValeurs');
+  const atlasContraintes = document.getElementById('atlasContraintes');
+  const atlasFormation = document.getElementById('atlasFormation');
+  const atlasTests = document.getElementById('atlasTests');
+  const atlasOuverture = document.getElementById('atlasOuverture');
+  const atlasDate = document.getElementById('atlasDate');
+  
+  if(atlasProfileData) atlasProfileData.innerHTML = '';
+  if(atlasUniversData) atlasUniversData.innerHTML = '';
+  if(atlasIdentite) atlasIdentite.innerHTML = '';
+  if(atlasSituation) atlasSituation.innerHTML = '';
+  if(atlasRessources) atlasRessources.innerHTML = '';
+  if(atlasValeurs) atlasValeurs.innerHTML = '';
+  if(atlasContraintes) atlasContraintes.innerHTML = '';
+  if(atlasFormation) atlasFormation.innerHTML = '';
+  if(atlasTests) atlasTests.innerHTML = '';
+  if(atlasOuverture) atlasOuverture.innerHTML = '';
+  if(atlasDate) atlasDate.textContent = '';
+  
+  console.log("✅ Atlas - Données supprimées");
+}
+
 /* ===== VÉRIFICATION DES DONNÉES REQUISES ===== */
 
 function checkRequiredData() {
-  // Vérifier uniquement les univers et le bilan
   const selectedUniversDetails = localStorage.getItem('selected_univers_details');
   let hasUnivers = false;
   
@@ -201,7 +507,6 @@ function copyResultsToClipboard() {
         textToCopy += "👤 MON PROFIL PERSONNEL\n";
         textToCopy += "───────────────────────────────────────\n\n";
         
-        // Convertir en tableau et trier par pourcentage décroissant
         const profileArray = Object.entries(profile)
           .map(([code, data]) => ({
             code: code,
@@ -391,7 +696,6 @@ function downloadPDF() {
         pdfContent += "👤 MON PROFIL PERSONNEL\n";
         pdfContent += "───────────────────────────────────────────────────────\n\n";
         
-        // Convertir en tableau et trier par pourcentage décroissant
         const profileArray = Object.entries(profile)
           .map(([code, data]) => ({
             code: code,
