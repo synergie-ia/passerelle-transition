@@ -1,5 +1,5 @@
 /* ====== Paramètres ====== */
-const STORAGE_KEY = "ia360_selected_universes";
+const STORAGE_KEY = "transition360_ia360_selected_universes";
 /* ======================== */
 
 /* -- Lecture des sélections en mémoire -- */
