@@ -7,6 +7,7 @@
   VERSION ATLAS - Section HTML cachée pour ChatGPT
   VERSION FINALE - Messages améliorés + gestion blocage
   VERSION 38 - Suppression message confirmation + détection blocage
+  VERSION 39 - Ajout préfixe transition360_ pour localStorage
   ============================================
 */
 
@@ -58,7 +59,7 @@ function updateAtlasData() {
   }
   
   // 1. PROFIL PERSONNEL
-  const profileData = localStorage.getItem('profile_percentages');
+  const profileData = localStorage.getItem('transition360_profile_percentages');
   const atlasProfileData = document.getElementById('atlasProfileData');
   
   if(profileData && atlasProfileData){
@@ -100,7 +101,7 @@ function updateAtlasData() {
   }
   
   // 2. UNIVERS SÉLECTIONNÉS
-  const universData = localStorage.getItem('selected_univers_details');
+  const universData = localStorage.getItem('transition360_selected_univers_details');
   const atlasUniversData = document.getElementById('atlasUniversData');
   
   if(universData && atlasUniversData){
@@ -132,7 +133,7 @@ function updateAtlasData() {
   }
   
   // 3. BILAN PERSONNEL
-  const situationData = localStorage.getItem('situation_data');
+  const situationData = localStorage.getItem('transition360_situation_data');
   
   if(situationData){
     try {
@@ -314,9 +315,9 @@ function showAtlasData() {
 /* ===== BADGES DE COMPLÉTION ===== */
 
 function updateCompletionBadges() {
-  const hasAnswers = localStorage.getItem('questionnaire_answers');
-  const hasProfile = localStorage.getItem('profile_percentages');
-  const hasUnivers = localStorage.getItem('selected_univers_details');
+  const hasAnswers = localStorage.getItem('transition360_questionnaire_answers');
+  const hasProfile = localStorage.getItem('transition360_profile_percentages');
+  const hasUnivers = localStorage.getItem('transition360_selected_univers_details');
   
   const cards = document.querySelectorAll('.action-card');
   
@@ -328,7 +329,7 @@ function updateCompletionBadges() {
     console.log('✅ Badge Questionnaire ajouté');
   }
   
-  const hasSituation = localStorage.getItem('situation_data');
+  const hasSituation = localStorage.getItem('transition360_situation_data');
   if(cards[1] && hasSituation){
     const badge = document.createElement('div');
     badge.className = 'completion-badge';
@@ -368,13 +369,13 @@ function confirmReset() {
 function resetAllData() {
   try {
     const keysToRemove = [
-      'questionnaire_answers',
-      'profile_percentages',
-      'univers_details',
-      'selected_univers_details',
-      'selectedUnivers',
-      'situation_data',
-      'data_exported'
+      'transition360_questionnaire_answers',
+      'transition360_profile_percentages',
+      'transition360_univers_details',
+      'transition360_selected_univers_details',
+      'transition360_selectedUnivers',
+      'transition360_situation_data',
+      'transition360_data_exported'
     ];
     
     keysToRemove.forEach(key => {
@@ -432,7 +433,7 @@ function clearAtlasData() {
 /* ===== VÉRIFICATION DES DONNÉES REQUISES ===== */
 
 function checkRequiredData() {
-  const selectedUniversDetails = localStorage.getItem('selected_univers_details');
+  const selectedUniversDetails = localStorage.getItem('transition360_selected_univers_details');
   let hasUnivers = false;
   
   if(selectedUniversDetails) {
@@ -446,7 +447,7 @@ function checkRequiredData() {
     }
   }
   
-  const situationData = localStorage.getItem('situation_data');
+  const situationData = localStorage.getItem('transition360_situation_data');
   let hasSituation = false;
   
   if(situationData) {
@@ -488,15 +489,15 @@ function copyResultsToClipboard() {
       return;
     }
     
-    const universData = localStorage.getItem('selected_univers_details');
-    const situationData = localStorage.getItem('situation_data');
+    const universData = localStorage.getItem('transition360_selected_univers_details');
+    const situationData = localStorage.getItem('transition360_situation_data');
     
     let textToCopy = "═══════════════════════════════════════\n";
     textToCopy += "   Passerelle-Transition - MES RÉSULTATS\n";
     textToCopy += "═══════════════════════════════════════\n\n";
     
     // PROFIL PERSONNEL
-    const profileData = localStorage.getItem('profile_percentages');
+    const profileData = localStorage.getItem('transition360_profile_percentages');
     if(profileData){
       try {
         const profile = JSON.parse(profileData);
@@ -628,7 +629,7 @@ function copyResultsToClipboard() {
       navigator.clipboard.writeText(textToCopy)
         .then(() => {
           console.log("✅ Texte copié avec succès");
-          localStorage.setItem('data_exported', 'true');
+          localStorage.setItem('transition360_data_exported', 'true');
           showCopySuccess();
         })
         .catch(err => {
@@ -668,8 +669,8 @@ function downloadPDF() {
       return;
     }
     
-    const universData = localStorage.getItem('selected_univers_details');
-    const situationData = localStorage.getItem('situation_data');
+    const universData = localStorage.getItem('transition360_selected_univers_details');
+    const situationData = localStorage.getItem('transition360_situation_data');
     
     let pdfContent = "";
     
@@ -684,7 +685,7 @@ function downloadPDF() {
     }) + "\n\n";
     
     // PROFIL PERSONNEL
-    const profileData = localStorage.getItem('profile_percentages');
+    const profileData = localStorage.getItem('transition360_profile_percentages');
     if(profileData){
       try {
         const profile = JSON.parse(profileData);
@@ -822,7 +823,7 @@ function downloadPDF() {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
     
-    localStorage.setItem('data_exported', 'true');
+    localStorage.setItem('transition360_data_exported', 'true');
     
     console.log("✅ Fichier téléchargé");
     showDownloadSuccess();
@@ -880,7 +881,7 @@ function fallbackCopy(text) {
     
     if(successful){
       console.log("✅ Copie réussie (méthode alternative)");
-      localStorage.setItem('data_exported', 'true');
+      localStorage.setItem('transition360_data_exported', 'true');
       showCopySuccess();
     } else {
       throw new Error("execCommand a échoué");
