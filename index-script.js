@@ -79,6 +79,7 @@ function resetAllData() {
       'transition360_selected_univers_details',
       'transition360_selectedUnivers',
       'transition360_situation_data',
+      'transition360_situation_data_autosave',
       'transition360_data_exported'
     ];
     
@@ -475,7 +476,7 @@ function downloadPDF() {
     }
     
     pdfContent += "═══════════════════════════════════════════════════════\n";
-    pdfContent += "Document généré par Reconversion 360 IA\n";
+    pdfContent += "Document généré par pass-transition IA\n";
     pdfContent += "© 2025 Synergie IA\n";
     pdfContent += "═══════════════════════════════════════════════════════";
     
